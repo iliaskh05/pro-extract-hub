@@ -10,18 +10,50 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DevisRouteImport } from './routes/devis'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
+import { Route as MethodeRouteImport } from './routes/methode'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
 import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
+import { Route as ZonesIndexRouteImport } from './routes/zones.index'
+import { Route as ZonesSlugRouteImport } from './routes/zones.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConfidentialiteRoute = ConfidentialiteRouteImport.update({
+  id: '/confidentialite',
+  path: '/confidentialite',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DevisRoute = DevisRouteImport.update({
   id: '/devis',
   path: '/devis',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
+  id: '/mentions-legales',
+  path: '/mentions-legales',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MethodeRoute = MethodeRouteImport.update({
+  id: '/methode',
+  path: '/methode',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicesIndexRoute = ServicesIndexRouteImport.update({
@@ -34,39 +66,111 @@ const ServicesSlugRoute = ServicesSlugRouteImport.update({
   path: '/services/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ZonesIndexRoute = ZonesIndexRouteImport.update({
+  id: '/zones/',
+  path: '/zones/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ZonesSlugRoute = ZonesSlugRouteImport.update({
+  id: '/zones/$slug',
+  path: '/zones/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/confidentialite': typeof ConfidentialiteRoute
+  '/contact': typeof ContactRoute
   '/devis': typeof DevisRoute
+  '/faq': typeof FaqRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
+  '/methode': typeof MethodeRoute
   '/services/$slug': typeof ServicesSlugRoute
+  '/zones/$slug': typeof ZonesSlugRoute
   '/services/': typeof ServicesIndexRoute
+  '/zones/': typeof ZonesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/confidentialite': typeof ConfidentialiteRoute
+  '/contact': typeof ContactRoute
   '/devis': typeof DevisRoute
+  '/faq': typeof FaqRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
+  '/methode': typeof MethodeRoute
   '/services/$slug': typeof ServicesSlugRoute
+  '/zones/$slug': typeof ZonesSlugRoute
   '/services': typeof ServicesIndexRoute
+  '/zones': typeof ZonesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/confidentialite': typeof ConfidentialiteRoute
+  '/contact': typeof ContactRoute
   '/devis': typeof DevisRoute
+  '/faq': typeof FaqRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
+  '/methode': typeof MethodeRoute
   '/services/$slug': typeof ServicesSlugRoute
+  '/zones/$slug': typeof ZonesSlugRoute
   '/services/': typeof ServicesIndexRoute
+  '/zones/': typeof ZonesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/devis' | '/services/$slug' | '/services/'
+  fullPaths:
+    | '/'
+    | '/confidentialite'
+    | '/contact'
+    | '/devis'
+    | '/faq'
+    | '/mentions-legales'
+    | '/methode'
+    | '/services/$slug'
+    | '/zones/$slug'
+    | '/services/'
+    | '/zones/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/devis' | '/services/$slug' | '/services'
-  id: '__root__' | '/' | '/devis' | '/services/$slug' | '/services/'
+  to:
+    | '/'
+    | '/confidentialite'
+    | '/contact'
+    | '/devis'
+    | '/faq'
+    | '/mentions-legales'
+    | '/methode'
+    | '/services/$slug'
+    | '/zones/$slug'
+    | '/services'
+    | '/zones'
+  id:
+    | '__root__'
+    | '/'
+    | '/confidentialite'
+    | '/contact'
+    | '/devis'
+    | '/faq'
+    | '/mentions-legales'
+    | '/methode'
+    | '/services/$slug'
+    | '/zones/$slug'
+    | '/services/'
+    | '/zones/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ConfidentialiteRoute: typeof ConfidentialiteRoute
+  ContactRoute: typeof ContactRoute
   DevisRoute: typeof DevisRoute
+  FaqRoute: typeof FaqRoute
+  MentionsLegalesRoute: typeof MentionsLegalesRoute
+  MethodeRoute: typeof MethodeRoute
   ServicesSlugRoute: typeof ServicesSlugRoute
+  ZonesSlugRoute: typeof ZonesSlugRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
+  ZonesIndexRoute: typeof ZonesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -78,11 +182,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/confidentialite': {
+      id: '/confidentialite'
+      path: '/confidentialite'
+      fullPath: '/confidentialite'
+      preLoaderRoute: typeof ConfidentialiteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/devis': {
       id: '/devis'
       path: '/devis'
       fullPath: '/devis'
       preLoaderRoute: typeof DevisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentions-legales': {
+      id: '/mentions-legales'
+      path: '/mentions-legales'
+      fullPath: '/mentions-legales'
+      preLoaderRoute: typeof MentionsLegalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/methode': {
+      id: '/methode'
+      path: '/methode'
+      fullPath: '/methode'
+      preLoaderRoute: typeof MethodeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/services/': {
@@ -99,14 +238,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/zones/': {
+      id: '/zones/'
+      path: '/zones'
+      fullPath: '/zones/'
+      preLoaderRoute: typeof ZonesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/zones/$slug': {
+      id: '/zones/$slug'
+      path: '/zones/$slug'
+      fullPath: '/zones/$slug'
+      preLoaderRoute: typeof ZonesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ConfidentialiteRoute: ConfidentialiteRoute,
+  ContactRoute: ContactRoute,
   DevisRoute: DevisRoute,
+  FaqRoute: FaqRoute,
+  MentionsLegalesRoute: MentionsLegalesRoute,
+  MethodeRoute: MethodeRoute,
   ServicesSlugRoute: ServicesSlugRoute,
+  ZonesSlugRoute: ZonesSlugRoute,
   ServicesIndexRoute: ServicesIndexRoute,
+  ZonesIndexRoute: ZonesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
