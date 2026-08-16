@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>/</loc><priority>1.0</priority></url>
+  <url><loc>/services</loc><priority>0.9</priority></url>
+  <url><loc>/services/degraissage-hotte</loc><priority>0.8</priority></url>
+  <url><loc>/services/nettoyage-filtres</loc><priority>0.8</priority></url>
+  <url><loc>/services/nettoyage-conduit</loc><priority>0.8</priority></url>
+  <url><loc>/services/nettoyage-moteur-caisson</loc><priority>0.8</priority></url>
+  <url><loc>/services/entretien-periodique</loc><priority>0.8</priority></url>
+  <url><loc>/services/diagnostic-devis</loc><priority>0.8</priority></url>
+  <url><loc>/zones</loc><priority>0.8</priority></url>
+  <url><loc>/zones/paris</loc><priority>0.8</priority></url>
+  <url><loc>/zones/perpignan</loc><priority>0.8</priority></url>
+  <url><loc>/methode</loc><priority>0.7</priority></url>
+  <url><loc>/devis</loc><priority>0.9</priority></url>
+  <url><loc>/faq</loc><priority>0.6</priority></url>
+  <url><loc>/contact</loc><priority>0.6</priority></url>
+</urlset>
