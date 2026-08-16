@@ -441,7 +441,7 @@ function Dashboard() {
   );
 }
 
-function Field({ label, value }: { label: string; value?: string | null }) {
+function Field({ label, value }: { label: string; value?: string | null | undefined }) {
   return (
     <div>
       <p className="text-xs font-semibold text-muted-foreground">{label}</p>

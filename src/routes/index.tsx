@@ -298,8 +298,8 @@ function Home() {
 
           <Reveal className="mt-12">
             <BeforeAfterSlider
-              before={GALLERY[0].before}
-              after={GALLERY[0].after}
+              before={GALLERY[0]!.before}
+              after={GALLERY[0]!.after}
               alt="Hotte de cuisine professionnelle"
             />
           </Reveal>
