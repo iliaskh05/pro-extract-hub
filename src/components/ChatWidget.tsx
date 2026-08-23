@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { Bot, Send, X } from "lucide-react";
+import { Send, X } from "lucide-react";
 import { askAssistant } from "@/lib/chat.functions";
 import { cn } from "@/lib/utils";
 
@@ -10,14 +10,18 @@ type Msg = { role: "user" | "assistant"; content: string };
 const INITIAL: Msg = {
   role: "assistant",
   content:
-    "Bonjour, je peux vous aider à identifier la prestation adaptée à votre installation ou vous guider vers une demande de devis.",
+    "Bonjour, je peux vous aider à identifier votre besoin ou vous guider vers une demande de devis.",
 };
 
-const SUGGESTIONS = [
-  "Je suis un restaurant à Paris.",
-  "Combien coûte le nettoyage d'une hotte ?",
-  "Vous intervenez à Perpignan ?",
-  "Quand pouvez-vous intervenir ?",
+const QUICK: Array<{
+  label: string;
+  action: "devis" | "zones" | "methode" | "contact" | "send";
+  text?: string;
+}> = [
+  { label: "Demander un devis", action: "devis" },
+  { label: "Zone d'intervention", action: "zones" },
+  { label: "Comment ça marche ?", action: "send", text: "Comment ça marche ?" },
+  { label: "Parler à un expert", action: "contact" },
 ];
 
 export function ChatWidget() {
@@ -27,6 +31,7 @@ export function ChatWidget() {
   const [loading, setLoading] = useState(false);
   const ask = useServerFn(askAssistant);
   const endRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
@@ -56,14 +61,40 @@ export function ChatWidget() {
     }
   }
 
+  function handleQuick(item: (typeof QUICK)[number]) {
+    if (item.action === "send" && item.text) {
+      void send(item.text);
+      return;
+    }
+    setOpen(false);
+    if (item.action === "devis") navigate({ to: "/devis" });
+    if (item.action === "zones") navigate({ to: "/zones" });
+    if (item.action === "contact") navigate({ to: "/contact" });
+  }
+
   return (
-    <div className="fixed right-4 bottom-42 z-50 flex flex-col items-end gap-3 lg:bottom-24">
+    <div className="fixed right-4 bottom-40 z-50 flex flex-col items-end gap-3 lg:bottom-24">
       {open && (
-        <div className="flex h-[28rem] w-[21rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-border bg-popover shadow-lift">
-          <div className="surface-ink flex items-center justify-between px-4 py-3">
+        <div
+          role="dialog"
+          aria-label="Assistant Extraction"
+          className="panel-in flex h-[31rem] max-h-[calc(100svh-9rem)] w-[22rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-border bg-popover shadow-lift"
+        >
+          <div className="surface-ink flex items-center justify-between px-4 py-3.5">
             <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent/20 text-accent">
-                <Bot className="size-4" />
+              <span className="relative flex h-9 w-9 items-center justify-center rounded-full border border-accent/30 bg-accent/15 text-accent">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.5" />
+                  <path
+                    d="M8 13.5c1.2 1.4 6.8 1.4 8 0"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                  <circle cx="9.2" cy="10" r="1" fill="currentColor" />
+                  <circle cx="14.8" cy="10" r="1" fill="currentColor" />
+                </svg>
+                <span className="absolute -right-0.5 -bottom-0.5 h-2 w-2 rounded-full bg-accent" />
               </span>
               <div>
                 <p className="text-sm font-semibold text-ink-foreground">Assistant Extraction</p>
@@ -87,10 +118,10 @@ export function ChatWidget() {
               <div
                 key={i}
                 className={cn(
-                  "max-w-[85%] rounded-xl px-3.5 py-2.5 text-sm leading-relaxed",
+                  "step-in max-w-[88%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-line",
                   m.role === "assistant"
-                    ? "bg-secondary text-secondary-foreground"
-                    : "ml-auto bg-primary text-primary-foreground",
+                    ? "rounded-tl-md bg-secondary text-secondary-foreground"
+                    : "ml-auto rounded-tr-md bg-primary text-primary-foreground",
                 )}
               >
                 {m.content}
@@ -110,30 +141,34 @@ export function ChatWidget() {
               </div>
             )}
             {messages.length <= 1 && (
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                {SUGGESTIONS.map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => send(s)}
-                    className="rounded-full border border-border px-3 py-1.5 text-xs transition-colors hover:border-accent hover:bg-secondary"
-                  >
-                    {s}
-                  </button>
-                ))}
+              <div className="flex flex-wrap gap-1.5 pt-2">
+                {QUICK.map((s) =>
+                  s.action === "devis" ? (
+                    <Link
+                      key={s.label}
+                      to="/devis"
+                      onClick={() => setOpen(false)}
+                      className="rounded-full border border-border px-3 py-1.5 text-xs transition-colors hover:border-accent hover:bg-secondary"
+                    >
+                      {s.label}
+                    </Link>
+                  ) : (
+                    <button
+                      key={s.label}
+                      type="button"
+                      onClick={() => handleQuick(s)}
+                      className="rounded-full border border-border px-3 py-1.5 text-xs transition-colors hover:border-accent hover:bg-secondary"
+                    >
+                      {s.label}
+                    </button>
+                  ),
+                )}
               </div>
             )}
             <div ref={endRef} />
           </div>
 
           <div className="border-t border-border p-3">
-            <Link
-              to="/devis"
-              onClick={() => setOpen(false)}
-              className="mb-2 flex h-10 items-center justify-center rounded-lg bg-accent text-sm font-semibold text-accent-foreground transition-transform hover:-translate-y-0.5"
-            >
-              Obtenir mon devis
-            </Link>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -168,9 +203,26 @@ export function ChatWidget() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Fermer l'assistant" : "Ouvrir l'assistant Extraction"}
-        className="flex h-13 w-13 items-center justify-center rounded-full bg-ink text-ink-foreground shadow-lift transition-transform hover:-translate-y-0.5 active:scale-95"
+        className={cn(
+          "flex h-12 w-12 items-center justify-center rounded-full bg-ink text-ink-foreground shadow-lift transition-transform hover:-translate-y-0.5 active:scale-95",
+          !open && "glow-breathe",
+        )}
       >
-        {open ? <X className="size-6" /> : <Bot className="size-6" />}
+        {open ? (
+          <X className="size-5" />
+        ) : (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="8.2" stroke="currentColor" strokeWidth="1.6" />
+            <path
+              d="M8 13.6c1.3 1.5 6.7 1.5 8 0"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+            />
+            <circle cx="9.2" cy="10" r="1.05" fill="currentColor" />
+            <circle cx="14.8" cy="10" r="1.05" fill="currentColor" />
+          </svg>
+        )}
       </button>
     </div>
   );

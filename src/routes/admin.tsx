@@ -7,12 +7,7 @@ import { LEAD_STATUSES, type LeadStatus } from "@/lib/site";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import type { Session } from "@supabase/supabase-js";
@@ -91,18 +86,21 @@ function AuthGate() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-secondary/40 px-5 py-16">
-      <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-8 shadow-card">
+    <div className="flex min-h-screen items-center justify-center bg-ink px-5 py-16">
+      <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-8 shadow-lift">
         <Link
           to="/"
           className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="size-3.5" /> Retour au site
         </Link>
-        <h1 className="mt-5 text-2xl font-extrabold tracking-tight">Espace CRM</h1>
+        <h1 className="mt-5 text-2xl font-semibold tracking-tight">Espace CRM</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Prototype de démonstration. Créez un accès pour consulter les demandes générées par le
           site.
+        </p>
+        <p className="mt-4 font-mono text-[11px] tracking-wide text-accent uppercase">
+          Website Lead → CRM → Follow-up
         </p>
         <form
           className="mt-6 space-y-4"
@@ -195,31 +193,42 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen bg-secondary/30">
-      <header className="border-b border-border bg-background">
+      <header className="border-b border-border bg-ink text-ink-foreground">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-4 lg:px-8">
           <div>
-            <h1 className="text-lg font-extrabold tracking-tight">
+            <h1 className="text-lg font-semibold tracking-tight">
               CRM Extraction Pro
               <span className="ml-2 rounded-full bg-accent/15 px-2 py-0.5 text-[10px] font-semibold tracking-widest text-accent uppercase">
                 Démo
               </span>
             </h1>
-            <p className="text-xs text-muted-foreground">
-              Les demandes envoyées depuis le site apparaissent ici en temps réel.
+            <p className="mt-1 font-mono text-[11px] tracking-wide text-ink-muted uppercase">
+              Website Lead → CRM → Follow-up
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className="text-ink-foreground hover:bg-ink-foreground/10 hover:text-ink-foreground"
+            >
               <Link to="/">Voir le site</Link>
             </Button>
             <Button
               variant="outline"
               size="sm"
+              className="border-ink-border bg-transparent text-ink-foreground hover:bg-ink-foreground/10 hover:text-ink-foreground"
               onClick={() => void qc.invalidateQueries({ queryKey: ["leads"] })}
             >
               <RefreshCw className="size-4" /> Actualiser
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => void supabase.auth.signOut()}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-ink-foreground hover:bg-ink-foreground/10 hover:text-ink-foreground"
+              onClick={() => void supabase.auth.signOut()}
+            >
               <LogOut className="size-4" /> Quitter
             </Button>
           </div>
@@ -350,9 +359,7 @@ function Dashboard() {
         <DialogContent className="max-h-[85vh] max-w-2xl overflow-y-auto">
           {selected && (
             <>
-              <DialogTitle>
-                {selected.company_name || selected.contact_name || "Lead"}
-              </DialogTitle>
+              <DialogTitle>{selected.company_name || selected.contact_name || "Lead"}</DialogTitle>
               <DialogDescription>
                 Reçu le {new Date(selected.created_at).toLocaleString("fr-FR")} · source{" "}
                 {selected.source}

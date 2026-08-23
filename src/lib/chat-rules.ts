@@ -28,7 +28,20 @@ export function ruleBasedAnswer(input: string): string {
   if (has(t, ["hotte", "filtre", "conduit", "moteur", "caisson", "extraction"])) {
     return "Nous intervenons sur la hotte, les filtres, les conduits accessibles ainsi que le moteur et le caisson selon la configuration. Pouvez-vous me préciser votre type d'établissement et votre ville ?";
   }
-  if (has(t, ["restaurant", "hôtel", "hotel", "boulangerie", "pâtisserie", "patisserie", "traiteur", "fast", "cantine", "collectiv"])) {
+  if (
+    has(t, [
+      "restaurant",
+      "hôtel",
+      "hotel",
+      "boulangerie",
+      "pâtisserie",
+      "patisserie",
+      "traiteur",
+      "fast",
+      "cantine",
+      "collectiv",
+    ])
+  ) {
     return "Très bien, nous accompagnons ce type d'établissement. Indiquez-moi votre ville et je vous oriente vers la demande de devis adaptée.";
   }
   if (has(t, ["norme", "réglement", "reglement", "obligation", "loi", "assurance"])) {
@@ -36,6 +49,19 @@ export function ruleBasedAnswer(input: string): string {
   }
   if (has(t, ["devis", "demande", "commencer"])) {
     return "Parfait. La demande de devis prend environ deux minutes : établissement, installation, localisation, photos éventuelles et coordonnées.";
+  }
+  if (
+    has(t, [
+      "comment ça marche",
+      "comment ca marche",
+      "étapes",
+      "etapes",
+      "processus",
+      "méthode",
+      "methode",
+    ])
+  ) {
+    return "Le parcours est simple : vous décrivez votre installation, nous l'analysons, vous recevez une proposition, nous planifions puis réalisons l'intervention, et vous recevez le suivi documenté.";
   }
   if (has(t, ["bonjour", "salut", "hello"])) {
     return "Bonjour ! Dites-moi votre type d'établissement et votre ville, je vous oriente vers la prestation adaptée.";

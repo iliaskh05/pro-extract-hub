@@ -18,16 +18,52 @@ const schema = z.object({
  * Chat de l'« Assistant Extraction ».
  *
  * Architecture sécurisée : le frontend n'appelle jamais un fournisseur IA
- * directement. Cette server function fait office de proxy. Elle utilise la
- * passerelle IA Lovable si LOVABLE_API_KEY est disponible, sinon un moteur de
- * réponses déterministe (prototype). Pour brancher OpenAI plus tard, renseigner
- * OPENAI_API_KEY côté serveur et remplacer l'URL/modèle ci-dessous.
+ * directement. Chaîne : Frontend → server function → OpenAI / Lovable / règles.
+ *
+ * Priorité côté serveur :
+ * 1. OPENAI_API_KEY (+ optionnel OPENAI_MODEL, défaut gpt-4o-mini)
+ * 2. LOVABLE_API_KEY (passerelle Lovable)
+ * 3. Moteur déterministe (prototype)
+ *
+ * Ne jamais exposer de clé dans le frontend.
  */
 export const askAssistant = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => schema.parse(data))
   .handler(async ({ data }) => {
     const last = data.messages[data.messages.length - 1]?.content ?? "";
     const fallback = ruleBasedAnswer(last);
+
+    const payload = {
+      messages: [{ role: "system", content: SYSTEM_PROMPT }, ...data.messages],
+    };
+
+    const openaiKey = process.env["OPENAI_API_KEY"];
+    if (openaiKey) {
+      try {
+        const res = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${openaiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: process.env["OPENAI_MODEL"] || "gpt-4o-mini",
+            ...payload,
+            max_tokens: 400,
+            temperature: 0.4,
+          }),
+        });
+        if (res.ok) {
+          const json = (await res.json()) as {
+            choices?: Array<{ message?: { content?: string } }>;
+          };
+          const reply = json.choices?.[0]?.message?.content?.trim();
+          if (reply) return { reply, mode: "openai" as const };
+        }
+      } catch {
+        /* fallback below */
+      }
+    }
 
     const apiKey = process.env["LOVABLE_API_KEY"];
     if (!apiKey) return { reply: fallback, mode: "rules" as const };
@@ -41,7 +77,7 @@ export const askAssistant = createServerFn({ method: "POST" })
         },
         body: JSON.stringify({
           model: "google/gemini-3.5-flash",
-          messages: [{ role: "system", content: SYSTEM_PROMPT }, ...data.messages],
+          ...payload,
         }),
       });
       if (!res.ok) return { reply: fallback, mode: "rules" as const };
@@ -49,9 +85,7 @@ export const askAssistant = createServerFn({ method: "POST" })
         choices?: Array<{ message?: { content?: string } }>;
       };
       const reply = json.choices?.[0]?.message?.content?.trim();
-      return reply
-        ? { reply, mode: "ai" as const }
-        : { reply: fallback, mode: "rules" as const };
+      return reply ? { reply, mode: "ai" as const } : { reply: fallback, mode: "rules" as const };
     } catch {
       return { reply: fallback, mode: "rules" as const };
     }

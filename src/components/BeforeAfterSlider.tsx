@@ -6,12 +6,14 @@ type Props = {
   after: string;
   alt: string;
   className?: string;
+  demo?: boolean;
 };
 
-export function BeforeAfterSlider({ before, after, alt, className }: Props) {
-  const [pos, setPos] = useState(50);
+export function BeforeAfterSlider({ before, after, alt, className, demo = true }: Props) {
+  const [pos, setPos] = useState(52);
+  const [dragging, setDragging] = useState(false);
+  const [touched, setTouched] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const dragging = useRef(false);
 
   const setFromClientX = useCallback((clientX: number) => {
     const rect = containerRef.current?.getBoundingClientRect();
@@ -20,52 +22,79 @@ export function BeforeAfterSlider({ before, after, alt, className }: Props) {
     setPos(Math.min(100, Math.max(0, next)));
   }, []);
 
+  const sliderId = `ba-${alt.replace(/\s+/g, "-").toLowerCase()}`;
+
   return (
     <div
       ref={containerRef}
+      data-cursor="Glisser"
       className={cn(
-        "relative aspect-[4/3] w-full touch-none overflow-hidden rounded-xl bg-muted select-none sm:aspect-[16/10]",
+        "group cursor-swap relative aspect-[4/3] w-full touch-pan-y overflow-hidden rounded-2xl bg-muted select-none sm:aspect-[16/10]",
         className,
       )}
       onPointerDown={(e) => {
-        dragging.current = true;
-        (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
+        setDragging(true);
+        setTouched(true);
+        (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
         setFromClientX(e.clientX);
       }}
-      onPointerMove={(e) => dragging.current && setFromClientX(e.clientX)}
-      onPointerUp={() => (dragging.current = false)}
-      onPointerLeave={() => (dragging.current = false)}
+      onPointerMove={(e) => {
+        if (dragging) setFromClientX(e.clientX);
+      }}
+      onPointerUp={(e) => {
+        setDragging(false);
+        (e.currentTarget as HTMLElement).releasePointerCapture?.(e.pointerId);
+      }}
+      onPointerCancel={() => setDragging(false)}
     >
       <img
         src={after}
         alt={`${alt} — après`}
         loading="lazy"
         className="absolute inset-0 h-full w-full object-cover"
+        draggable={false}
       />
       <div
         className="absolute inset-0 overflow-hidden"
-        style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}
+        style={{
+          clipPath: `inset(0 ${100 - pos}% 0 0)`,
+          transition: dragging ? "none" : "clip-path 450ms var(--ease-premium)",
+        }}
       >
         <img
           src={before}
           alt={`${alt} — avant`}
           loading="lazy"
           className="h-full w-full object-cover"
+          draggable={false}
         />
       </div>
 
-      <span className="pointer-events-none absolute top-4 left-4 rounded-full bg-ink/75 px-3 py-1 text-[11px] font-semibold tracking-widest text-ink-foreground uppercase backdrop-blur">
+      <span className="pointer-events-none absolute top-4 left-4 rounded-full bg-ink/80 px-3 py-1 text-[10px] font-semibold tracking-[0.18em] text-ink-foreground uppercase backdrop-blur">
         Avant
       </span>
-      <span className="pointer-events-none absolute top-4 right-4 rounded-full bg-accent/90 px-3 py-1 text-[11px] font-semibold tracking-widest text-accent-foreground uppercase backdrop-blur">
+      <span className="pointer-events-none absolute top-4 right-4 rounded-full bg-ink-foreground/90 px-3 py-1 text-[10px] font-semibold tracking-[0.18em] text-ink uppercase backdrop-blur">
         Après
       </span>
+      {demo && (
+        <span className="pointer-events-none absolute bottom-4 left-4 rounded-full border border-ink-foreground/20 bg-ink/70 px-2.5 py-1 text-[10px] font-semibold tracking-[0.2em] text-ink-foreground uppercase backdrop-blur">
+          Démonstration
+        </span>
+      )}
 
       <div
         className="pointer-events-none absolute inset-y-0 w-px bg-ink-foreground/90"
-        style={{ left: `${pos}%` }}
+        style={{
+          left: `${pos}%`,
+          transition: dragging ? "none" : "left 450ms var(--ease-premium)",
+        }}
       >
-        <div className="absolute top-1/2 left-1/2 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-ink-foreground/70 bg-background/95 shadow-lift">
+        <span
+          className={cn(
+            "absolute top-1/2 left-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-ink-foreground/40 bg-background/95 shadow-lift transition-shadow duration-300 group-hover:shadow-glow",
+            !touched && "handle-hint",
+          )}
+        >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path
               d="M9 6 4 12l5 6M15 6l5 6-5 6"
@@ -75,22 +104,31 @@ export function BeforeAfterSlider({ before, after, alt, className }: Props) {
               strokeLinejoin="round"
             />
           </svg>
-        </div>
+        </span>
       </div>
 
-      <label className="sr-only" htmlFor={`ba-${alt}`}>
+      <label className="sr-only" htmlFor={sliderId}>
         Comparer avant / après — {alt}
       </label>
       <input
-        id={`ba-${alt}`}
+        id={sliderId}
         type="range"
         min={0}
         max={100}
-        value={pos}
-        onChange={(e) => setPos(Number(e.target.value))}
-        className="absolute inset-x-0 bottom-0 h-10 w-full cursor-ew-resize opacity-0"
+        value={Math.round(pos)}
+        onChange={(e) => {
+          setTouched(true);
+          setPos(Number(e.target.value));
+        }}
+        className="absolute inset-x-0 bottom-0 h-12 w-full cursor-ew-resize opacity-0 focus-visible:opacity-100 focus-visible:outline-none"
         aria-label={`Comparer avant et après — ${alt}`}
       />
+
+      {!touched && (
+        <span className="pointer-events-none absolute inset-x-0 bottom-4 hidden justify-center text-[10px] tracking-[0.24em] text-ink-foreground/70 uppercase sm:flex">
+          Glissez pour comparer
+        </span>
+      )}
     </div>
   );
 }

@@ -55,12 +55,30 @@ const EMPTY: FormState = {
   message: "",
 };
 
+// Caractères sans ambiguïté visuelle : la référence est souvent lue au téléphone.
+const REF_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+function makeRef() {
+  let out = "";
+  for (let i = 0; i < 6; i += 1) {
+    out += REF_ALPHABET[Math.floor(Math.random() * REF_ALPHABET.length)];
+  }
+  return out;
+}
+
+const STEP_HINTS: Record<number, string> = {
+  0: "Sélectionnez un type d'établissement pour continuer.",
+  2: "Indiquez au moins la ville de l'établissement.",
+  4: "Nom, téléphone et email valides sont nécessaires pour vous répondre.",
+};
+
 export function QuoteForm() {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormState>(EMPTY);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [reference, setReference] = useState(makeRef);
 
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
@@ -93,7 +111,7 @@ export function QuoteForm() {
       last_cleaning: form.last_cleaning || null,
       requested_frequency: form.requested_frequency || null,
       photos: form.photos,
-      message: form.message || null,
+      message: [form.message.trim(), `Réf. #${reference}`].filter(Boolean).join("\n\n"),
       source: "website_form",
     });
     setSubmitting(false);
@@ -108,70 +126,106 @@ export function QuoteForm() {
   if (done) {
     const wa = whatsappLink("Bonjour, je viens d'envoyer une demande de devis depuis votre site.");
     return (
-      <div className="rounded-2xl border border-border bg-card p-8 text-center shadow-card md:p-12">
-        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent/15 text-accent">
-          <Check className="size-7" />
-        </span>
-        <h2 className="mt-6 text-2xl font-bold tracking-tight md:text-3xl">
-          Votre demande a bien été prise en compte.
-        </h2>
-        <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
-          Notre équipe qualifie votre installation et revient vers vous avec une proposition
-          adaptée. Cette demande apparaît immédiatement dans l'espace CRM du prototype.
-        </p>
-        <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <Button
-            onClick={() =>
-              toast.success("Confirmation simulée", {
-                description:
-                  "Prototype : l'email transactionnel sera branché lors de la mise en production.",
-              })
-            }
-          >
-            Recevoir la confirmation par email
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => {
-              if (wa) window.open(wa, "_blank", "noopener");
-              else
-                toast.info("Prototype — WhatsApp non connecté", {
-                  description: "Le numéro WhatsApp Business sera renseigné avant la mise en ligne.",
-                });
-            }}
-          >
-            Continuer sur WhatsApp
-          </Button>
+      <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-card">
+        <div className="surface-ink relative overflow-hidden px-8 py-12 text-center md:px-12 md:py-16">
+          <div
+            className="pointer-events-none absolute -top-32 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-accent/15 blur-3xl"
+            aria-hidden="true"
+          />
+          <div className="relative">
+            <span
+              className="step-in glow-breathe mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-accent/30 bg-accent/15 text-accent"
+              style={{ animationDelay: "0.05s" }}
+            >
+              <Check className="size-7" />
+            </span>
+            <p className="step-in eyebrow mt-6 text-accent" style={{ animationDelay: "0.15s" }}>
+              Demande enregistrée
+            </p>
+            <h2
+              className="step-in mt-4 text-3xl font-semibold tracking-[-0.04em] text-ink-foreground md:text-4xl"
+              style={{ animationDelay: "0.25s" }}
+            >
+              Votre demande est entre de bonnes mains.
+            </h2>
+            <p
+              className="step-in mx-auto mt-4 max-w-md text-sm leading-relaxed text-ink-muted"
+              style={{ animationDelay: "0.35s" }}
+            >
+              Votre demande a bien été enregistrée. Nous disposons maintenant des informations
+              nécessaires pour analyser votre besoin.
+            </p>
+            <p
+              className="step-in mt-7 inline-flex items-center gap-2 rounded-full border border-ink-border bg-ink-foreground/5 px-5 py-2.5 text-xs text-ink-muted"
+              style={{ animationDelay: "0.45s" }}
+            >
+              Référence :
+              <span className="font-mono text-sm tracking-[0.2em] text-ink-foreground">
+                #{reference}
+              </span>
+            </p>
+          </div>
         </div>
-        <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm">
-          <Link to="/admin" className="text-accent underline-offset-4 hover:underline">
-            Voir la demande dans le CRM (démo)
-          </Link>
-          <button
-            type="button"
-            className="text-muted-foreground underline-offset-4 hover:underline"
-            onClick={() => {
-              setForm(EMPTY);
-              setStep(0);
-              setDone(false);
-            }}
-          >
-            Nouvelle demande
-          </button>
+        <div className="flex flex-col items-center gap-3 px-8 py-8 md:px-12">
+          <div className="flex w-full flex-col justify-center gap-3 sm:flex-row">
+            <Button
+              onClick={() => {
+                if (wa) window.open(wa, "_blank", "noopener");
+                else
+                  toast.info("Prototype — WhatsApp non connecté", {
+                    description:
+                      "Le numéro WhatsApp Business sera renseigné avant la mise en ligne.",
+                  });
+              }}
+            >
+              Continuer sur WhatsApp
+            </Button>
+            <Button asChild variant="outline">
+              <Link to="/">Retour à l'accueil</Link>
+            </Button>
+          </div>
+          <div className="mt-2 flex flex-wrap justify-center gap-4 text-sm">
+            <Link to="/admin" className="text-muted-foreground underline-offset-4 hover:underline">
+              Voir la demande dans le CRM (démo)
+            </Link>
+            <button
+              type="button"
+              className="text-muted-foreground underline-offset-4 hover:underline"
+              onClick={() => {
+                setForm(EMPTY);
+                setStep(0);
+                setDone(false);
+                setReference(makeRef());
+              }}
+            >
+              Nouvelle demande
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
+  const progress = ((step + 1) / STEPS.length) * 100;
+
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-card">
+      <div className="h-1 bg-secondary">
+        <div
+          className="h-full bg-accent transition-[width] duration-500 ease-out"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
       <div className="border-b border-border px-6 pt-6 pb-5 md:px-8">
-        <div className="flex items-center justify-between gap-2">
+        <p className="eyebrow text-accent">
+          {String(step + 1).padStart(2, "0")} {STEPS[step]}
+        </p>
+        <div className="mt-4 flex items-center justify-between gap-2">
           {STEPS.map((label, i) => (
             <div key={label} className="flex flex-1 items-center gap-2">
               <span
                 className={cn(
-                  "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-colors",
+                  "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold transition-colors",
                   i < step
                     ? "bg-accent text-accent-foreground"
                     : i === step
@@ -183,7 +237,7 @@ export function QuoteForm() {
               </span>
               <span
                 className={cn(
-                  "hidden text-xs font-medium md:block",
+                  "hidden text-[11px] font-medium tracking-wide uppercase md:block",
                   i === step ? "text-foreground" : "text-muted-foreground",
                 )}
               >
@@ -314,7 +368,9 @@ export function QuoteForm() {
                   <span
                     className={cn(
                       "ml-3 flex h-5 w-5 items-center justify-center rounded-full border",
-                      form[key] ? "border-accent bg-accent text-accent-foreground" : "border-border",
+                      form[key]
+                        ? "border-accent bg-accent text-accent-foreground"
+                        : "border-border",
                     )}
                   >
                     {form[key] && <Check className="size-3" />}
@@ -404,7 +460,9 @@ export function QuoteForm() {
 
         {step === 4 && (
           <fieldset className="space-y-5">
-            <legend className="text-xl font-bold tracking-tight md:text-2xl">Vos coordonnées</legend>
+            <legend className="text-xl font-bold tracking-tight md:text-2xl">
+              Vos coordonnées
+            </legend>
             <div className="grid gap-5 sm:grid-cols-2">
               <div>
                 <Label htmlFor="contact_name">Nom *</Label>
@@ -468,6 +526,12 @@ export function QuoteForm() {
         )}
       </div>
 
+      {!canContinue && STEP_HINTS[step] && (
+        <p className="px-6 pb-2 text-xs text-muted-foreground md:px-8" role="status">
+          {STEP_HINTS[step]}
+        </p>
+      )}
+
       <div className="flex items-center justify-between gap-3 border-t border-border px-6 py-5 md:px-8">
         <Button
           type="button"
@@ -477,7 +541,7 @@ export function QuoteForm() {
         >
           <ChevronLeft className="size-4" /> Retour
         </Button>
-        <span className="text-xs text-muted-foreground">
+        <span className="hidden text-xs text-muted-foreground sm:block">
           Étape {step + 1} / {STEPS.length}
         </span>
         {step < STEPS.length - 1 ? (
@@ -487,7 +551,7 @@ export function QuoteForm() {
         ) : (
           <Button type="button" disabled={!canContinue || submitting} onClick={() => void submit()}>
             {submitting && <Loader2 className="size-4 animate-spin" />}
-            Envoyer ma demande
+            {submitting ? "Envoi en cours…" : "Envoyer ma demande"}
           </Button>
         )}
       </div>

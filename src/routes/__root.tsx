@@ -17,6 +17,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { WhatsAppWidget } from "@/components/WhatsAppWidget";
 import { ChatWidget } from "@/components/ChatWidget";
 import { StickyMobileCta } from "@/components/StickyMobileCta";
+import { CursorLabel } from "@/components/CursorLabel";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
@@ -94,7 +95,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "fr_FR" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "theme-color", content: "#1c2229" },
+      { name: "theme-color", content: "#0c1118" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -103,7 +104,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Inter:wght@400;500;600;700&display=swap",
       },
     ],
     scripts: [
@@ -150,9 +151,15 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <a
+        href="#contenu"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[100] focus:rounded-md focus:bg-background focus:px-3 focus:py-2 focus:text-sm"
+      >
+        Aller au contenu
+      </a>
       <div className="flex min-h-screen flex-col">
         {!isAdmin && <SiteHeader />}
-        <main className="flex-1">
+        <main id="contenu" className="flex-1">
           <Outlet />
         </main>
         {!isAdmin && <SiteFooter />}
@@ -162,6 +169,7 @@ function RootComponent() {
             <StickyMobileCta />
             <WhatsAppWidget />
             <ChatWidget />
+            <CursorLabel />
           </>
         )}
       </div>

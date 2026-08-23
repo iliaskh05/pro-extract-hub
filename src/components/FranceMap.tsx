@@ -1,10 +1,9 @@
-/**
- * Carte stylisée de France (SVG léger, sans dépendance cartographique).
- * Seules les deux zones réellement desservies sont mises en évidence.
- */
-export function FranceMap({ highlight }: { highlight?: "paris" | "perpignan" }) {
-  const dot = (active: boolean) =>
-    active ? "oklch(0.72 0.12 205)" : "oklch(0.72 0.12 205 / 0.75)";
+import { Link } from "@tanstack/react-router";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
+
+export function FranceMap({ highlight }: { highlight?: "paris" | "perpignan" | undefined }) {
+  const reduced = usePrefersReducedMotion();
+  const dot = (active: boolean) => (active ? "oklch(0.74 0.1 198)" : "oklch(0.74 0.1 198 / 0.55)");
 
   return (
     <div className="relative overflow-hidden rounded-2xl border border-ink-border surface-ink p-6">
@@ -18,17 +17,31 @@ export function FranceMap({ highlight }: { highlight?: "paris" | "perpignan" }) 
         <path
           d="M148 22 190 34 214 28 236 52 228 84 250 104 244 132 262 156 240 186 246 214 214 232 200 262 168 268 150 292 126 272 96 268 74 244 52 226 44 196 26 168 40 140 34 108 58 86 66 54 96 44 120 26Z"
           fill="oklch(1 0 0 / 0.05)"
-          stroke="oklch(0.72 0.12 205 / 0.45)"
+          stroke="oklch(0.74 0.1 198 / 0.45)"
           strokeWidth="1.5"
           strokeLinejoin="round"
         />
-        {/* Paris */}
         <g>
           <circle cx="150" cy="104" r="20" fill={dot(highlight !== "perpignan")} opacity="0.16">
-            <animate attributeName="r" values="16;26;16" dur="3.2s" repeatCount="indefinite" />
-            <animate attributeName="opacity" values="0.22;0.04;0.22" dur="3.2s" repeatCount="indefinite" />
+            {!reduced && (
+              <>
+                <animate attributeName="r" values="16;26;16" dur="3.2s" repeatCount="indefinite" />
+                <animate
+                  attributeName="opacity"
+                  values="0.22;0.04;0.22"
+                  dur="3.2s"
+                  repeatCount="indefinite"
+                />
+              </>
+            )}
           </circle>
-          <circle cx="150" cy="104" r="5.5" fill={dot(highlight !== "perpignan")} />
+          <circle
+            cx="150"
+            cy="104"
+            r="5.5"
+            fill={dot(highlight !== "perpignan")}
+            className="transition-[fill] duration-500"
+          />
           <text x="164" y="101" fill="oklch(0.98 0.004 240)" fontSize="11" fontWeight="700">
             Paris
           </text>
@@ -36,13 +49,34 @@ export function FranceMap({ highlight }: { highlight?: "paris" | "perpignan" }) 
             Île-de-France
           </text>
         </g>
-        {/* Perpignan */}
         <g>
           <circle cx="132" cy="266" r="20" fill={dot(highlight !== "paris")} opacity="0.16">
-            <animate attributeName="r" values="16;26;16" dur="3.2s" begin="1.1s" repeatCount="indefinite" />
-            <animate attributeName="opacity" values="0.22;0.04;0.22" dur="3.2s" begin="1.1s" repeatCount="indefinite" />
+            {!reduced && (
+              <>
+                <animate
+                  attributeName="r"
+                  values="16;26;16"
+                  dur="3.2s"
+                  begin="1.1s"
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  values="0.22;0.04;0.22"
+                  dur="3.2s"
+                  begin="1.1s"
+                  repeatCount="indefinite"
+                />
+              </>
+            )}
           </circle>
-          <circle cx="132" cy="266" r="5.5" fill={dot(highlight !== "paris")} />
+          <circle
+            cx="132"
+            cy="266"
+            r="5.5"
+            fill={dot(highlight !== "paris")}
+            className="transition-[fill] duration-500"
+          />
           <text x="146" y="263" fill="oklch(0.98 0.004 240)" fontSize="11" fontWeight="700">
             Perpignan
           </text>
@@ -52,13 +86,29 @@ export function FranceMap({ highlight }: { highlight?: "paris" | "perpignan" }) 
         </g>
         <path
           d="M150 104 C 118 160, 112 220, 132 266"
-          stroke="oklch(0.72 0.12 205 / 0.4)"
+          stroke="oklch(0.74 0.1 198 / 0.4)"
           strokeWidth="1.2"
           strokeDasharray="4 6"
           fill="none"
         />
       </svg>
-      <p className="relative mt-4 text-center text-xs text-ink-muted">
+      <div className="relative mt-5 grid grid-cols-2 gap-2">
+        <Link
+          to="/zones/$slug"
+          params={{ slug: "paris" }}
+          className="rounded-lg border border-ink-border px-3 py-2 text-center text-xs font-medium text-ink-foreground transition-colors hover:bg-ink-foreground/10"
+        >
+          Paris
+        </Link>
+        <Link
+          to="/zones/$slug"
+          params={{ slug: "perpignan" }}
+          className="rounded-lg border border-ink-border px-3 py-2 text-center text-xs font-medium text-ink-foreground transition-colors hover:bg-ink-foreground/10"
+        >
+          Perpignan
+        </Link>
+      </div>
+      <p className="relative mt-3 text-center text-xs text-ink-muted">
         Représentation schématique — zones réellement desservies uniquement.
       </p>
     </div>
