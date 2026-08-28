@@ -53,6 +53,7 @@ export const SERVICE_VISUALS: Record<string, { image: string; caption: string; a
 
 export const GALLERY = [
   {
+    kind: "demonstration" as const,
     title: "Hotte de cuisine professionnelle",
     type: "Dégraissage de hotte et filtres",
     before: beforeHood,
@@ -60,6 +61,7 @@ export const GALLERY = [
     text: "Démonstration : hotte et filtres fortement encrassés, puis état après dégraissage complet des surfaces accessibles.",
   },
   {
+    kind: "demonstration" as const,
     title: "Conduit d'extraction",
     type: "Nettoyage de conduit",
     before: beforeDuct,
@@ -67,6 +69,7 @@ export const GALLERY = [
     text: "Démonstration : section de conduit chargée en dépôts gras, puis état après traitement des zones accessibles.",
   },
   {
+    kind: "demonstration" as const,
     title: "Moteur / caisson d'extraction",
     type: "Nettoyage moteur et caisson",
     before: beforeMotor,

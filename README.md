@@ -1,3 +1,11 @@
+# Salis 3 Hottes
+
+Site commercial et première couche CRM. La marque publique est **Salis 3 Hottes**. Zones actives : **Paris**, **Perpignan**, **Troyes** et **Dijon**. La source de vérité métier est `src/lib/site.ts`.
+
+Le brief historique ci-dessous a servi de cahier des charges initial (marque provisoire). Il n'est plus la source de vérité du site.
+
+---
+
 # Extraction Excellence
 
 Construis un prototype web commercial premium, extrêmement moderne, crédible et interactif pour une nouvelle entreprise française spécialisée dans le dégraissage professionnel des hottes, conduits, filtres, moteurs et systèmes d’extraction des cuisines professionnelles.

@@ -15,7 +15,7 @@ const schema = z.object({
 });
 
 /**
- * Chat de l'« Assistant Extraction ».
+ * Chat de l'« Assistant Salis ».
  *
  * Architecture sécurisée : le frontend n'appelle jamais un fournisseur IA
  * directement. Chaîne : Frontend → server function → OpenAI / Lovable / règles.
@@ -23,7 +23,7 @@ const schema = z.object({
  * Priorité côté serveur :
  * 1. OPENAI_API_KEY (+ optionnel OPENAI_MODEL, défaut gpt-4o-mini)
  * 2. LOVABLE_API_KEY (passerelle Lovable)
- * 3. Moteur déterministe (prototype)
+ * 3. Moteur déterministe de secours
  *
  * Ne jamais exposer de clé dans le frontend.
  */

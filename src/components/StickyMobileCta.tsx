@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { MessageCircle } from "lucide-react";
-import { whatsappLink } from "@/lib/site";
+import { whatsappLink, whatsappUnavailableMessage } from "@/lib/site";
+import { track } from "@/lib/analytics";
 import { toast } from "sonner";
 
 export function StickyMobileCta() {
@@ -15,11 +16,10 @@ export function StickyMobileCta() {
           type="button"
           aria-label="Ouvrir WhatsApp"
           onClick={() => {
-            if (wa) window.open(wa, "_blank", "noopener");
-            else
-              toast.info("Prototype — WhatsApp non connecté", {
-                description: "Le numéro WhatsApp Business sera renseigné avant la mise en ligne.",
-              });
+            if (wa) {
+              track("WhatsApp Click", { from: "sticky" });
+              window.open(wa, "_blank", "noopener");
+            } else toast.info(whatsappUnavailableMessage().title, whatsappUnavailableMessage());
           }}
           className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[oklch(0.68_0.15_150)] text-white"
         >

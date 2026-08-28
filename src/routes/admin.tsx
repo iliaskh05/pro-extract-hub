@@ -3,7 +3,9 @@ import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, LogOut, RefreshCw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { LEAD_STATUSES, type LeadStatus } from "@/lib/site";
+import { BrandMark } from "@/components/BrandMark";
+import { LEAD_PHOTOS_BUCKET } from "@/lib/quote-schema";
+import { LEAD_STATUSES, SITE, type LeadStatus } from "@/lib/site";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,14 +20,13 @@ type Lead = Tables<"leads">;
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "Espace CRM (démonstration) | Extraction Pro" },
+      { title: "Espace CRM | Salis 3 Hottes" },
       {
         name: "description",
-        content:
-          "Mini CRM de démonstration : suivi des demandes de devis générées par le site, pipeline et indicateurs.",
+        content: "Suivi interne des demandes de devis.",
       },
-      { property: "og:title", content: "Espace CRM (démonstration)" },
-      { property: "og:description", content: "Prototype du futur CRM commercial." },
+      { property: "og:title", content: "Espace CRM" },
+      { property: "og:description", content: "CRM interne Salis 3 Hottes." },
       { name: "robots", content: "noindex" },
     ],
     links: [{ rel: "canonical", href: "/admin" }],
@@ -68,21 +69,11 @@ function AuthGate() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function submit(mode: "in" | "up") {
+  async function submit() {
     setLoading(true);
-    const fn =
-      mode === "in"
-        ? supabase.auth.signInWithPassword({ email, password })
-        : supabase.auth.signUp({
-            email,
-            password,
-            options: { emailRedirectTo: `${window.location.origin}/admin` },
-          });
-    const { error } = await fn;
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
     if (error) toast.error("Connexion impossible", { description: error.message });
-    else if (mode === "up")
-      toast.success("Compte créé", { description: "Vous pouvez maintenant vous connecter." });
   }
 
   return (
@@ -94,19 +85,21 @@ function AuthGate() {
         >
           <ArrowLeft className="size-3.5" /> Retour au site
         </Link>
+        <div className="mt-5">
+          <BrandMark compact />
+        </div>
         <h1 className="mt-5 text-2xl font-semibold tracking-tight">Espace CRM</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Prototype de démonstration. Créez un accès pour consulter les demandes générées par le
-          site.
+          Accès réservé aux collaborateurs autorisés de {SITE.name}.
         </p>
         <p className="mt-4 font-mono text-[11px] tracking-wide text-accent uppercase">
-          Website Lead → CRM → Follow-up
+          Demande → CRM → Suivi
         </p>
         <form
           className="mt-6 space-y-4"
           onSubmit={(e) => {
             e.preventDefault();
-            void submit("in");
+            void submit();
           }}
         >
           <div>
@@ -136,15 +129,6 @@ function AuthGate() {
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
             Se connecter
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            disabled={loading}
-            onClick={() => void submit("up")}
-          >
-            Créer un accès
           </Button>
         </form>
       </div>
@@ -176,7 +160,7 @@ function Dashboard() {
       { label: "Nouveaux leads", value: count("new") },
       { label: "Leads qualifiés", value: qualified },
       { label: "Demandes de devis", value: count("quote_requested") + count("quote_sent") },
-      { label: "Taux de conversion (démo)", value: `${conversion} %` },
+      { label: "Taux de conversion", value: `${conversion} %` },
     ];
   }, [leads]);
 
@@ -196,14 +180,9 @@ function Dashboard() {
       <header className="border-b border-border bg-ink text-ink-foreground">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-4 lg:px-8">
           <div>
-            <h1 className="text-lg font-semibold tracking-tight">
-              CRM Extraction Pro
-              <span className="ml-2 rounded-full bg-accent/15 px-2 py-0.5 text-[10px] font-semibold tracking-widest text-accent uppercase">
-                Démo
-              </span>
-            </h1>
+            <h1 className="text-lg font-semibold tracking-tight">CRM {SITE.name}</h1>
             <p className="mt-1 font-mono text-[11px] tracking-wide text-ink-muted uppercase">
-              Website Lead → CRM → Follow-up
+              Demande → CRM → Suivi
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -378,24 +357,23 @@ function Dashboard() {
                 <Field label="Moteur / caisson" value={selected.motor_present ? "Oui" : "Non"} />
                 <Field label="Dernière intervention" value={selected.last_cleaning} />
                 <Field label="Fréquence souhaitée" value={selected.requested_frequency} />
+                <Field
+                  label="Référence"
+                  value={selected.reference ? `#${selected.reference}` : null}
+                />
+                <Field label="Contact préféré" value={selected.preferred_contact} />
+                <Field
+                  label="Attribution"
+                  value={[selected.utm_source, selected.utm_medium, selected.utm_campaign]
+                    .filter(Boolean)
+                    .join(" / ")}
+                />
               </div>
 
               <div>
                 <p className="text-xs font-semibold text-muted-foreground">Photos transmises</p>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {(Array.isArray(selected.photos) ? (selected.photos as string[]) : []).length ===
-                  0 ? (
-                    <span className="text-sm text-muted-foreground">Aucune</span>
-                  ) : (
-                    (selected.photos as string[]).map((p) => (
-                      <span
-                        key={p}
-                        className="rounded-full bg-secondary px-3 py-1 text-xs font-medium"
-                      >
-                        {p} (simulée)
-                      </span>
-                    ))
-                  )}
+                  <LeadPhotos photos={selected.photos} />
                 </div>
               </div>
 
@@ -405,6 +383,8 @@ function Dashboard() {
                   <p className="mt-1 text-sm">{selected.message}</p>
                 </div>
               )}
+
+              <LeadNotes lead={selected} onSaved={(notes) => setSelected({ ...selected, notes })} />
 
               <div>
                 <p className="text-xs font-semibold text-muted-foreground">Historique</p>
@@ -444,6 +424,77 @@ function Dashboard() {
           )}
         </DialogContent>
       </Dialog>
+    </div>
+  );
+}
+
+function LeadPhotos({ photos }: { photos: Lead["photos"] }) {
+  const items = Array.isArray(photos) ? photos : [];
+  if (items.length === 0) return <span className="text-sm text-muted-foreground">Aucune</span>;
+  return (
+    <>
+      {items.map((item) => {
+        if (typeof item === "string") {
+          return (
+            <span key={item} className="rounded-full bg-secondary px-3 py-1 text-xs font-medium">
+              {item}
+            </span>
+          );
+        }
+        if (item && typeof item === "object" && "path" in item) {
+          const path = String((item as { path: string }).path);
+          return (
+            <button
+              key={path}
+              type="button"
+              className="rounded-full bg-secondary px-3 py-1 text-xs font-medium underline-offset-4 hover:underline"
+              onClick={async () => {
+                const { data } = await supabase.storage
+                  .from(LEAD_PHOTOS_BUCKET)
+                  .createSignedUrl(path, 120);
+                if (data?.signedUrl) window.open(data.signedUrl, "_blank", "noopener");
+                else toast.error("Photo indisponible");
+              }}
+            >
+              {(item as { slot?: string }).slot || path}
+            </button>
+          );
+        }
+        return null;
+      })}
+    </>
+  );
+}
+
+function LeadNotes({ lead, onSaved }: { lead: Lead; onSaved: (notes: string) => void }) {
+  const [notes, setNotes] = useState(lead.notes ?? "");
+  const [saving, setSaving] = useState(false);
+  return (
+    <div>
+      <p className="text-xs font-semibold text-muted-foreground">Notes internes</p>
+      <textarea
+        className="mt-2 min-h-20 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+        value={notes}
+        onChange={(e) => setNotes(e.target.value)}
+      />
+      <Button
+        type="button"
+        size="sm"
+        className="mt-2"
+        disabled={saving}
+        onClick={async () => {
+          setSaving(true);
+          const { error } = await supabase.from("leads").update({ notes }).eq("id", lead.id);
+          setSaving(false);
+          if (error) toast.error("Notes non enregistrées", { description: error.message });
+          else {
+            onSaved(notes);
+            toast.success("Notes enregistrées");
+          }
+        }}
+      >
+        Enregistrer la note
+      </Button>
     </div>
   );
 }

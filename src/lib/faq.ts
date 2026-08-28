@@ -1,3 +1,5 @@
+import { zonesLine } from "@/lib/site";
+
 export type FaqEntry = { q: string; a: string };
 
 export const FAQ: FaqEntry[] = [
@@ -7,7 +9,7 @@ export const FAQ: FaqEntry[] = [
   },
   {
     q: "Où intervenez-vous ?",
-    a: "Sur deux pôles : Paris & Île-de-France, et Perpignan & Pyrénées-Orientales. Nous ne communiquons pas de couverture au-delà de ces zones ; en limite de secteur, nous confirmons la faisabilité avant toute proposition.",
+    a: `Nous intervenons depuis ${zonesLine(" et ")}. Nous ne communiquons pas de couverture au-delà de ces pôles ; en limite de secteur, nous confirmons la faisabilité avant toute proposition.`,
   },
   {
     q: "Comment demander un devis ?",
@@ -31,6 +33,6 @@ export const FAQ: FaqEntry[] = [
   },
   {
     q: "À quelle fréquence faut-il prévoir un entretien ?",
-    a: "La fréquence dépend de votre activité, de votre type de cuisson et de vos obligations propres (notamment vis-à-vis de votre assurance). Nous préférons en discuter avec vous plutôt que d'annoncer une règle générale ; cette réponse sera précisée avec la direction avant la mise en ligne.",
+    a: "La fréquence dépend de votre activité, de votre type de cuisson et de vos obligations propres (notamment vis-à-vis de votre assurance). Nous préférons en discuter avec vous plutôt que d'annoncer une règle générale.",
   },
 ];

@@ -10,13 +10,13 @@ import { FAQ } from "@/lib/faq";
 export const Route = createFileRoute("/faq")({
   head: () => ({
     meta: [
-      { title: "Questions fréquentes sur le dégraissage de hotte | Extraction Pro" },
+      { title: "Questions fréquentes sur le dégraissage de hotte | Salis 3 Hottes" },
       {
         name: "description",
         content:
           "Établissements accompagnés, zones desservies, déroulé d'une intervention, rapport, fréquence d'entretien : les réponses aux questions les plus fréquentes.",
       },
-      { property: "og:title", content: "FAQ — Extraction Pro" },
+      { property: "og:title", content: "FAQ — Salis 3 Hottes" },
       {
         property: "og:description",
         content: "Les réponses aux questions fréquentes sur l'entretien des systèmes d'extraction.",

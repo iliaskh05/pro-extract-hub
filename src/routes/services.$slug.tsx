@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
-import { SERVICES } from "@/lib/site";
+import { SERVICES, activeZones } from "@/lib/site";
 import { SERVICE_VISUALS, GALLERY } from "@/lib/media";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/PageHero";
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/services/$slug")({
     if (!loaderData) {
       return {
         meta: [
-          { title: "Prestation indisponible | Extraction Pro" },
+          { title: "Prestation indisponible | Salis 3 Hottes" },
           { name: "robots", content: "noindex" },
         ],
       };
@@ -29,9 +29,9 @@ export const Route = createFileRoute("/services/$slug")({
     const { service } = loaderData;
     return {
       meta: [
-        { title: `${service.title} — cuisines professionnelles | Extraction Pro` },
+        { title: `${service.title} — cuisines professionnelles | Salis 3 Hottes` },
         { name: "description", content: service.description.slice(0, 155) },
-        { property: "og:title", content: `${service.title} | Extraction Pro` },
+        { property: "og:title", content: `${service.title} | Salis 3 Hottes` },
         { property: "og:description", content: service.short },
         { property: "og:type", content: "article" },
         { property: "og:url", content: `/services/${params.slug}` },
@@ -45,8 +45,8 @@ export const Route = createFileRoute("/services/$slug")({
             "@type": "Service",
             name: service.title,
             description: service.description,
-            areaServed: ["Paris / Île-de-France", "Perpignan / Pyrénées-Orientales"],
-            provider: { "@type": "ProfessionalService", name: "Extraction Pro" },
+            areaServed: activeZones().map((zone) => `${zone.name} / ${zone.region}`),
+            provider: { "@type": "ProfessionalService", name: "Salis 3 Hottes" },
           }),
         },
       ],

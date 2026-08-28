@@ -108,7 +108,7 @@ export function DigitalFirst() {
                 <div className="overflow-hidden rounded-[1.85rem] bg-ink">
                   <div className="flex items-center justify-between px-5 pt-5 pb-3">
                     <span className="text-[10px] tracking-[0.2em] text-ink-muted uppercase">
-                      Extraction Pro
+                      Salis 3 Hottes
                     </span>
                     <span className="size-1.5 rounded-full bg-accent" aria-hidden="true" />
                   </div>
@@ -127,7 +127,7 @@ export function DigitalFirst() {
                   <div className="space-y-2 px-4 py-4">
                     {[
                       { k: "Établissement", v: "Restaurant" },
-                      { k: "Zone", v: "Paris / IDF" },
+                      { k: "Zone", v: "Troyes · Dijon" },
                       { k: "Statut", v: "Nouveau" },
                       { k: "Rapport", v: "Photos + compte rendu" },
                     ].map((row) => (

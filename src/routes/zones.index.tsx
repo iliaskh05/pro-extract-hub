@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
-import { ZONES } from "@/lib/site";
+import { SITE, activeZones, zonesCountLabel, zonesLine, type ZoneSlug } from "@/lib/site";
 import { Button } from "@/components/ui/button";
 import { FranceMap } from "@/components/FranceMap";
 import { PageHero } from "@/components/PageHero";
@@ -9,21 +9,18 @@ import { Reveal } from "@/components/Reveal";
 import { FinalCta } from "@/components/FinalCta";
 import { MEDIA } from "@/lib/media";
 
-type ZoneSlug = (typeof ZONES)[number]["slug"];
-
 export const Route = createFileRoute("/zones/")({
   head: () => ({
     meta: [
-      { title: "Zones d'intervention : Paris & Perpignan | Extraction Pro" },
+      { title: `Zones d'intervention : ${zonesLine(" & ")} | ${SITE.name}` },
       {
         name: "description",
-        content:
-          "Deux pôles d'intervention : Paris & Île-de-France, Perpignan & Pyrénées-Orientales. Vérifiez la couverture pour votre établissement.",
+        content: `${zonesCountLabel()} d'intervention : ${zonesLine(", ")}. Vérifiez la couverture pour votre établissement.`,
       },
-      { property: "og:title", content: "Zones d'intervention — Extraction Pro" },
+      { property: "og:title", content: `Zones d'intervention — ${SITE.name}` },
       {
         property: "og:description",
-        content: "Paris & Île-de-France · Perpignan & Pyrénées-Orientales.",
+        content: zonesLine(" · "),
       },
       { property: "og:url", content: "/zones" },
     ],
@@ -39,7 +36,7 @@ function ZonesPage() {
     <div>
       <PageHero
         eyebrow="Zones d'intervention"
-        title="Deux pôles, une même exigence"
+        title={`${zonesCountLabel()}, une même exigence`}
         description="Nous n'annonçons que les zones réellement desservies."
         image={MEDIA.heroKitchen}
         imageAlt="Cuisine professionnelle"
@@ -53,7 +50,7 @@ function ZonesPage() {
 
           <Reveal delay={80}>
             <ol>
-              {ZONES.map((z, i) => (
+              {activeZones().map((z, i) => (
                 <li
                   key={z.slug}
                   onMouseEnter={() => setHovered(z.slug)}

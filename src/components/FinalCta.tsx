@@ -3,8 +3,9 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/Reveal";
-import { whatsappLink } from "@/lib/site";
+import { whatsappLink, whatsappUnavailableMessage } from "@/lib/site";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
+import { track } from "@/lib/analytics";
 import { toast } from "sonner";
 
 export function FinalCta({
@@ -69,12 +70,10 @@ export function FinalCta({
               variant="outline"
               className="h-12 border-ink-border bg-transparent px-8 text-base text-ink-foreground hover:bg-ink-foreground/10 hover:text-ink-foreground"
               onClick={() => {
-                if (wa) window.open(wa, "_blank", "noopener");
-                else
-                  toast.info("Prototype — WhatsApp non connecté", {
-                    description:
-                      "Le numéro WhatsApp Business sera renseigné avant la mise en ligne.",
-                  });
+                if (wa) {
+                  track("WhatsApp Click", { from: "cta" });
+                  window.open(wa, "_blank", "noopener");
+                } else toast.info(whatsappUnavailableMessage().title, whatsappUnavailableMessage());
               }}
             >
               WhatsApp

@@ -13,13 +13,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/services/")({
   head: () => ({
     meta: [
-      { title: "Nos prestations d'entretien d'extraction | Extraction Pro" },
+      { title: "Nos prestations d'entretien d'extraction | Salis 3 Hottes" },
       {
         name: "description",
         content:
           "Dégraissage de hotte, nettoyage des filtres, des conduits, du moteur et du caisson, entretien périodique et diagnostic pour cuisines professionnelles.",
       },
-      { property: "og:title", content: "Nos prestations — Extraction Pro" },
+      { property: "og:title", content: "Nos prestations — Salis 3 Hottes" },
       {
         property: "og:description",
         content:

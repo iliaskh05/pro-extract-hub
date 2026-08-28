@@ -22,7 +22,7 @@ export function BeforeAfterSection() {
             </h2>
           </div>
           <p className="max-w-xs text-sm leading-relaxed text-ink-muted">
-            Exemples de démonstration réalisés pour ce prototype — il ne s'agit pas de chantiers
+            Exemples clairement identifiés comme démonstration — il ne s'agit pas de chantiers
             clients réels.
           </p>
         </Reveal>

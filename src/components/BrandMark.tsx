@@ -1,55 +1,59 @@
 import { cn } from "@/lib/utils";
+import { SITE } from "@/lib/site";
+import logoWhite from "@/assets/brand/logo-white.png";
+import logoBlack from "@/assets/brand/logo-black.png";
 
+/**
+ * Logo flottant sans fond.
+ * - Fond sombre (hero / footer) → blanc
+ * - Fond clair (header au scroll) → noir
+ */
 export function BrandMark({
   className,
   inverted = false,
+  compact = false,
 }: {
   className?: string;
+  /** true = fond sombre → logo blanc ; false = fond clair → logo noir */
   inverted?: boolean;
+  compact?: boolean;
 }) {
+  const size = compact
+    ? "w-[8.5rem] sm:w-[9.5rem]"
+    : "w-[10.5rem] sm:w-[12rem] md:w-[13rem] lg:w-[14rem]";
+
   return (
-    <span className={cn("group flex items-center gap-2.5", className)}>
-      <span
+    <span
+      className={cn(
+        "brand-mark relative inline-flex shrink-0 items-center justify-center",
+        size,
+        className,
+      )}
+    >
+      <img
+        src={logoWhite}
+        alt={inverted ? SITE.name : ""}
+        width={830}
+        height={496}
+        decoding="async"
+        aria-hidden={!inverted}
         className={cn(
-          "flex h-9 w-9 items-center justify-center rounded-md transition-transform duration-300 group-hover:-translate-y-0.5",
-          inverted ? "bg-ink-foreground/10 text-ink-foreground" : "bg-ink text-ink-foreground",
+          "block h-auto w-full object-contain object-left select-none transition-opacity duration-300",
+          inverted ? "opacity-100" : "pointer-events-none absolute inset-0 opacity-0",
         )}
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path
-            d="M4 8.5 12 4l8 4.5M6 10.5V19h12v-8.5M9.5 19v-4.5h5V19"
-            stroke="currentColor"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M12 8.2v3.2"
-            stroke="currentColor"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            opacity="0.7"
-          />
-        </svg>
-      </span>
-      <span className="leading-tight">
-        <span
-          className={cn(
-            "block text-[15px] font-semibold tracking-tight",
-            inverted ? "text-ink-foreground" : "text-foreground",
-          )}
-        >
-          Extraction<span className="text-accent">Pro</span>
-        </span>
-        <span
-          className={cn(
-            "block text-[10px] tracking-[0.2em] uppercase",
-            inverted ? "text-ink-muted" : "text-muted-foreground",
-          )}
-        >
-          Extraction · Maintenance
-        </span>
-      </span>
+      />
+      <img
+        src={logoBlack}
+        alt={inverted ? "" : SITE.name}
+        width={830}
+        height={496}
+        decoding="async"
+        aria-hidden={inverted}
+        className={cn(
+          "block h-auto w-full object-contain object-left select-none transition-opacity duration-300",
+          inverted ? "pointer-events-none absolute inset-0 opacity-0" : "opacity-100",
+        )}
+      />
     </span>
   );
 }

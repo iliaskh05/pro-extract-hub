@@ -3,9 +3,7 @@ import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 import { FranceMap } from "@/components/FranceMap";
-import { ZONES } from "@/lib/site";
-
-type ZoneSlug = (typeof ZONES)[number]["slug"];
+import { activeZones, zonesCountLabel, type ZoneSlug } from "@/lib/site";
 
 export function ZonesSection() {
   const [hovered, setHovered] = useState<ZoneSlug | undefined>(undefined);
@@ -17,7 +15,7 @@ export function ZonesSection() {
           <Reveal>
             <p className="eyebrow text-accent">Zones d'intervention</p>
             <h2 className="mt-4 text-3xl leading-[1.04] font-semibold tracking-[-0.04em] sm:text-5xl">
-              Deux pôles, une même exigence
+              {zonesCountLabel()}, une même exigence
             </h2>
             <p className="mt-5 max-w-md text-sm leading-relaxed text-muted-foreground">
               Nous n'annonçons que les zones réellement desservies. En limite de secteur, la
@@ -25,7 +23,7 @@ export function ZonesSection() {
             </p>
 
             <div className="mt-10">
-              {ZONES.map((z) => (
+              {activeZones().map((z) => (
                 <Link
                   key={z.slug}
                   to="/zones/$slug"

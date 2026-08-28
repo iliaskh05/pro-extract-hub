@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Design system — Extraction Pro
+ * Design system — Salis 3 Hottes
  * Premium technique : noir profond, blanc cassé, gris froid, bleu nuit, cyan discret.
  */
 
@@ -94,6 +94,8 @@
   --ink-foreground: oklch(0.98 0.004 240);
   --ink-muted: oklch(0.72 0.014 240);
   --ink-border: oklch(1 0 0 / 12%);
+  /* Bleu marine du logo officiel — pour badges / fusion visuelle */
+  --brand-navy: #1a3a8f;
 
   /* Encrassement — utilisé uniquement pour la narration avant / après */
   --grime: oklch(0.58 0.09 62);
@@ -219,6 +221,12 @@
 
 @utility shadow-glow {
   box-shadow: var(--shadow-glow);
+}
+
+/* Logo officiel transparent : rendu net, sans pastille */
+.brand-mark img {
+  image-rendering: auto;
+  -webkit-user-drag: none;
 }
 
 @utility eyebrow {

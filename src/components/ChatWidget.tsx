@@ -3,6 +3,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { Send, X } from "lucide-react";
 import { askAssistant } from "@/lib/chat.functions";
+import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 type Msg = { role: "user" | "assistant"; content: string };
@@ -77,7 +78,7 @@ export function ChatWidget() {
       {open && (
         <div
           role="dialog"
-          aria-label="Assistant Extraction"
+          aria-label="Assistant Salis"
           className="panel-in flex h-[31rem] max-h-[calc(100svh-9rem)] w-[22rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-border bg-popover shadow-lift"
         >
           <div className="surface-ink flex items-center justify-between px-4 py-3.5">
@@ -97,9 +98,9 @@ export function ChatWidget() {
                 <span className="absolute -right-0.5 -bottom-0.5 h-2 w-2 rounded-full bg-accent" />
               </span>
               <div>
-                <p className="text-sm font-semibold text-ink-foreground">Assistant Extraction</p>
+                <p className="text-sm font-semibold text-ink-foreground">Assistant Salis</p>
                 <p className="text-[10px] tracking-wider text-ink-muted uppercase">
-                  Prototype · réponses guidées
+                  Réponses guidées
                 </p>
               </div>
             </div>
@@ -201,8 +202,13 @@ export function ChatWidget() {
 
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-label={open ? "Fermer l'assistant" : "Ouvrir l'assistant Extraction"}
+        onClick={() => {
+          setOpen((v) => {
+            if (!v) track("Chatbot Open");
+            return !v;
+          });
+        }}
+        aria-label={open ? "Fermer l'assistant" : "Ouvrir l'assistant Salis"}
         className={cn(
           "flex h-12 w-12 items-center justify-center rounded-full bg-ink text-ink-foreground shadow-lift transition-transform hover:-translate-y-0.5 active:scale-95",
           !open && "glow-breathe",

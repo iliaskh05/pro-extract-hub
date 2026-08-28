@@ -5,18 +5,18 @@ import { cn } from "@/lib/utils";
 const STAGES = [
   {
     n: "01",
-    title: "Accumulation",
-    text: "Les dépôts gras se fixent sur les filtres, dans le plénum puis le long du conduit. Le flux se réduit sans que rien ne le signale.",
+    title: "Hotte & accumulation",
+    text: "Les dépôts gras se fixent sur les filtres, dans le plénum puis le long du conduit. L'extraction perd en efficacité sans que rien ne le signale clairement.",
   },
   {
     n: "02",
-    title: "Intervention",
-    text: "Chaque élément accessible est traité : filtres, surfaces, conduit, moteur et caisson selon la configuration de l'installation.",
+    title: "Dégraissage",
+    text: "Chaque élément accessible est traité : hotte, filtres, conduit, moteur et caisson, selon la configuration et l'accessibilité de l'installation.",
   },
   {
     n: "03",
-    title: "Extraction rétablie",
-    text: "Le passage de l'air retrouve sa section. L'état constaté est photographié, daté et consigné.",
+    title: "Documentation & suivi",
+    text: "L'état constaté est photographié, daté et consigné. Vous conservez un compte rendu et une prochaine échéance, pas seulement une surface propre.",
   },
 ];
 

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { zonesLine } from "@/lib/site";
 import { HeroSection } from "@/components/home/HeroSection";
 import { TrustStrip } from "@/components/home/TrustStrip";
 import { ProblemSection } from "@/components/home/ProblemSection";
@@ -16,11 +17,10 @@ import { FinalCta } from "@/components/FinalCta";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Dégraissage de hottes & conduits de cuisine pro | Extraction Pro" },
+      { title: "Dégraissage de hottes & conduits de cuisine pro | Salis 3 Hottes" },
       {
         name: "description",
-        content:
-          "Dégraissage professionnel des hottes, filtres, conduits et moteurs d'extraction pour cuisines professionnelles. Paris & Île-de-France, Perpignan & Pyrénées-Orientales.",
+        content: `Dégraissage professionnel des hottes, filtres, conduits et moteurs d'extraction pour cuisines professionnelles. ${zonesLine(" et ")}.`,
       },
       { property: "og:title", content: "Une extraction impeccable. Une cuisine plus sereine." },
       {

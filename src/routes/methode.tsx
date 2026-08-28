@@ -9,13 +9,13 @@ import { METHOD } from "@/lib/method";
 export const Route = createFileRoute("/methode")({
   head: () => ({
     meta: [
-      { title: "Notre méthode d'intervention en 6 étapes | Extraction Pro" },
+      { title: "Notre méthode d'intervention en 6 étapes | Salis 3 Hottes" },
       {
         name: "description",
         content:
           "Analyse, préparation, dégraissage, contrôle, documentation et suivi : la méthode d'intervention appliquée à chaque système d'extraction.",
       },
-      { property: "og:title", content: "Notre méthode — Extraction Pro" },
+      { property: "og:title", content: "Notre méthode — Salis 3 Hottes" },
       {
         property: "og:description",
         content: "Six étapes documentées, de l'analyse au suivi de votre installation.",

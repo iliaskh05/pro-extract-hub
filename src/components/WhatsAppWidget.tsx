@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { MessageCircle, X } from "lucide-react";
-import { whatsappLink, WHATSAPP_NUMBER } from "@/lib/site";
+import { whatsappLink, WHATSAPP_NUMBER, whatsappUnavailableMessage } from "@/lib/site";
+import { track } from "@/lib/analytics";
 import { toast } from "sonner";
 
 type WaOption = { label: string; message: string; goto?: "/devis" | "/zones" };
@@ -23,22 +24,20 @@ export function WhatsAppWidget() {
   function handle(option: (typeof OPTIONS)[number]) {
     const link = whatsappLink(option.message);
     if (link) {
+      track("WhatsApp Click", { from: "widget" });
       window.open(link, "_blank", "noopener");
       setOpen(false);
       return;
     }
-    toast.info("Prototype — WhatsApp non connecté", {
-      description:
-        "Le numéro WhatsApp Business sera renseigné avant la mise en ligne. Message simulé : « " +
-        option.message +
-        " »",
+    toast.info(whatsappUnavailableMessage().title, {
+      description: whatsappUnavailableMessage().description,
     });
     setOpen(false);
     if (option.goto) navigate({ to: option.goto });
   }
 
   return (
-    <div className="fixed right-4 bottom-24 z-50 flex flex-col items-end gap-3 lg:bottom-6">
+    <div className="fixed right-4 bottom-[5.75rem] z-50 flex flex-col items-end gap-3 lg:bottom-6">
       {open && (
         <div className="panel-in w-[19rem] overflow-hidden rounded-2xl border border-border bg-popover shadow-lift">
           <div className="surface-ink px-5 py-4">
@@ -60,7 +59,7 @@ export function WhatsAppWidget() {
             ))}
             {!WHATSAPP_NUMBER && (
               <p className="px-1 pt-1 text-[11px] text-muted-foreground">
-                Prototype : numéro WhatsApp Business à connecter.
+                Numéro WhatsApp Business à confirmer.
               </p>
             )}
           </div>

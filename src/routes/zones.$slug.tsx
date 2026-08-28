@@ -1,6 +1,13 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import { SERVICES, ZONES, whatsappLink } from "@/lib/site";
+import {
+  SERVICES,
+  SITE,
+  getZone,
+  whatsappLink,
+  whatsappUnavailableMessage,
+  type ZoneSlug,
+} from "@/lib/site";
 import { Button } from "@/components/ui/button";
 import { FranceMap } from "@/components/FranceMap";
 import { PageHero } from "@/components/PageHero";
@@ -10,11 +17,12 @@ import { FaqExplorer } from "@/components/FaqExplorer";
 import { FinalCta } from "@/components/FinalCta";
 import { MEDIA } from "@/lib/media";
 import { FAQ } from "@/lib/faq";
+import { track } from "@/lib/analytics";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/zones/$slug")({
   loader: ({ params }) => {
-    const zone = ZONES.find((z) => z.slug === params.slug);
+    const zone = getZone(params.slug);
     if (!zone) throw notFound();
     return { zone };
   },
@@ -22,7 +30,7 @@ export const Route = createFileRoute("/zones/$slug")({
     if (!loaderData) {
       return {
         meta: [
-          { title: "Zone indisponible | Extraction Pro" },
+          { title: `Zone indisponible | ${SITE.name}` },
           { name: "robots", content: "noindex" },
         ],
       };
@@ -30,12 +38,12 @@ export const Route = createFileRoute("/zones/$slug")({
     const { zone } = loaderData;
     return {
       meta: [
-        { title: `Dégraissage de hotte — ${zone.name} | Extraction Pro` },
+        { title: `${zone.heroTitle} | ${SITE.name}` },
         {
           name: "description",
-          content: `Dégraissage et entretien des systèmes d'extraction de cuisines professionnelles sur ${zone.name}.`,
+          content: `${zone.localIntro} Devis et intervention documentée.`,
         },
-        { property: "og:title", content: `${zone.name} — Extraction Pro` },
+        { property: "og:title", content: `${zone.name} — ${SITE.name}` },
         { property: "og:description", content: zone.description },
         { property: "og:url", content: `/zones/${params.slug}` },
       ],
@@ -46,8 +54,9 @@ export const Route = createFileRoute("/zones/$slug")({
           children: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "ProfessionalService",
-            name: `Extraction Pro — ${zone.name}`,
-            areaServed: zone.name,
+            name: `${SITE.name} — ${zone.name}`,
+            areaServed: `${zone.name} / ${zone.region}`,
+            provider: { "@type": "ProfessionalService", name: SITE.name },
           }),
         },
       ],
@@ -58,15 +67,21 @@ export const Route = createFileRoute("/zones/$slug")({
 
 function ZoneDetail() {
   const { zone } = Route.useLoaderData();
-  const wa = whatsappLink(`Bonjour, j'ai un établissement sur ${zone.name}.`);
-  const localFaq = FAQ.filter((f) => /où|zone|établissement|devis|rapport/i.test(f.q)).slice(0, 4);
+  const wa = whatsappLink(zone.whatsappMessage);
+  const localFaq = [
+    {
+      q: `Intervenez-vous à ${zone.name} ?`,
+      a: zone.coverage,
+    },
+    ...FAQ.filter((f) => /devis|rapport|établissement|déroule/i.test(f.q)).slice(0, 3),
+  ];
 
   return (
     <div>
       <PageHero
-        eyebrow={`Pôle ${zone.short}`}
-        title={`Entretien des systèmes d'extraction — ${zone.name}`}
-        description={zone.description}
+        eyebrow={`${zone.name} · ${zone.region}`}
+        title={zone.heroTitle}
+        description={zone.localIntro}
         image={MEDIA.heroKitchen}
         imageAlt={`Cuisine professionnelle — ${zone.name}`}
       >
@@ -79,11 +94,10 @@ function ZoneDetail() {
             variant="outline"
             className="border-ink-border bg-transparent text-ink-foreground hover:bg-ink-foreground/10 hover:text-ink-foreground"
             onClick={() => {
-              if (wa) window.open(wa, "_blank", "noopener");
-              else
-                toast.info("Prototype — WhatsApp non connecté", {
-                  description: "Le numéro sera renseigné avant la mise en ligne.",
-                });
+              if (wa) {
+                track("WhatsApp Click", { from: `zone-${zone.slug}` });
+                window.open(wa, "_blank", "noopener");
+              } else toast.info(whatsappUnavailableMessage().title, whatsappUnavailableMessage());
             }}
           >
             WhatsApp
@@ -94,7 +108,7 @@ function ZoneDetail() {
       <section className="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
         <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
           <Reveal>
-            <FranceMap highlight={zone.slug} />
+            <FranceMap highlight={zone.slug as ZoneSlug} />
           </Reveal>
           <Reveal delay={80}>
             <p className="eyebrow text-accent">Zone géographique</p>
@@ -102,8 +116,16 @@ function ZoneDetail() {
               {zone.name}
             </h2>
             <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
-              {zone.description}
+              {zone.coverage}
             </p>
+            <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
+              {zone.sectorsFocus}
+            </p>
+            <ul className="mt-6 space-y-2 text-sm text-muted-foreground">
+              {zone.useful.map((item) => (
+                <li key={item}>· {item}</li>
+              ))}
+            </ul>
 
             <h3 className="mt-12 text-lg font-semibold tracking-tight">
               Prestations disponibles sur ce pôle
@@ -133,7 +155,7 @@ function ZoneDetail() {
           <Reveal>
             <p className="eyebrow text-accent">Méthode</p>
             <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] md:text-4xl">
-              Processus d'intervention
+              Processus d'intervention à {zone.name}
             </h2>
           </Reveal>
           <div className="mt-10">
@@ -144,7 +166,7 @@ function ZoneDetail() {
 
       <section className="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
         <Reveal>
-          <p className="eyebrow text-accent">FAQ locale</p>
+          <p className="eyebrow text-accent">FAQ {zone.name}</p>
           <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] md:text-4xl">
             Les questions les plus fréquentes
           </h2>
@@ -152,7 +174,7 @@ function ZoneDetail() {
         <FaqExplorer items={localFaq} className="mt-10" />
       </section>
 
-      <FinalCta title={`Un devis pour ${zone.short} ?`} />
+      <FinalCta title={`Un devis pour ${zone.name} ?`} />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { QuoteForm } from "@/components/QuoteForm";
 import { PageHero } from "@/components/PageHero";
+import { SITE, zonesLine } from "@/lib/site";
 
 const STEPS = [
   "01 Établissement",
@@ -13,13 +14,12 @@ const STEPS = [
 export const Route = createFileRoute("/devis")({
   head: () => ({
     meta: [
-      { title: "Obtenir un devis de dégraissage de hotte | Extraction Pro" },
+      { title: `Obtenir un devis de dégraissage de hotte | ${SITE.name}` },
       {
         name: "description",
-        content:
-          "Décrivez votre installation en 5 étapes (établissement, hotte, filtres, conduit, moteur) et recevez une proposition adaptée à votre cuisine professionnelle.",
+        content: `Décrivez votre installation en 5 étapes et recevez une proposition adaptée à votre cuisine professionnelle à ${zonesLine(" ou ")}.`,
       },
-      { property: "og:title", content: "Obtenir un devis — Extraction Pro" },
+      { property: "og:title", content: `Obtenir un devis — ${SITE.name}` },
       {
         property: "og:description",
         content: "Demande de devis en 5 étapes pour l'entretien de votre système d'extraction.",
@@ -56,8 +56,7 @@ function DevisPage() {
         <div className="mx-auto max-w-3xl px-5 py-14 lg:px-8 lg:py-20">
           <QuoteForm />
           <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
-            Prototype de démonstration : les données envoyées sont enregistrées dans la base de
-            démonstration du futur CRM.{" "}
+            Vos informations servent uniquement à qualifier la demande.{" "}
             <Link to="/confidentialite" className="underline-offset-4 hover:underline">
               Confidentialité
             </Link>

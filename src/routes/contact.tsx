@@ -1,22 +1,31 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MessageCircle, Phone, Mail, FileText } from "lucide-react";
-import { SITE, ZONES, whatsappLink } from "@/lib/site";
+import {
+  SITE,
+  activeZones,
+  displayValue,
+  zonesLine,
+  emailHref,
+  phoneHref,
+  whatsappLink,
+  whatsappUnavailableMessage,
+} from "@/lib/site";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/PageHero";
 import { FinalCta } from "@/components/FinalCta";
 import { MEDIA } from "@/lib/media";
+import { track } from "@/lib/analytics";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — parler à un expert extraction | Extraction Pro" },
+      { title: `Contact — parler à un expert | ${SITE.name}` },
       {
         name: "description",
-        content:
-          "Échangez avec notre équipe sur votre installation d'extraction : demande de devis, question technique, zone d'intervention.",
+        content: `Échangez avec ${SITE.name} sur votre installation d'extraction à ${zonesLine(" ou ")} : devis, question technique, zone d'intervention.`,
       },
-      { property: "og:title", content: "Contact — Extraction Pro" },
+      { property: "og:title", content: `Contact — ${SITE.name}` },
       {
         property: "og:description",
         content: "Parlez à un expert de l'entretien des systèmes d'extraction.",
@@ -30,6 +39,8 @@ export const Route = createFileRoute("/contact")({
 
 function ContactPage() {
   const wa = whatsappLink();
+  const tel = phoneHref();
+  const mail = emailHref();
 
   return (
     <div>
@@ -59,17 +70,16 @@ function ContactPage() {
             <MessageCircle className="size-6 text-accent" />
             <h2 className="mt-4 text-lg font-semibold tracking-tight">WhatsApp</h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Canal rapide pour une question courte. Numéro WhatsApp Business à connecter.
+              Canal rapide pour une question courte.
             </p>
             <Button
               variant="outline"
               className="mt-5"
               onClick={() => {
-                if (wa) window.open(wa, "_blank", "noopener");
-                else
-                  toast.info("Prototype — WhatsApp non connecté", {
-                    description: "Le numéro sera renseigné avant la mise en ligne.",
-                  });
+                if (wa) {
+                  track("WhatsApp Click", { from: "contact" });
+                  window.open(wa, "_blank", "noopener");
+                } else toast.info(whatsappUnavailableMessage().title, whatsappUnavailableMessage());
               }}
             >
               Ouvrir WhatsApp
@@ -79,18 +89,26 @@ function ContactPage() {
           <div className="rounded-2xl border border-border bg-card p-7">
             <Phone className="size-6 text-accent" />
             <h2 className="mt-4 text-lg font-semibold tracking-tight">Téléphone</h2>
-            <p className="mt-2 text-sm text-muted-foreground">{SITE.phonePlaceholder}</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Placeholder prototype — à renseigner par la direction.
+            <p className="mt-2 text-sm text-muted-foreground">
+              {tel ? (
+                <a href={tel} onClick={() => track("Phone Click")}>
+                  {SITE.phone}
+                </a>
+              ) : (
+                displayValue(SITE.phone, "Numéro à confirmer")
+              )}
             </p>
           </div>
 
           <div className="rounded-2xl border border-border bg-card p-7">
             <Mail className="size-6 text-accent" />
             <h2 className="mt-4 text-lg font-semibold tracking-tight">Email</h2>
-            <p className="mt-2 text-sm text-muted-foreground">{SITE.emailPlaceholder}</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Placeholder prototype — à renseigner par la direction.
+            <p className="mt-2 text-sm text-muted-foreground">
+              {mail ? (
+                <a href={mail}>{SITE.email}</a>
+              ) : (
+                displayValue(SITE.email, "Email à confirmer")
+              )}
             </p>
           </div>
         </div>
@@ -98,7 +116,7 @@ function ContactPage() {
         <div className="mt-12 rounded-2xl border border-border bg-secondary/50 p-7">
           <h2 className="text-lg font-semibold tracking-tight">Zones d'intervention</h2>
           <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
-            {ZONES.map((z) => (
+            {activeZones().map((z) => (
               <li key={z.slug}>· {z.name}</li>
             ))}
           </ul>

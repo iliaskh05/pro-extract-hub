@@ -1,9 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { SERVICES, SITE, ZONES, whatsappLink } from "@/lib/site";
+import { SERVICES, SITE, activeZones, displayValue, whatsappLink } from "@/lib/site";
 import { BrandMark } from "@/components/BrandMark";
 
 export function SiteFooter() {
   const wa = whatsappLink();
+  const zones = activeZones();
 
   return (
     <footer className="surface-ink border-t border-ink-border">
@@ -15,9 +16,6 @@ export function SiteFooter() {
               {SITE.tagline} pour les cuisines professionnelles.
             </p>
             <p className="mt-3 text-xs text-ink-muted/80">{SITE.launch}.</p>
-            <p className="mt-4 text-xs text-ink-muted/70">
-              Prototype de présentation — contenus de démonstration.
-            </p>
           </div>
 
           <div className="lg:col-span-2">
@@ -40,7 +38,7 @@ export function SiteFooter() {
           <div className="lg:col-span-2">
             <h2 className="eyebrow text-accent">Zones</h2>
             <ul className="mt-4 space-y-2.5">
-              {ZONES.map((z) => (
+              {zones.map((z) => (
                 <li key={z.slug}>
                   <Link
                     to="/zones/$slug"
@@ -103,9 +101,9 @@ export function SiteFooter() {
           <div className="lg:col-span-2">
             <h2 className="eyebrow text-accent">Contact</h2>
             <ul className="mt-4 space-y-2.5 text-sm text-ink-muted">
-              <li>Téléphone : {SITE.phonePlaceholder}</li>
-              <li>Email : {SITE.emailPlaceholder}</li>
-              <li>{SITE.addressPlaceholder}</li>
+              <li>Téléphone : {displayValue(SITE.phone, "À confirmer")}</li>
+              <li>Email : {displayValue(SITE.email, "À confirmer")}</li>
+              <li>{displayValue(SITE.address, "Adresse à confirmer")}</li>
               <li>
                 {wa ? (
                   <a
@@ -117,7 +115,7 @@ export function SiteFooter() {
                     WhatsApp
                   </a>
                 ) : (
-                  <span>WhatsApp : numéro à définir</span>
+                  <span>WhatsApp : numéro à confirmer</span>
                 )}
               </li>
             </ul>
@@ -126,7 +124,7 @@ export function SiteFooter() {
 
         <div className="mt-14 flex flex-col gap-4 border-t border-ink-border pt-8 text-xs text-ink-muted md:flex-row md:items-center md:justify-between">
           <p>
-            © {new Date().getFullYear()} {SITE.legalName}. {SITE.siretPlaceholder}.
+            © {new Date().getFullYear()} {displayValue(SITE.legalName, SITE.name)}.
           </p>
           <nav className="flex flex-wrap gap-5" aria-label="Liens légaux">
             <Link to="/mentions-legales" className="hover:text-ink-foreground">
@@ -134,9 +132,6 @@ export function SiteFooter() {
             </Link>
             <Link to="/confidentialite" className="hover:text-ink-foreground">
               Confidentialité
-            </Link>
-            <Link to="/admin" className="hover:text-ink-foreground">
-              Espace admin (démo)
             </Link>
           </nav>
         </div>
