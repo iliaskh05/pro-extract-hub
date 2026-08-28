@@ -28,7 +28,7 @@ const schema = z.object({
  * Ne jamais exposer de clé dans le frontend.
  */
 export const askAssistant = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => schema.parse(data))
+  .validator((data: unknown) => schema.parse(data))
   .handler(async ({ data }) => {
     const last = data.messages[data.messages.length - 1]?.content ?? "";
     const fallback = ruleBasedAnswer(last);

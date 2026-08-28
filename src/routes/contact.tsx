@@ -15,25 +15,18 @@ import { PageHero } from "@/components/PageHero";
 import { FinalCta } from "@/components/FinalCta";
 import { MEDIA } from "@/lib/media";
 import { track } from "@/lib/analytics";
+import { pageHead } from "@/lib/seo";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/contact")({
-  head: () => ({
-    meta: [
-      { title: `Contact — parler à un expert | ${SITE.name}` },
-      {
-        name: "description",
-        content: `Échangez avec ${SITE.name} sur votre installation d'extraction à ${zonesLine(" ou ")} : devis, question technique, zone d'intervention.`,
-      },
-      { property: "og:title", content: `Contact — ${SITE.name}` },
-      {
-        property: "og:description",
-        content: "Parlez à un expert de l'entretien des systèmes d'extraction.",
-      },
-      { property: "og:url", content: "/contact" },
-    ],
-    links: [{ rel: "canonical", href: "/contact" }],
-  }),
+  head: () =>
+    pageHead({
+      title: `Contact — parler à un expert | ${SITE.name}`,
+      description: `Échangez avec ${SITE.name} sur votre installation d'extraction à ${zonesLine(" ou ")} : devis, question technique, zone d'intervention.`,
+      path: "/contact",
+      ogTitle: `Contact — ${SITE.name}`,
+      ogDescription: "Parlez à un expert de l'entretien des systèmes d'extraction.",
+    }),
   component: ContactPage,
 });
 
@@ -95,7 +88,16 @@ function ContactPage() {
                   {SITE.phone}
                 </a>
               ) : (
-                displayValue(SITE.phone, "Numéro à confirmer")
+                <>
+                  {displayValue(SITE.phone, "Numéro à confirmer")}
+                  <span className="mt-2 block text-xs">
+                    En attendant, utilisez le{" "}
+                    <Link to="/devis" className="underline underline-offset-4">
+                      formulaire de devis
+                    </Link>
+                    .
+                  </span>
+                </>
               )}
             </p>
           </div>
@@ -107,7 +109,12 @@ function ContactPage() {
               {mail ? (
                 <a href={mail}>{SITE.email}</a>
               ) : (
-                displayValue(SITE.email, "Email à confirmer")
+                <>
+                  {displayValue(SITE.email, "Email à confirmer")}
+                  <span className="mt-2 block text-xs">
+                    Le devis en ligne reste le canal le plus rapide pour être recontacté.
+                  </span>
+                </>
               )}
             </p>
           </div>

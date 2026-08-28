@@ -10,6 +10,7 @@ import { MethodSteps } from "@/components/MethodSteps";
 import { FaqExplorer } from "@/components/FaqExplorer";
 import { FinalCta } from "@/components/FinalCta";
 import { FAQ } from "@/lib/faq";
+import { pageHead, absoluteUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/services/$slug")({
   loader: ({ params }) => {
@@ -19,38 +20,31 @@ export const Route = createFileRoute("/services/$slug")({
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
-      return {
-        meta: [
-          { title: "Prestation indisponible | Salis 3 Hottes" },
-          { name: "robots", content: "noindex" },
-        ],
-      };
+      return pageHead({
+        title: `Prestation indisponible | Salis 3 Hottes`,
+        description: "Cette prestation n'est pas disponible.",
+        path: `/services/${params.slug}`,
+        noindex: true,
+      });
     }
     const { service } = loaderData;
-    return {
-      meta: [
-        { title: `${service.title} — cuisines professionnelles | Salis 3 Hottes` },
-        { name: "description", content: service.description.slice(0, 155) },
-        { property: "og:title", content: `${service.title} | Salis 3 Hottes` },
-        { property: "og:description", content: service.short },
-        { property: "og:type", content: "article" },
-        { property: "og:url", content: `/services/${params.slug}` },
-      ],
-      links: [{ rel: "canonical", href: `/services/${params.slug}` }],
-      scripts: [
-        {
-          type: "application/ld+json",
-          children: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Service",
-            name: service.title,
-            description: service.description,
-            areaServed: activeZones().map((zone) => `${zone.name} / ${zone.region}`),
-            provider: { "@type": "ProfessionalService", name: "Salis 3 Hottes" },
-          }),
-        },
-      ],
-    };
+    return pageHead({
+      title: `${service.title} — cuisines professionnelles | Salis 3 Hottes`,
+      description: service.description.slice(0, 155),
+      path: `/services/${params.slug}`,
+      ogTitle: `${service.title} | Salis 3 Hottes`,
+      ogDescription: service.short,
+      ogType: "article",
+      jsonLd: {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        name: service.title,
+        description: service.description,
+        url: absoluteUrl(`/services/${params.slug}`),
+        areaServed: activeZones().map((zone) => `${zone.name} / ${zone.region}`),
+        provider: { "@type": "ProfessionalService", name: "Salis 3 Hottes" },
+      },
+    });
   },
   component: ServiceDetail,
 });

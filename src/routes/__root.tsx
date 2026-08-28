@@ -8,20 +8,24 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { WhatsAppWidget } from "@/components/WhatsAppWidget";
-import { ChatWidget } from "@/components/ChatWidget";
 import { StickyMobileCta } from "@/components/StickyMobileCta";
 import { CursorLabel } from "@/components/CursorLabel";
 import { CookieConsent } from "@/components/CookieConsent";
 import { AnalyticsGate } from "@/components/AnalyticsGate";
 import { Toaster } from "@/components/ui/sonner";
-import { SITE, activeZones, zonesSeoLine } from "@/lib/site";
+import { SITE, activeZones, siteUrl, zonesSeoLine } from "@/lib/site";
+import { absoluteUrl, ogImageUrl } from "@/lib/seo";
+
+const ChatWidget = lazy(() =>
+  import("@/components/ChatWidget").then((m) => ({ default: m.ChatWidget })),
+);
 
 function NotFoundComponent() {
   return (
@@ -96,14 +100,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:site_name", content: SITE.name },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "fr_FR" },
-      { property: "og:image", content: "/brand/logo.png" },
+      { property: "og:image", content: ogImageUrl() },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: ogImageUrl() },
       { name: "theme-color", content: "#0c1118" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/brand/logo.png", type: "image/png" },
+      { rel: "icon", href: "/brand/logo-white.png", type: "image/png" },
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+      ...(import.meta.env["VITE_SUPABASE_URL"]
+        ? [{ rel: "preconnect", href: import.meta.env["VITE_SUPABASE_URL"] as string }]
+        : []),
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -124,7 +132,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             "@type": "AdministrativeArea",
             name: `${zone.name} / ${zone.region}`,
           })),
-          image: "/brand/logo.png",
+          image: ogImageUrl(),
+          url: siteUrl() ? absoluteUrl("/") : undefined,
         }),
       },
     ],
@@ -173,7 +182,9 @@ function RootComponent() {
             <div className="pb-24 lg:pb-0" aria-hidden="true" />
             <StickyMobileCta />
             <WhatsAppWidget />
-            <ChatWidget />
+            <Suspense fallback={null}>
+              <ChatWidget />
+            </Suspense>
             <CursorLabel />
           </>
         )}

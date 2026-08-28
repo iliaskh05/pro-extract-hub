@@ -1,20 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SITE, displayValue } from "@/lib/site";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/confidentialite")({
-  head: () => ({
-    meta: [
-      { title: `Politique de confidentialité | ${SITE.name}` },
-      {
-        name: "description",
-        content: `Traitement des données transmises via le formulaire de devis de ${SITE.name}.`,
-      },
-      { property: "og:title", content: `Politique de confidentialité — ${SITE.name}` },
-      { property: "og:description", content: "Traitement des données du formulaire de devis." },
-      { property: "og:url", content: "/confidentialite" },
-    ],
-    links: [{ rel: "canonical", href: "/confidentialite" }],
-  }),
+  head: () =>
+    pageHead({
+      title: `Politique de confidentialité | ${SITE.name}`,
+      description: `Traitement des données transmises via le formulaire de devis de ${SITE.name}.`,
+      path: "/confidentialite",
+      ogTitle: `Politique de confidentialité — ${SITE.name}`,
+      ogDescription: "Traitement des données du formulaire de devis.",
+    }),
   component: () => (
     <div className="mx-auto max-w-3xl px-5 py-14 lg:px-8 lg:py-20">
       <h1 className="text-3xl font-extrabold tracking-tight md:text-4xl">

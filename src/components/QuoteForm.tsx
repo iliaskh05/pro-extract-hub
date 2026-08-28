@@ -179,36 +179,15 @@ export function QuoteForm() {
       }
       track("Quote Submit", { city: form.city });
       setDone(true);
-    } catch {
-      const fallback = await supabase.from("leads").insert({
-        company_name: form.company_name || null,
-        contact_name: form.contact_name,
-        phone: form.phone,
-        email: form.email,
-        business_type: form.business_type,
-        city: form.city,
-        postal_code: form.postal_code || null,
-        hood_length: form.hood_length || null,
-        filter_count: form.filter_count ? Number(form.filter_count) : null,
-        duct_present: form.duct_present,
-        motor_present: form.motor_present,
-        last_cleaning: form.last_cleaning || null,
-        requested_frequency: form.requested_frequency || null,
-        photos: Object.keys(files),
-        message: form.message || null,
-        source: "website_form",
+    } catch (err) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : "L'enregistrement a échoué. Merci de réessayer dans un instant.";
+      setError(message);
+      toast.error("Envoi impossible", {
+        description: "Vérifiez votre connexion ou réessayez plus tard.",
       });
-      if (fallback.error) {
-        setError("L'enregistrement a échoué. Merci de réessayer dans un instant.");
-        toast.error("Envoi impossible", {
-          description: "Le service est temporairement indisponible.",
-        });
-        setSubmitting(false);
-        return;
-      }
-      setReference("ENREGISTREE");
-      track("Quote Submit", { city: form.city, mode: "fallback" });
-      setDone(true);
     }
     setSubmitting(false);
   }

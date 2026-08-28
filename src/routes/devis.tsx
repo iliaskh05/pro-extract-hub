@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { QuoteForm } from "@/components/QuoteForm";
 import { PageHero } from "@/components/PageHero";
 import { SITE, zonesLine } from "@/lib/site";
+import { pageHead } from "@/lib/seo";
 
 const STEPS = [
   "01 Établissement",
@@ -12,22 +13,14 @@ const STEPS = [
 ];
 
 export const Route = createFileRoute("/devis")({
-  head: () => ({
-    meta: [
-      { title: `Obtenir un devis de dégraissage de hotte | ${SITE.name}` },
-      {
-        name: "description",
-        content: `Décrivez votre installation en 5 étapes et recevez une proposition adaptée à votre cuisine professionnelle à ${zonesLine(" ou ")}.`,
-      },
-      { property: "og:title", content: `Obtenir un devis — ${SITE.name}` },
-      {
-        property: "og:description",
-        content: "Demande de devis en 5 étapes pour l'entretien de votre système d'extraction.",
-      },
-      { property: "og:url", content: "/devis" },
-    ],
-    links: [{ rel: "canonical", href: "/devis" }],
-  }),
+  head: () =>
+    pageHead({
+      title: `Obtenir un devis de dégraissage de hotte | ${SITE.name}`,
+      description: `Décrivez votre installation en 5 étapes et recevez une proposition adaptée à votre cuisine professionnelle à ${zonesLine(" ou ")}.`,
+      path: "/devis",
+      ogTitle: `Obtenir un devis — ${SITE.name}`,
+      ogDescription: "Demande de devis en 5 étapes pour l'entretien de votre système d'extraction.",
+    }),
   component: DevisPage,
 });
 

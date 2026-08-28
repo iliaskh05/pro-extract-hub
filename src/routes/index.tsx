@@ -1,37 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { lazy, Suspense } from "react";
+import { pageHead } from "@/lib/seo";
 import { zonesLine } from "@/lib/site";
 import { HeroSection } from "@/components/home/HeroSection";
-import { TrustStrip } from "@/components/home/TrustStrip";
-import { ProblemSection } from "@/components/home/ProblemSection";
-import { ExtractionSignature } from "@/components/home/ExtractionSignature";
-import { DocumentedSection } from "@/components/home/DocumentedSection";
-import { BeforeAfterSection } from "@/components/home/BeforeAfterSection";
-import { ServicesExplorer } from "@/components/home/ServicesExplorer";
-import { SectorsSection } from "@/components/home/SectorsSection";
-import { ProcessTimeline } from "@/components/home/ProcessTimeline";
-import { DigitalFirst } from "@/components/home/DigitalFirst";
-import { ZonesSection } from "@/components/home/ZonesSection";
-import { FaqPreview } from "@/components/home/FaqPreview";
-import { FinalCta } from "@/components/FinalCta";
+
+const HomeStory = lazy(() =>
+  import("@/components/home/HomeStory").then((m) => ({ default: m.HomeStory })),
+);
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Dégraissage de hottes & conduits de cuisine pro | Salis 3 Hottes" },
-      {
-        name: "description",
-        content: `Dégraissage professionnel des hottes, filtres, conduits et moteurs d'extraction pour cuisines professionnelles. ${zonesLine(" et ")}.`,
-      },
-      { property: "og:title", content: "Une extraction impeccable. Une cuisine plus sereine." },
-      {
-        property: "og:description",
-        content:
-          "Dégraissage et entretien documenté des systèmes d'extraction de cuisines professionnelles.",
-      },
-      { property: "og:url", content: "/" },
-    ],
-    links: [{ rel: "canonical", href: "/" }],
-  }),
+  head: () =>
+    pageHead({
+      title: "Dégraissage de hottes & conduits de cuisine pro | Salis 3 Hottes",
+      description: `Dégraissage professionnel des hottes, filtres, conduits et moteurs d'extraction pour cuisines professionnelles. ${zonesLine(" et ")}.`,
+      path: "/",
+      ogTitle: "Une extraction impeccable. Une cuisine plus sereine.",
+      ogDescription:
+        "Dégraissage et entretien documenté des systèmes d'extraction de cuisines professionnelles.",
+    }),
   component: Home,
 });
 
@@ -44,22 +30,9 @@ function Home() {
         aria-hidden="true"
       />
       <HeroSection />
-
-      {/* Le récit défile par-dessus le hero : la transition reste continue. */}
-      <div className="relative z-10">
-        <TrustStrip />
-        <ProblemSection />
-        <ExtractionSignature />
-        <DocumentedSection />
-        <BeforeAfterSection />
-        <ServicesExplorer />
-        <SectorsSection />
-        <ProcessTimeline />
-        <DigitalFirst />
-        <ZonesSection />
-        <FaqPreview />
-        <FinalCta />
-      </div>
+      <Suspense fallback={<div className="min-h-[40vh] bg-background" aria-hidden="true" />}>
+        <HomeStory />
+      </Suspense>
     </div>
   );
 }

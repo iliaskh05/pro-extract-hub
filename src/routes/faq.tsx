@@ -6,39 +6,28 @@ import { FinalCta } from "@/components/FinalCta";
 import { FaqExplorer } from "@/components/FaqExplorer";
 import { Input } from "@/components/ui/input";
 import { FAQ } from "@/lib/faq";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/faq")({
-  head: () => ({
-    meta: [
-      { title: "Questions fréquentes sur le dégraissage de hotte | Salis 3 Hottes" },
-      {
-        name: "description",
-        content:
-          "Établissements accompagnés, zones desservies, déroulé d'une intervention, rapport, fréquence d'entretien : les réponses aux questions les plus fréquentes.",
+  head: () =>
+    pageHead({
+      title: "Questions fréquentes sur le dégraissage de hotte | Salis 3 Hottes",
+      description:
+        "Établissements accompagnés, zones desservies, déroulé d'une intervention, rapport, fréquence d'entretien : les réponses aux questions les plus fréquentes.",
+      path: "/faq",
+      ogTitle: "FAQ — Salis 3 Hottes",
+      ogDescription:
+        "Les réponses aux questions fréquentes sur l'entretien des systèmes d'extraction.",
+      jsonLd: {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: FAQ.map((item) => ({
+          "@type": "Question",
+          name: item.q,
+          acceptedAnswer: { "@type": "Answer", text: item.a },
+        })),
       },
-      { property: "og:title", content: "FAQ — Salis 3 Hottes" },
-      {
-        property: "og:description",
-        content: "Les réponses aux questions fréquentes sur l'entretien des systèmes d'extraction.",
-      },
-      { property: "og:url", content: "/faq" },
-    ],
-    links: [{ rel: "canonical", href: "/faq" }],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: FAQ.map((item) => ({
-            "@type": "Question",
-            name: item.q,
-            acceptedAnswer: { "@type": "Answer", text: item.a },
-          })),
-        }),
-      },
-    ],
-  }),
+    }),
   component: FaqPage,
 });
 

@@ -5,25 +5,18 @@ import { PageHero } from "@/components/PageHero";
 import { FinalCta } from "@/components/FinalCta";
 import { MEDIA } from "@/lib/media";
 import { METHOD } from "@/lib/method";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/methode")({
-  head: () => ({
-    meta: [
-      { title: "Notre méthode d'intervention en 6 étapes | Salis 3 Hottes" },
-      {
-        name: "description",
-        content:
-          "Analyse, préparation, dégraissage, contrôle, documentation et suivi : la méthode d'intervention appliquée à chaque système d'extraction.",
-      },
-      { property: "og:title", content: "Notre méthode — Salis 3 Hottes" },
-      {
-        property: "og:description",
-        content: "Six étapes documentées, de l'analyse au suivi de votre installation.",
-      },
-      { property: "og:url", content: "/methode" },
-    ],
-    links: [{ rel: "canonical", href: "/methode" }],
-  }),
+  head: () =>
+    pageHead({
+      title: "Notre méthode d'intervention en 6 étapes | Salis 3 Hottes",
+      description:
+        "Analyse, préparation, dégraissage, contrôle, documentation et suivi : la méthode d'intervention appliquée à chaque système d'extraction.",
+      path: "/methode",
+      ogTitle: "Notre méthode — Salis 3 Hottes",
+      ogDescription: "Six étapes documentées, de l'analyse au suivi de votre installation.",
+    }),
   component: MethodPage,
 });
 

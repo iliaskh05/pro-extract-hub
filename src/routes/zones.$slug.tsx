@@ -19,6 +19,7 @@ import { MEDIA } from "@/lib/media";
 import { FAQ } from "@/lib/faq";
 import { track } from "@/lib/analytics";
 import { toast } from "sonner";
+import { pageHead, absoluteUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/zones/$slug")({
   loader: ({ params }) => {
@@ -28,39 +29,29 @@ export const Route = createFileRoute("/zones/$slug")({
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
-      return {
-        meta: [
-          { title: `Zone indisponible | ${SITE.name}` },
-          { name: "robots", content: "noindex" },
-        ],
-      };
+      return pageHead({
+        title: `Zone indisponible | ${SITE.name}`,
+        description: "Cette zone d'intervention n'est pas disponible.",
+        path: `/zones/${params.slug}`,
+        noindex: true,
+      });
     }
     const { zone } = loaderData;
-    return {
-      meta: [
-        { title: `${zone.heroTitle} | ${SITE.name}` },
-        {
-          name: "description",
-          content: `${zone.localIntro} Devis et intervention documentée.`,
-        },
-        { property: "og:title", content: `${zone.name} — ${SITE.name}` },
-        { property: "og:description", content: zone.description },
-        { property: "og:url", content: `/zones/${params.slug}` },
-      ],
-      links: [{ rel: "canonical", href: `/zones/${params.slug}` }],
-      scripts: [
-        {
-          type: "application/ld+json",
-          children: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "ProfessionalService",
-            name: `${SITE.name} — ${zone.name}`,
-            areaServed: `${zone.name} / ${zone.region}`,
-            provider: { "@type": "ProfessionalService", name: SITE.name },
-          }),
-        },
-      ],
-    };
+    return pageHead({
+      title: `${zone.heroTitle} | ${SITE.name}`,
+      description: `${zone.localIntro} Devis et intervention documentée.`,
+      path: `/zones/${params.slug}`,
+      ogTitle: `${zone.name} — ${SITE.name}`,
+      ogDescription: zone.description,
+      jsonLd: {
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        name: `${SITE.name} — ${zone.name}`,
+        url: absoluteUrl(`/zones/${params.slug}`),
+        areaServed: `${zone.name} / ${zone.region}`,
+        provider: { "@type": "ProfessionalService", name: SITE.name },
+      },
+    });
   },
   component: ZoneDetail,
 });

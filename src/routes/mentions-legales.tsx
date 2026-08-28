@@ -1,20 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PENDING_COMPANY_INFO, SITE, displayValue } from "@/lib/site";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/mentions-legales")({
-  head: () => ({
-    meta: [
-      { title: `Mentions légales | ${SITE.name}` },
-      {
-        name: "description",
-        content: `Mentions légales du site ${SITE.name}.`,
-      },
-      { property: "og:title", content: `Mentions légales — ${SITE.name}` },
-      { property: "og:description", content: "Informations légales du site." },
-      { property: "og:url", content: "/mentions-legales" },
-    ],
-    links: [{ rel: "canonical", href: "/mentions-legales" }],
-  }),
+  head: () =>
+    pageHead({
+      title: `Mentions légales | ${SITE.name}`,
+      description: `Mentions légales du site ${SITE.name}.`,
+      path: "/mentions-legales",
+      ogTitle: `Mentions légales — ${SITE.name}`,
+      ogDescription: "Informations légales du site.",
+    }),
   component: () => (
     <div className="mx-auto max-w-3xl px-5 py-14 lg:px-8 lg:py-20">
       <h1 className="text-3xl font-extrabold tracking-tight md:text-4xl">Mentions légales</h1>

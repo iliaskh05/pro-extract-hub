@@ -8,24 +8,17 @@ import { PageHero } from "@/components/PageHero";
 import { Reveal } from "@/components/Reveal";
 import { FinalCta } from "@/components/FinalCta";
 import { MEDIA } from "@/lib/media";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/zones/")({
-  head: () => ({
-    meta: [
-      { title: `Zones d'intervention : ${zonesLine(" & ")} | ${SITE.name}` },
-      {
-        name: "description",
-        content: `${zonesCountLabel()} d'intervention : ${zonesLine(", ")}. Vérifiez la couverture pour votre établissement.`,
-      },
-      { property: "og:title", content: `Zones d'intervention — ${SITE.name}` },
-      {
-        property: "og:description",
-        content: zonesLine(" · "),
-      },
-      { property: "og:url", content: "/zones" },
-    ],
-    links: [{ rel: "canonical", href: "/zones" }],
-  }),
+  head: () =>
+    pageHead({
+      title: `Zones d'intervention : ${zonesLine(" & ")} | ${SITE.name}`,
+      description: `${zonesCountLabel()} d'intervention : ${zonesLine(", ")}. Vérifiez la couverture pour votre établissement.`,
+      path: "/zones",
+      ogTitle: `Zones d'intervention — ${SITE.name}`,
+      ogDescription: zonesLine(" · "),
+    }),
   component: ZonesPage,
 });
 

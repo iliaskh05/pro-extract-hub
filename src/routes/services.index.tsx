@@ -9,26 +9,19 @@ import { MethodSteps } from "@/components/MethodSteps";
 import { FinalCta } from "@/components/FinalCta";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/services/")({
-  head: () => ({
-    meta: [
-      { title: "Nos prestations d'entretien d'extraction | Salis 3 Hottes" },
-      {
-        name: "description",
-        content:
-          "Dégraissage de hotte, nettoyage des filtres, des conduits, du moteur et du caisson, entretien périodique et diagnostic pour cuisines professionnelles.",
-      },
-      { property: "og:title", content: "Nos prestations — Salis 3 Hottes" },
-      {
-        property: "og:description",
-        content:
-          "Six prestations d'entretien des systèmes d'extraction de cuisines professionnelles.",
-      },
-      { property: "og:url", content: "/services" },
-    ],
-    links: [{ rel: "canonical", href: "/services" }],
-  }),
+  head: () =>
+    pageHead({
+      title: "Nos prestations d'entretien d'extraction | Salis 3 Hottes",
+      description:
+        "Dégraissage de hotte, nettoyage des filtres, des conduits, du moteur et du caisson, entretien périodique et diagnostic pour cuisines professionnelles.",
+      path: "/services",
+      ogTitle: "Nos prestations — Salis 3 Hottes",
+      ogDescription:
+        "Six prestations d'entretien des systèmes d'extraction de cuisines professionnelles.",
+    }),
   component: ServicesPage,
 });
 
