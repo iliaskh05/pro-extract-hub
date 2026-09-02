@@ -1,4 +1,5 @@
 import { SERVICES, activeZones, siteUrl } from "@/lib/site";
+import { SECTORS } from "@/lib/sectors";
 
 /** URL absolue pour canonical, Open Graph et sitemap. */
 export function absoluteUrl(path: string): string {
@@ -35,6 +36,13 @@ export function sitemapEntries(): SitemapEntry[] {
       changefreq: "monthly" as const,
     })),
     { path: "/methode", priority: "0.7", changefreq: "monthly" },
+    { path: "/tarifs", priority: "0.7", changefreq: "monthly" },
+    { path: "/secteurs", priority: "0.8", changefreq: "monthly" },
+    ...SECTORS.map((s) => ({
+      path: `/secteurs/${s.slug}`,
+      priority: "0.75",
+      changefreq: "monthly" as const,
+    })),
     { path: "/devis", priority: "0.9", changefreq: "monthly" },
     { path: "/faq", priority: "0.6", changefreq: "monthly" },
     { path: "/contact", priority: "0.6", changefreq: "monthly" },

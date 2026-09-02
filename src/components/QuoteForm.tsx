@@ -19,6 +19,12 @@ import {
   quoteSchema,
 } from "@/lib/quote-schema";
 import { attachLeadPhotos, submitQuote } from "@/lib/quote.functions";
+import {
+  clearQuotePrefill,
+  loadQuotePrefill,
+  readAttribution,
+  type QuotePrefill,
+} from "@/lib/quote-prefill";
 import { track } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -69,14 +75,10 @@ const EMPTY: FormState = {
   website: "",
 };
 
-function readUtms() {
-  if (typeof window === "undefined") return { source: "", medium: "", campaign: "" };
-  const q = new URLSearchParams(window.location.search);
-  return {
-    source: q.get("utm_source") ?? "",
-    medium: q.get("utm_medium") ?? "",
-    campaign: q.get("utm_campaign") ?? "",
-  };
+function buildInitial(prefill?: QuotePrefill): FormState {
+  const stored = typeof window !== "undefined" ? loadQuotePrefill() : {};
+  const merged = { ...EMPTY, ...stored, ...prefill };
+  return merged;
 }
 
 function validateFile(file: File) {
@@ -87,16 +89,16 @@ function validateFile(file: File) {
   return null;
 }
 
-export function QuoteForm() {
+export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
   const [step, setStep] = useState(0);
-  const [form, setForm] = useState<FormState>(EMPTY);
+  const [form, setForm] = useState<FormState>(() => buildInitial(prefill));
   const [files, setFiles] = useState<Partial<Record<string, File>>>({});
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [reference, setReference] = useState<string>("");
-  const [utms] = useState(readUtms);
+  const [attribution] = useState(readAttribution);
   const submitRemote = useServerFn(submitQuote);
   const attachRemote = useServerFn(attachLeadPhotos);
 
@@ -152,9 +154,12 @@ export function QuoteForm() {
       ...form,
       consent: form.consent ? true : undefined,
       source: "website_form",
-      utm_source: utms.source,
-      utm_medium: utms.medium,
-      utm_campaign: utms.campaign,
+      utm_source: attribution.utm_source,
+      utm_medium: attribution.utm_medium,
+      utm_campaign: attribution.utm_campaign,
+      landing_page: attribution.landing_page,
+      service_source: attribution.service_source,
+      zone_source: attribution.zone_source,
       uploads: Object.entries(files).map(([slot, file]) => ({
         slot,
         name: file!.name,
@@ -178,6 +183,7 @@ export function QuoteForm() {
         await uploadSigned(result.uploads, result.id);
       }
       track("Quote Submit", { city: form.city });
+      clearQuotePrefill();
       setDone(true);
     } catch (err) {
       const message =

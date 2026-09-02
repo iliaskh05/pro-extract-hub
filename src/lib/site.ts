@@ -323,6 +323,12 @@ export const LEAD_STATUSES = [
 
 export type LeadStatus = (typeof LEAD_STATUSES)[number]["value"];
 
+export const PRIORITY_LABELS: Record<string, string> = {
+  normal: "Normale",
+  high: "Prioritaire",
+  critical: "Critique",
+};
+
 export const CONTACT_METHODS = [
   { value: "email", label: "Email" },
   { value: "phone", label: "Téléphone" },

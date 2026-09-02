@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { urgencyToPriority } from "@/lib/quote-options";
 import { quoteSchema, LEAD_PHOTOS_BUCKET, type PhotoRecord } from "./quote-schema";
 
 const WINDOW_MS = 60 * 60 * 1000;
@@ -53,6 +54,7 @@ export const submitQuote = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const reference = makeRef();
     const filterCount = data.filter_count ? Number(data.filter_count) : null;
+    const urgency = data.need_type === "intervention_urgente" ? data.urgency_level : "normal";
 
     const core = {
       company_name: data.company_name || null,
@@ -78,9 +80,24 @@ export const submitQuote = createServerFn({ method: "POST" })
       reference,
       consent: true,
       preferred_contact: data.preferred_contact || null,
+      priority: urgencyToPriority(urgency),
       utm_source: data.utm_source || null,
       utm_medium: data.utm_medium || null,
       utm_campaign: data.utm_campaign || null,
+      need_type: data.need_type || null,
+      installation_type: data.installation_type || null,
+      hood_type: data.hood_type || null,
+      duct_length: data.duct_length || null,
+      soil_level: data.soil_level || null,
+      accessibility: data.accessibility || null,
+      night_intervention: data.night_intervention ?? false,
+      schedule_preference: data.schedule_preference || null,
+      request_type: data.request_type || null,
+      maintenance_frequency: data.maintenance_frequency || null,
+      urgency_level: urgency,
+      landing_page: data.landing_page || null,
+      service_source: data.service_source || null,
+      zone_source: data.zone_source || null,
     };
 
     const full = await supabaseAdmin
@@ -122,6 +139,14 @@ export const submitQuote = createServerFn({ method: "POST" })
         business_type: data.business_type,
         source: data.source || "website_form",
         message: data.message,
+        need_type: data.need_type,
+        urgency_level: urgency,
+        request_type: data.request_type,
+        maintenance_frequency: data.maintenance_frequency,
+        schedule_preference: data.schedule_preference,
+        landing_page: data.landing_page,
+        service_source: data.service_source,
+        zone_source: data.zone_source,
       });
     } catch {
       /* La notification ne doit jamais bloquer l'enregistrement. */

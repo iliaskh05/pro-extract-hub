@@ -10,6 +10,7 @@ export type Database = {
     Tables: {
       leads: {
         Row: {
+          accessibility: string | null;
           assigned_user: string | null;
           business_type: string | null;
           city: string | null;
@@ -17,14 +18,24 @@ export type Database = {
           consent: boolean | null;
           contact_name: string | null;
           created_at: string;
+          duct_length: string | null;
           duct_present: boolean | null;
           email: string | null;
           filter_count: number | null;
           hood_length: string | null;
+          hood_type: string | null;
           id: string;
+          installation_type: string | null;
+          landing_page: string | null;
           last_cleaning: string | null;
+          last_intervention_at: string | null;
+          maintenance_frequency: string | null;
           message: string | null;
           motor_present: boolean | null;
+          need_type: string | null;
+          next_action: string | null;
+          next_due_at: string | null;
+          night_intervention: boolean | null;
           notes: string | null;
           phone: string | null;
           photos: Json;
@@ -32,13 +43,19 @@ export type Database = {
           preferred_contact: string | null;
           priority: string | null;
           reference: string | null;
+          request_type: string | null;
           requested_frequency: string | null;
+          schedule_preference: string | null;
+          service_source: string | null;
+          soil_level: string | null;
           source: string;
           status: Database["public"]["Enums"]["lead_status"];
           updated_at: string;
+          urgency_level: string | null;
           utm_campaign: string | null;
           utm_medium: string | null;
           utm_source: string | null;
+          zone_source: string | null;
         };
         Insert: {
           assigned_user?: string | null;
