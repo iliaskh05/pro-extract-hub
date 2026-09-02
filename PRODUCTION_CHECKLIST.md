@@ -65,7 +65,7 @@ Optionnel — l'assistant fonctionne sans clé (règles déterministes).
 
 ### Conversion
 
-- [ ] Formulaire devis 6 étapes + résumé
+- [ ] Formulaire devis 5 étapes + confirmation
 - [ ] Upload photos
 - [ ] Urgence / contrat / fréquence en base
 - [ ] Emails reçus (admin + client)

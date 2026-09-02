@@ -1,11 +1,12 @@
 import { Reveal } from "@/components/Reveal";
+import { zonesHeroLine } from "@/lib/site";
 
-const PILLARS = [
-  { word: "Professionnel", note: "Intervention encadrée" },
-  { word: "Documenté", note: "Photos avant / après" },
-  { word: "Traçable", note: "Rapport d'intervention" },
-  { word: "Suivi", note: "Prochaine échéance" },
-];
+const ITEMS = [
+  "Intervention professionnelle",
+  "Photos avant / après",
+  "Documentation d'intervention",
+  "Suivi périodique",
+] as const;
 
 export function TrustStrip() {
   return (
@@ -14,40 +15,20 @@ export function TrustStrip() {
       className="border-b border-ink-border bg-ink"
       aria-label="Nos engagements"
     >
-      <div className="mx-auto max-w-7xl px-5 py-14 lg:px-8 lg:py-20">
-        <ul className="flex flex-wrap items-baseline gap-x-5 gap-y-6 sm:gap-x-8">
-          {PILLARS.map((p, i) => (
-            <Reveal
-              as="li"
-              key={p.word}
-              delay={i * 110}
-              className="flex items-baseline gap-5 sm:gap-8"
-            >
-              <span className="block">
-                <span className="block text-2xl font-semibold tracking-[-0.04em] text-ink-foreground sm:text-3xl lg:text-[2.75rem] lg:leading-none">
-                  {p.word}
-                </span>
-                <span className="mt-2 block text-[11px] tracking-[0.16em] text-ink-muted uppercase">
-                  {p.note}
-                </span>
+      <div className="mx-auto max-w-7xl px-5 py-10 lg:px-8 lg:py-12">
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {ITEMS.map((item, i) => (
+            <Reveal as="li" key={item} delay={i * 50}>
+              <span className="flex items-center gap-3 text-sm font-medium text-ink-foreground">
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />
+                {item}
               </span>
-              {i < PILLARS.length - 1 && (
-                <span
-                  className="text-2xl font-light text-accent/50 sm:text-3xl lg:text-4xl"
-                  aria-hidden="true"
-                >
-                  /
-                </span>
-              )}
             </Reveal>
           ))}
         </ul>
-
-        <Reveal delay={200}>
-          <div className="mt-12 h-px w-full origin-left bg-ink-border" />
-          <p className="mt-6 max-w-xl text-sm leading-relaxed text-ink-muted">
-            Nous démarrons notre activité en septembre 2026 avec une exigence simple : une
-            intervention technique, et la preuve de ce qui a été fait.
+        <Reveal delay={120}>
+          <p className="mt-6 text-center text-[11px] tracking-[0.18em] text-ink-muted uppercase sm:text-left">
+            {zonesHeroLine()}
           </p>
         </Reveal>
       </div>

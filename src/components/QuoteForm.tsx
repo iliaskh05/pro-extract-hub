@@ -25,6 +25,13 @@ import {
   readAttribution,
   type QuotePrefill,
 } from "@/lib/quote-prefill";
+import {
+  parseEmail,
+  parseFilterCount,
+  parseMeterage,
+  parsePhone,
+  parsePostalCode,
+} from "@/lib/quote-validation";
 import { track } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -89,6 +96,49 @@ function validateFile(file: File) {
   return null;
 }
 
+function validateStepFields(step: number, form: FormState): Record<string, string> {
+  const errors: Record<string, string> = {};
+  if (step === 1) {
+    if (form.hood_length) {
+      const r = parseMeterage(form.hood_length);
+      if (!r.ok) errors.hood_length = r.error;
+    }
+    if (form.filter_count) {
+      const r = parseFilterCount(form.filter_count);
+      if (!r.ok) errors.filter_count = r.error;
+    }
+  }
+  if (step === 2 && form.postal_code) {
+    const r = parsePostalCode(form.postal_code);
+    if (!r.ok) errors.postal_code = r.error;
+  }
+  if (step === 4) {
+    const emailR = parseEmail(form.email);
+    if (!emailR.ok) errors.email = emailR.error;
+    const phoneR = parsePhone(form.phone);
+    if (!phoneR.ok) errors.phone = phoneR.error;
+    if (form.contact_name.trim().length < 2) {
+      errors.contact_name = "Indiquez votre nom.";
+    }
+  }
+  return errors;
+}
+
+function assignFileToSlot(
+  file: File,
+  slotKey: string,
+  setFiles: (
+    updater: (prev: Partial<Record<string, File>>) => Partial<Record<string, File>>,
+  ) => void,
+) {
+  const problem = validateFile(file);
+  if (problem) {
+    toast.error(problem);
+    return;
+  }
+  setFiles((prev) => ({ ...prev, [slotKey]: file }));
+}
+
 export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormState>(() => buildInitial(prefill));
@@ -98,6 +148,7 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [reference, setReference] = useState<string>("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [attribution] = useState(readAttribution);
   const submitRemote = useServerFn(submitQuote);
   const attachRemote = useServerFn(attachLeadPhotos);
@@ -122,8 +173,10 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
 
   const canContinue =
     (step === 0 && !!form.business_type) ||
-    step === 1 ||
-    (step === 2 && form.city.trim().length > 1) ||
+    (step === 1 && Object.keys(validateStepFields(1, form)).length === 0) ||
+    (step === 2 &&
+      form.city.trim().length > 1 &&
+      Object.keys(validateStepFields(2, form)).length === 0) ||
     step === 3 ||
     (step === 4 && parsed.success);
 
@@ -150,6 +203,14 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
   }
 
   async function submit() {
+    if (submitting) return;
+
+    const stepErrs = validateStepFields(4, form);
+    if (Object.keys(stepErrs).length) {
+      setFieldErrors(stepErrs);
+      return;
+    }
+
     const check = quoteSchema.safeParse({
       ...form,
       consent: form.consent ? true : undefined,
@@ -168,7 +229,14 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
       })),
     });
     if (!check.success) {
-      setError(check.error.issues[0]?.message ?? "Vérifiez les champs du formulaire.");
+      const issues = check.error.issues;
+      const mapped: Record<string, string> = {};
+      for (const issue of issues) {
+        const key = String(issue.path[0] ?? "");
+        if (key && !mapped[key]) mapped[key] = issue.message;
+      }
+      setFieldErrors(mapped);
+      setError(issues[0]?.message ?? "Vérifiez les champs du formulaire.");
       return;
     }
 
@@ -215,7 +283,7 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
             </span>
             <p className="step-in eyebrow mt-6 text-accent">Demande enregistrée</p>
             <h2 className="step-in mt-4 text-3xl font-semibold tracking-[-0.04em] text-ink-foreground md:text-4xl">
-              Votre demande est entre de bonnes mains.
+              Votre demande a bien été transmise.
             </h2>
             <p className="step-in mx-auto mt-4 max-w-md text-sm leading-relaxed text-ink-muted">
               Votre demande a bien été enregistrée. Nous disposons maintenant des informations
@@ -341,22 +409,44 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
                 <Input
                   id="hood_length"
                   className="mt-2"
-                  placeholder="ex. 3 mètres"
+                  inputMode="decimal"
+                  placeholder="ex. 3 ou 3,5"
                   value={form.hood_length}
-                  onChange={(e) => set("hood_length", e.target.value)}
+                  onChange={(e) => {
+                    set("hood_length", e.target.value);
+                    setFieldErrors((prev) => {
+                      const next = { ...prev };
+                      delete next.hood_length;
+                      return next;
+                    });
+                  }}
+                  aria-invalid={!!fieldErrors.hood_length}
                 />
+                {fieldErrors.hood_length && (
+                  <p className="mt-1 text-xs text-destructive">{fieldErrors.hood_length}</p>
+                )}
               </div>
               <div>
                 <Label htmlFor="filter_count">Nombre de filtres</Label>
                 <Input
                   id="filter_count"
                   className="mt-2"
-                  type="number"
-                  min={0}
+                  inputMode="numeric"
                   placeholder="ex. 6"
                   value={form.filter_count}
-                  onChange={(e) => set("filter_count", e.target.value)}
+                  onChange={(e) => {
+                    set("filter_count", e.target.value.replace(/\D/g, ""));
+                    setFieldErrors((prev) => {
+                      const next = { ...prev };
+                      delete next.filter_count;
+                      return next;
+                    });
+                  }}
+                  aria-invalid={!!fieldErrors.filter_count}
                 />
+                {fieldErrors.filter_count && (
+                  <p className="mt-1 text-xs text-destructive">{fieldErrors.filter_count}</p>
+                )}
               </div>
               <div>
                 <Label htmlFor="last_cleaning">Dernière intervention</Label>
@@ -457,9 +547,19 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
                   inputMode="numeric"
                   autoComplete="postal-code"
                   value={form.postal_code}
-                  onChange={(e) => set("postal_code", e.target.value)}
-                  placeholder="ex. 10000"
+                  onChange={(e) => {
+                    set("postal_code", e.target.value.replace(/\D/g, "").slice(0, 5));
+                    setFieldErrors((prev) => {
+                      const next = { ...prev };
+                      delete next.postal_code;
+                      return next;
+                    });
+                  }}
+                  aria-invalid={!!fieldErrors.postal_code}
                 />
+                {fieldErrors.postal_code && (
+                  <p className="mt-1 text-xs text-destructive">{fieldErrors.postal_code}</p>
+                )}
               </div>
             </div>
           </fieldset>
@@ -469,8 +569,8 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
           <fieldset className="space-y-5">
             <legend className="text-xl font-bold tracking-tight md:text-2xl">Photos</legend>
             <p className="text-sm text-muted-foreground">
-              Optionnel. JPG, PNG ou WebP, 5 Mo maximum par fichier. Les photos accélèrent la
-              qualification.
+              Optionnel. JPG, PNG ou WebP, 5 Mo maximum par fichier. Glissez-déposez ou touchez pour
+              ajouter.
             </p>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {PHOTO_SLOTS.map((slot) => {
@@ -484,6 +584,19 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
                           ? "border-accent bg-accent/10"
                           : "border-border hover:border-accent/60 hover:bg-secondary",
                       )}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.currentTarget.classList.add("border-accent", "bg-accent/5");
+                      }}
+                      onDragLeave={(e) => {
+                        e.currentTarget.classList.remove("border-accent", "bg-accent/5");
+                      }}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        e.currentTarget.classList.remove("border-accent", "bg-accent/5");
+                        const file = e.dataTransfer.files?.[0];
+                        if (file) assignFileToSlot(file, slot.key, setFiles);
+                      }}
                     >
                       {current ? (
                         <Check className="size-5 text-accent" />
@@ -501,12 +614,7 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
                         onChange={(e) => {
                           const file = e.target.files?.[0];
                           if (!file) return;
-                          const problem = validateFile(file);
-                          if (problem) {
-                            toast.error(problem);
-                            return;
-                          }
-                          setFiles((prev) => ({ ...prev, [slot.key]: file }));
+                          assignFileToSlot(file, slot.key, setFiles);
                         }}
                       />
                     </label>
@@ -547,8 +655,19 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
                   required
                   autoComplete="name"
                   value={form.contact_name}
-                  onChange={(e) => set("contact_name", e.target.value)}
+                  onChange={(e) => {
+                    set("contact_name", e.target.value);
+                    setFieldErrors((prev) => {
+                      const next = { ...prev };
+                      delete next.contact_name;
+                      return next;
+                    });
+                  }}
+                  aria-invalid={!!fieldErrors.contact_name}
                 />
+                {fieldErrors.contact_name && (
+                  <p className="mt-1 text-xs text-destructive">{fieldErrors.contact_name}</p>
+                )}
               </div>
               <div>
                 <Label htmlFor="company_name">Entreprise</Label>
@@ -569,8 +688,19 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
                   type="tel"
                   autoComplete="tel"
                   value={form.phone}
-                  onChange={(e) => set("phone", e.target.value)}
+                  onChange={(e) => {
+                    set("phone", e.target.value);
+                    setFieldErrors((prev) => {
+                      const next = { ...prev };
+                      delete next.phone;
+                      return next;
+                    });
+                  }}
+                  aria-invalid={!!fieldErrors.phone}
                 />
+                {fieldErrors.phone && (
+                  <p className="mt-1 text-xs text-destructive">{fieldErrors.phone}</p>
+                )}
               </div>
               <div>
                 <Label htmlFor="email">Email *</Label>
@@ -581,8 +711,19 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
                   type="email"
                   autoComplete="email"
                   value={form.email}
-                  onChange={(e) => set("email", e.target.value)}
+                  onChange={(e) => {
+                    set("email", e.target.value);
+                    setFieldErrors((prev) => {
+                      const next = { ...prev };
+                      delete next.email;
+                      return next;
+                    });
+                  }}
+                  aria-invalid={!!fieldErrors.email}
                 />
+                {fieldErrors.email && (
+                  <p className="mt-1 text-xs text-destructive">{fieldErrors.email}</p>
+                )}
               </div>
             </div>
             <div>
@@ -664,7 +805,19 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
           Étape {step + 1} / {STEPS.length}
         </span>
         {step < STEPS.length - 1 ? (
-          <Button type="button" disabled={!canContinue} onClick={() => setStep((s) => s + 1)}>
+          <Button
+            type="button"
+            disabled={!canContinue}
+            onClick={() => {
+              const errs = validateStepFields(step, form);
+              if (Object.keys(errs).length) {
+                setFieldErrors(errs);
+                return;
+              }
+              setFieldErrors({});
+              setStep((s) => Math.min(STEPS.length - 1, s + 1));
+            }}
+          >
             Continuer <ChevronRight className="size-4" />
           </Button>
         ) : (

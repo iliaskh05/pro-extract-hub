@@ -1,4 +1,11 @@
 import { z } from "zod";
+import {
+  parseEmail,
+  parseFilterCount,
+  parseMeterage,
+  parsePhone,
+  parsePostalCode,
+} from "@/lib/quote-validation";
 import { BUSINESS_TYPES } from "@/lib/site";
 import {
   ACCESSIBILITY_OPTIONS,
@@ -24,8 +31,33 @@ export const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
 export const MAX_PHOTOS = PHOTO_SLOTS.length;
 export const ALLOWED_PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
 
-const phoneRe = /^(?:\+33|0033|0)[1-9](?:[\s.-]?\d{2}){4}$|^\+[1-9]\d{7,14}$/;
-const postalRe = /^\d{5}$/;
+const meterageSchema = z
+  .string()
+  .max(80)
+  .optional()
+  .default("")
+  .superRefine((v, ctx) => {
+    const r = parseMeterage(v);
+    if (!r.ok) ctx.addIssue({ code: z.ZodIssueCode.custom, message: r.error });
+  })
+  .transform((v) => {
+    const r = parseMeterage(v);
+    return r.ok ? r.value : v;
+  });
+
+const filterCountSchema = z
+  .string()
+  .max(10)
+  .optional()
+  .default("")
+  .superRefine((v, ctx) => {
+    const r = parseFilterCount(v);
+    if (!r.ok) ctx.addIssue({ code: z.ZodIssueCode.custom, message: r.error });
+  })
+  .transform((v) => {
+    const r = parseFilterCount(v);
+    return r.ok ? r.value : v;
+  });
 
 const needValues = NEED_TYPES.map((n) => n.value) as [string, ...string[]];
 const urgencyValues = URGENCY_LEVELS.map((u) => u.value) as [string, ...string[]];
@@ -41,12 +73,15 @@ export const quoteSchema = z.object({
   postal_code: z
     .string()
     .trim()
-    .refine((v) => v === "" || postalRe.test(v), "Code postal français à 5 chiffres"),
+    .superRefine((v, ctx) => {
+      const r = parsePostalCode(v);
+      if (!r.ok) ctx.addIssue({ code: z.ZodIssueCode.custom, message: r.error });
+    }),
   installation_type: z.enum(INSTALLATION_TYPES).optional().default("Autre / à préciser"),
   hood_type: z.enum(HOOD_TYPES).optional().default("Non précisé"),
-  hood_length: z.string().max(80).optional().default(""),
+  hood_length: meterageSchema,
   duct_length: z.enum(DUCT_LENGTHS).optional().default("Non précisé"),
-  filter_count: z.string().max(10).optional().default(""),
+  filter_count: filterCountSchema,
   duct_present: z.boolean(),
   motor_present: z.boolean(),
   soil_level: z.enum(soilValues).optional().default("non_precise"),
@@ -63,8 +98,22 @@ export const quoteSchema = z.object({
   phone: z
     .string()
     .trim()
-    .refine((v) => phoneRe.test(v.replace(/\s/g, "")), "Numéro de téléphone invalide"),
-  email: z.string().trim().email("Adresse email invalide").max(120),
+    .superRefine((v, ctx) => {
+      const r = parsePhone(v);
+      if (!r.ok) ctx.addIssue({ code: z.ZodIssueCode.custom, message: r.error });
+    }),
+  email: z
+    .string()
+    .trim()
+    .max(120)
+    .superRefine((v, ctx) => {
+      const r = parseEmail(v);
+      if (!r.ok) ctx.addIssue({ code: z.ZodIssueCode.custom, message: r.error });
+    })
+    .transform((v) => {
+      const r = parseEmail(v);
+      return r.ok ? r.value : v.trim().toLowerCase();
+    }),
   message: z.string().max(2000).optional().default(""),
   preferred_contact: z.enum(["email", "phone", "whatsapp"]).optional(),
   consent: z.literal(true, {

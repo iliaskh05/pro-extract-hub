@@ -189,6 +189,11 @@ export function getZone(slug: string): Zone | undefined {
   return ZONES.find((z) => z.slug === slug && z.active);
 }
 
+/** Ligne zones pour le hero — inclut Île-de-France autour du pôle Paris. */
+export function zonesHeroLine(): string {
+  return "Paris · Île-de-France · Dijon · Troyes · Perpignan";
+}
+
 export function zonesLine(separator = " · "): string {
   const names = activeZones().map((z) => z.name);
   if (names.length === 0) return "";

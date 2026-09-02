@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, MapPin, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MEDIA } from "@/lib/media";
-import { whatsappLink, whatsappUnavailableMessage, zonesLine } from "@/lib/site";
+import { whatsappLink, whatsappUnavailableMessage, zonesHeroLine } from "@/lib/site";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { track } from "@/lib/analytics";
 import { toast } from "sonner";
@@ -112,7 +112,7 @@ export function HeroSection() {
           {/* 1. Texte + CTAs */}
           <div className="flex flex-col items-center text-center md:items-start md:text-left">
             <p className="hero-copy eyebrow text-accent" style={{ animationDelay: "0.2s" }}>
-              Salis 3 Hottes · Dégraissage & entretien
+              Dégraissage & entretien des systèmes d'extraction
             </p>
 
             <h1 className="mt-4 max-w-3xl text-[2rem] leading-[1.08] font-semibold tracking-[-0.04em] text-ink-foreground sm:mt-5 sm:text-[2.25rem] sm:leading-[1.05] md:mt-6 md:text-5xl md:leading-[0.97] lg:text-[4.75rem]">
@@ -141,7 +141,7 @@ export function HeroSection() {
             >
               <p className="inline-flex max-w-full items-center justify-center gap-2 rounded-full border border-ink-border bg-ink-foreground/5 px-4 py-2.5 text-center text-[11px] font-medium text-ink-foreground/90 backdrop-blur-md sm:text-xs">
                 <MapPin className="size-3.5 shrink-0 text-accent" aria-hidden="true" />
-                <span className="leading-snug">{zonesLine()}</span>
+                <span className="leading-snug">{zonesHeroLine()}</span>
               </p>
 
               <Button

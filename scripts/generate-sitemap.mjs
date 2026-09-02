@@ -1,6 +1,6 @@
 /**
  * Génère public/sitemap.xml et public/robots.txt avec VITE_SITE_URL.
- * Exécuté avant build si la variable est définie.
+ * Aligné sur src/lib/seo.ts (services, zones actives, secteurs).
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
@@ -27,6 +27,7 @@ function loadEnv() {
 }
 
 const base = loadEnv();
+
 const services = [
   "degraissage-hotte",
   "nettoyage-filtres",
@@ -35,7 +36,18 @@ const services = [
   "entretien-periodique",
   "diagnostic-devis",
 ];
+
 const zones = ["paris", "perpignan", "troyes", "dijon"];
+
+const sectors = [
+  "restaurant",
+  "hotel",
+  "fast-food",
+  "boulangerie",
+  "patisserie",
+  "traiteur",
+  "cuisine-collective",
+];
 
 const paths = [
   { path: "/", priority: "1.0" },
@@ -44,6 +56,9 @@ const paths = [
   { path: "/zones", priority: "0.8" },
   ...zones.map((z) => ({ path: `/zones/${z}`, priority: "0.9" })),
   { path: "/methode", priority: "0.7" },
+  { path: "/tarifs", priority: "0.7" },
+  { path: "/secteurs", priority: "0.8" },
+  ...sectors.map((s) => ({ path: `/secteurs/${s}`, priority: "0.75" })),
   { path: "/devis", priority: "0.9" },
   { path: "/faq", priority: "0.6" },
   { path: "/contact", priority: "0.6" },
