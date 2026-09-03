@@ -3,6 +3,10 @@ import ductDetail from "@/assets/duct-detail.jpg";
 import hoodReference from "@/assets/after-hood.jpg";
 import ductReference from "@/assets/duct-detail.jpg";
 import motorReference from "@/assets/after-motor.jpg";
+import beforeDuct from "@/assets/before-duct.jpg";
+import beforeHood from "@/assets/hero-kitchen.jpg";
+import afterHood from "@/assets/after-hood.jpg";
+import afterMotor from "@/assets/after-motor.jpg";
 
 /**
  * Visuels du site.
@@ -16,6 +20,10 @@ export const MEDIA = {
   hoodReference,
   ductReference,
   motorReference,
+  beforeDuct,
+  beforeHood,
+  afterHood,
+  afterMotor,
 } as const;
 
 export type GalleryItem = {
