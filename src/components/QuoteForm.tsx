@@ -206,7 +206,7 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
       stored.push({ slot: item.slot, path: item.path, mime: file.type, size: file.size });
     }
     if (stored.length) {
-      await attachRemote({ data: { leadId, photos: stored } });
+      await attachRemote({ data: { leadId, uploadToken, photos: stored } });
     }
   }
 
