@@ -85,7 +85,7 @@ export const submitQuote = createServerFn({ method: "POST" })
   .validator((data: unknown) => quoteSchema.parse(data))
   .handler(async ({ data }) => {
     if (data.website) {
-      return { ok: true as const, reference: "XXXXXX", uploads: [] as never[] };
+      return { ok: true as const, reference: "XXXXXX", uploads: [] as never[], uploadToken: "" };
     }
     if (rateLimited(await clientKey())) {
       throw new Error("Trop de demandes depuis cette connexion. Réessayez dans une heure.");
