@@ -34,6 +34,46 @@ function rateLimited(key: string) {
   return false;
 }
 
+const UPLOAD_TOKEN_TTL_MS = 30 * 60 * 1000;
+
+function tokenSecret() {
+  const secret =
+    process.env['SUPABASE_SERVICE_ROLE_KEY'] ?? process.env['SUPABASE_PUBLISHABLE_KEY'] ?? "";
+  if (!secret) throw new Error("Configuration serveur incomplète.");
+  return secret;
+}
+
+function b64url(bytes: Uint8Array) {
+  let bin = "";
+  for (const b of bytes) bin += String.fromCharCode(b);
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+async function signUploadToken(leadId: string, expiresAt: number) {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(tokenSecret()),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const sig = await crypto.subtle.sign(
+    "HMAC",
+    key,
+    new TextEncoder().encode(`${leadId}.${expiresAt}`),
+  );
+  return `${expiresAt}.${b64url(new Uint8Array(sig))}`;
+}
+
+async function verifyUploadToken(leadId: string, token: string) {
+  const [expRaw, sig] = token.split(".");
+  const expiresAt = Number(expRaw);
+  if (!expRaw || !sig || !Number.isFinite(expiresAt)) return false;
+  if (Date.now() > expiresAt) return false;
+  const expected = await signUploadToken(leadId, expiresAt);
+  return expected === token;
+}
+
 function makeRef() {
   const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let out = "";
@@ -45,7 +85,7 @@ export const submitQuote = createServerFn({ method: "POST" })
   .validator((data: unknown) => quoteSchema.parse(data))
   .handler(async ({ data }) => {
     if (data.website) {
-      return { ok: true as const, reference: "XXXXXX", uploads: [] as never[] };
+      return { ok: true as const, reference: "XXXXXX", uploads: [] as never[], uploadToken: "" };
     }
     if (rateLimited(await clientKey())) {
       throw new Error("Trop de demandes depuis cette connexion. Réessayez dans une heure.");
@@ -152,18 +192,23 @@ export const submitQuote = createServerFn({ method: "POST" })
       /* La notification ne doit jamais bloquer l'enregistrement. */
     }
 
-    return { ok: true as const, id: leadId, reference, uploads };
+    const uploadToken = uploads.length
+      ? await signUploadToken(leadId, Date.now() + UPLOAD_TOKEN_TTL_MS)
+      : "";
+
+    return { ok: true as const, id: leadId, reference, uploads, uploadToken };
   });
 
 const attachSchema = z.object({
   leadId: z.string().uuid(),
+  uploadToken: z.string().min(1).max(200),
   photos: z
     .array(
       z.object({
-        slot: z.string(),
-        path: z.string(),
-        mime: z.string().optional(),
-        size: z.number().optional(),
+        slot: z.string().max(40),
+        path: z.string().max(300),
+        mime: z.string().max(100).optional(),
+        size: z.number().int().nonnegative().optional(),
       }),
     )
     .max(8),
@@ -172,6 +217,13 @@ const attachSchema = z.object({
 export const attachLeadPhotos = createServerFn({ method: "POST" })
   .validator((data: unknown) => attachSchema.parse(data))
   .handler(async ({ data }) => {
+    if (!(await verifyUploadToken(data.leadId, data.uploadToken))) {
+      throw new Error("Lien d'envoi de photos invalide ou expiré.");
+    }
+    const prefix = `leads/${data.leadId}/`;
+    if (data.photos.some((p) => !p.path.startsWith(prefix))) {
+      throw new Error("Chemin de fichier invalide.");
+    }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const photos: PhotoRecord[] = data.photos.map((p) => ({
       ...p,

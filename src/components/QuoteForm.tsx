@@ -190,6 +190,7 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
   async function uploadSigned(
     uploads: Array<{ slot: string; path: string; token: string }>,
     leadId: string,
+    uploadToken: string,
   ) {
     const stored: Array<{ slot: string; path: string; mime?: string; size?: number }> = [];
     for (const item of uploads) {
@@ -205,7 +206,7 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
       stored.push({ slot: item.slot, path: item.path, mime: file.type, size: file.size });
     }
     if (stored.length) {
-      await attachRemote({ data: { leadId, photos: stored } });
+      await attachRemote({ data: { leadId, uploadToken, photos: stored } });
     }
   }
 
@@ -254,8 +255,8 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
     try {
       const result = await submitRemote({ data: check.data });
       setReference(result.reference);
-      if (result.id && result.uploads.length) {
-        await uploadSigned(result.uploads, result.id);
+      if (result.id && result.uploads.length && result.uploadToken) {
+        await uploadSigned(result.uploads, result.id, result.uploadToken);
       }
       track("Quote Submit", { city: form.city });
       clearQuotePrefill();
