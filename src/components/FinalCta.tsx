@@ -45,7 +45,11 @@ export function FinalCta({
   }, [reduced]);
 
   return (
-    <section ref={sectionRef} className="surface-ink relative overflow-hidden">
+    <section
+      ref={sectionRef}
+      className="surface-ink relative overflow-hidden"
+      data-header-tone="dark"
+    >
       <div className="grid-tech absolute inset-0 opacity-60" aria-hidden="true" />
       <div
         ref={glowRef}

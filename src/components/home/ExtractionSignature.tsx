@@ -49,6 +49,7 @@ export function ExtractionSignature() {
   return (
     <section
       ref={trackRef}
+      data-header-tone="dark"
       className="surface-ink relative h-[220vh] lg:h-[340vh]"
       aria-label="Le parcours de l'air dans votre système d'extraction"
     >

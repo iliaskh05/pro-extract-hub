@@ -12,7 +12,7 @@ export function BeforeAfterSection() {
   const selected = open !== null ? GALLERY[open] : null;
 
   return (
-    <section className="surface-ink relative overflow-hidden">
+    <section className="surface-ink relative overflow-hidden" data-header-tone="dark">
       <div className="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-32">
         <Reveal className="flex flex-wrap items-end justify-between gap-6">
           <div>
@@ -22,13 +22,18 @@ export function BeforeAfterSection() {
             </h2>
           </div>
           <p className="max-w-xs text-sm leading-relaxed text-ink-muted">
-            Exemples clairement identifiés comme démonstration — il ne s'agit pas de chantiers
-            clients réels.
+            Comparaisons sur le même angle de vue — glissez pour voir la transformation.
           </p>
         </Reveal>
 
         <Reveal className="relative mt-12" variant="mask">
-          <BeforeAfterSlider before={featured.before} after={featured.after} alt={featured.title} />
+          <BeforeAfterSlider
+            before={featured.before}
+            after={featured.after}
+            alt={featured.title}
+            objectPosition={featured.objectPosition}
+            beforeTreatment={featured.beforeTreatment}
+          />
         </Reveal>
         <div className="mt-3 flex justify-end">
           <button
@@ -42,7 +47,7 @@ export function BeforeAfterSection() {
 
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           {GALLERY.map((g, i) => (
-            <Reveal key={g.title} delay={i * 70}>
+            <Reveal key={g.slug} delay={i * 70}>
               <button
                 type="button"
                 onClick={() => setOpen(i)}
@@ -52,14 +57,12 @@ export function BeforeAfterSection() {
                 <span className="relative block aspect-[4/3] overflow-hidden">
                   <img
                     src={g.after}
-                    alt={`${g.title} — après intervention (démonstration)`}
+                    alt={`${g.title} — après intervention`}
                     loading="lazy"
                     className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    style={{ objectPosition: g.objectPosition }}
                   />
                   <span className="absolute inset-0 bg-ink/0 transition-colors duration-500 group-hover:bg-ink/25" />
-                  <span className="absolute top-3 left-3 rounded-full bg-ink/80 px-2.5 py-1 text-[10px] font-semibold tracking-[0.18em] text-ink-foreground uppercase">
-                    Démonstration
-                  </span>
                 </span>
                 <span className="block p-5">
                   <span className="block text-sm font-semibold tracking-tight text-ink-foreground">
@@ -77,12 +80,14 @@ export function BeforeAfterSection() {
         <DialogContent className="max-w-4xl">
           {selected && (
             <>
-              <DialogTitle>{selected.title} — démonstration</DialogTitle>
+              <DialogTitle>{selected.title}</DialogTitle>
               <DialogDescription>{selected.text}</DialogDescription>
               <BeforeAfterSlider
                 before={selected.before}
                 after={selected.after}
                 alt={selected.title}
+                objectPosition={selected.objectPosition}
+                beforeTreatment={selected.beforeTreatment}
               />
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <p className="text-xs text-muted-foreground">

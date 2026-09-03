@@ -136,13 +136,19 @@ function ServiceDetail() {
       <section className="surface-ink">
         <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
           <Reveal>
-            <p className="eyebrow text-accent">Démonstration</p>
+            <p className="eyebrow text-accent">Avant / Après</p>
             <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-ink-foreground md:text-4xl">
               Avant / après
             </h2>
           </Reveal>
           <Reveal variant="mask" className="mt-10">
-            <BeforeAfterSlider before={demo.before} after={demo.after} alt={demo.title} />
+            <BeforeAfterSlider
+              before={demo.before}
+              after={demo.after}
+              alt={demo.title}
+              objectPosition={demo.objectPosition}
+              beforeTreatment={demo.beforeTreatment}
+            />
           </Reveal>
         </div>
       </section>

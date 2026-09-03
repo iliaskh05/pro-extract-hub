@@ -19,7 +19,7 @@ export function PageHero({
   compact?: boolean;
 }) {
   return (
-    <section className="surface-ink hero-bleed relative overflow-hidden">
+    <section className="surface-ink hero-bleed relative overflow-hidden" data-header-tone="dark">
       <div id="hero-sentinel" className="absolute top-0 h-24 w-full" aria-hidden="true" />
       {image && (
         <img

@@ -106,7 +106,7 @@ export const ZONES: Zone[] = [
       "Documentation photo et compte rendu après passage",
     ],
     whatsappMessage: "Bonjour, je souhaite demander un devis pour mon établissement à Paris.",
-    map: { x: 158, y: 92 },
+    map: { x: 284.4, y: 148.56 },
   },
   {
     slug: "perpignan",
@@ -129,7 +129,7 @@ export const ZONES: Zone[] = [
       "Suivi et prochaine échéance conservés dans l'historique",
     ],
     whatsappMessage: "Bonjour, je souhaite demander un devis pour mon établissement à Perpignan.",
-    map: { x: 178, y: 252 },
+    map: { x: 303.67, y: 503.3 },
   },
   {
     slug: "troyes",
@@ -152,7 +152,7 @@ export const ZONES: Zone[] = [
       "Documentation photo et compte rendu après passage",
     ],
     whatsappMessage: "Bonjour, je souhaite demander un devis pour mon établissement à Troyes.",
-    map: { x: 176, y: 118 },
+    map: { x: 345.48, y: 180.78 },
   },
   {
     slug: "dijon",
@@ -175,7 +175,7 @@ export const ZONES: Zone[] = [
       "Suivi et prochaine échéance conservés dans l'historique",
     ],
     whatsappMessage: "Bonjour, je souhaite demander un devis pour mon établissement à Dijon.",
-    map: { x: 198, y: 148 },
+    map: { x: 379.77, y: 236.96 },
   },
 ];
 

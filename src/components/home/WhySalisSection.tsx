@@ -26,7 +26,11 @@ const CARDS = [
 
 export function WhySalisSection() {
   return (
-    <section className="bg-background">
+    <section className="bg-background relative overflow-hidden">
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,oklch(0.74_0.1_198/0.12),transparent)]"
+        aria-hidden="true"
+      />
       <div className="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-28">
         <Reveal className="max-w-2xl">
           <p className="eyebrow text-accent">Pourquoi Salis 3 Hottes</p>

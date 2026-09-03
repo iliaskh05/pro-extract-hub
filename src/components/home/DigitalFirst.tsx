@@ -37,7 +37,7 @@ export function DigitalFirst() {
   }, []);
 
   return (
-    <section className="surface-ink relative overflow-hidden">
+    <section className="surface-ink relative overflow-hidden" data-header-tone="dark">
       <div className="grid-tech absolute inset-0 opacity-30" aria-hidden="true" />
       <div className="relative mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-32">
         <div className="grid items-center gap-14 lg:grid-cols-12 lg:gap-16">

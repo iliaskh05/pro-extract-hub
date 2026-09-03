@@ -23,9 +23,6 @@ export function HeroSection() {
   useEffect(() => {
     if (reduced) return;
 
-    // Le hero n'est collant qu'à partir de lg : ailleurs, ni sortie au scroll ni parallax.
-    const desktop = window.matchMedia("(min-width: 1024px)").matches;
-    if (!desktop) return;
     const parallax = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
     let frame = 0;
@@ -36,9 +33,10 @@ export function HeroSection() {
     const paint = () => {
       frame = 0;
       sectionRef.current?.style.setProperty("--hero-p", progress.toFixed(3));
-      transform(backdropRef.current, mx * 4, my * 3 + progress * 24);
-      transform(mainRef.current, mx * 11, my * 8 + progress * 46, 1.02 + progress * 0.06);
-      transform(detailRef.current, mx * -18, my * -13 + progress * 78);
+      const scrollBoost = progress * (window.innerWidth >= 1024 ? 1 : 0.65);
+      transform(backdropRef.current, mx * 4, my * 3 + scrollBoost * 24);
+      transform(mainRef.current, mx * 11, my * 8 + scrollBoost * 46, 1.02 + scrollBoost * 0.06);
+      transform(detailRef.current, mx * -18, my * -13 + scrollBoost * 78);
     };
 
     const schedule = () => {

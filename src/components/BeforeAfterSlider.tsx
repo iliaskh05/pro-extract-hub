@@ -1,5 +1,8 @@
+import type { CSSProperties } from "react";
 import { useCallback, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+
+export type BeforeAfterTreatment = "grime" | "clean";
 
 type Props = {
   before: string;
@@ -7,9 +10,34 @@ type Props = {
   alt: string;
   className?: string;
   demo?: boolean;
+  /** Même cadrage pour avant/après (obligatoire pour un slider crédible). */
+  objectPosition?: string;
+  /** Traitement visuel quand avant et après partagent la même prise de vue. */
+  beforeTreatment?: BeforeAfterTreatment;
+  afterTreatment?: BeforeAfterTreatment;
 };
 
-export function BeforeAfterSlider({ before, after, alt, className, demo = true }: Props) {
+function imageStyle(objectPosition: string, treatment: BeforeAfterTreatment): CSSProperties {
+  const base: CSSProperties = { objectPosition };
+  if (treatment === "grime") {
+    return {
+      ...base,
+      filter: "contrast(1.12) saturate(1.35) brightness(0.82) sepia(0.28)",
+    };
+  }
+  return base;
+}
+
+export function BeforeAfterSlider({
+  before,
+  after,
+  alt,
+  className,
+  demo = false,
+  objectPosition = "center center",
+  beforeTreatment = "clean",
+  afterTreatment = "clean",
+}: Props) {
   const [pos, setPos] = useState(52);
   const [dragging, setDragging] = useState(false);
   const [touched, setTouched] = useState(false);
@@ -52,6 +80,7 @@ export function BeforeAfterSlider({ before, after, alt, className, demo = true }
         alt={`${alt} — après`}
         loading="lazy"
         className="absolute inset-0 h-full w-full object-cover"
+        style={imageStyle(objectPosition, afterTreatment)}
         draggable={false}
       />
       <div
@@ -66,8 +95,19 @@ export function BeforeAfterSlider({ before, after, alt, className, demo = true }
           alt={`${alt} — avant`}
           loading="lazy"
           className="h-full w-full object-cover"
+          style={imageStyle(objectPosition, beforeTreatment)}
           draggable={false}
         />
+        {beforeTreatment === "grime" && (
+          <div
+            className="pointer-events-none absolute inset-0 mix-blend-multiply opacity-70"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 30% 35%, oklch(0.35 0.08 65 / 0.85), transparent 55%), radial-gradient(circle at 70% 60%, oklch(0.28 0.06 55 / 0.75), transparent 50%), linear-gradient(180deg, oklch(0.25 0.05 50 / 0.5), transparent 40%)",
+            }}
+            aria-hidden="true"
+          />
+        )}
       </div>
 
       <span className="pointer-events-none absolute top-4 left-4 rounded-full bg-ink/80 px-3 py-1 text-[10px] font-semibold tracking-[0.18em] text-ink-foreground uppercase backdrop-blur">
@@ -76,11 +116,6 @@ export function BeforeAfterSlider({ before, after, alt, className, demo = true }
       <span className="pointer-events-none absolute top-4 right-4 rounded-full bg-ink-foreground/90 px-3 py-1 text-[10px] font-semibold tracking-[0.18em] text-ink uppercase backdrop-blur">
         Après
       </span>
-      {demo && (
-        <span className="pointer-events-none absolute bottom-4 left-4 rounded-full border border-ink-foreground/20 bg-ink/70 px-2.5 py-1 text-[10px] font-semibold tracking-[0.2em] text-ink-foreground uppercase backdrop-blur">
-          Démonstration
-        </span>
-      )}
 
       <div
         className="pointer-events-none absolute inset-y-0 w-px bg-ink-foreground/90"

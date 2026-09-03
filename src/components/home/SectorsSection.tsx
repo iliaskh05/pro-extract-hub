@@ -17,7 +17,7 @@ const LAYOUT = [
 
 export function SectorsSection() {
   return (
-    <section className="surface-ink relative overflow-hidden">
+    <section className="surface-ink relative overflow-hidden" data-header-tone="dark">
       <div className="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-32">
         <Reveal className="max-w-2xl">
           <p className="eyebrow text-accent">Secteurs</p>

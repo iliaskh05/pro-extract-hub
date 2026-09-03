@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite dev",
     "build": "npm run generate:seo && vite build",
-    "generate:seo": "node scripts/generate-sitemap.mjs",
+    "generate:seo": "node scripts/generate-sitemap.mjs && node scripts/build-france-map.mjs",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",

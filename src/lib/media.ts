@@ -1,48 +1,92 @@
-import heroKitchen from "@/assets/hero-kitchen.jpg";
-import beforeHood from "@/assets/before-hood.jpg";
-import afterHood from "@/assets/after-hood.jpg";
-import beforeDuct from "@/assets/before-duct.jpg";
-import afterDuct from "@/assets/after-duct.jpg";
-import beforeMotor from "@/assets/before-motor.jpg";
-import afterMotor from "@/assets/after-motor.jpg";
+import heroKitchen from "@/assets/duct-detail.jpg";
 import ductDetail from "@/assets/duct-detail.jpg";
+import hoodReference from "@/assets/after-hood.jpg";
+import ductReference from "@/assets/duct-detail.jpg";
+import motorReference from "@/assets/after-motor.jpg";
 
+/**
+ * Visuels du site.
+ * Les paires avant/après du slider utilisent la même prise de vue (même fichier)
+ * avec un traitement « encrassement » côté avant, en attendant vos photos réelles
+ * dans `public/interventions/{slug}/before.jpg` et `after.jpg`.
+ */
 export const MEDIA = {
   heroKitchen,
-  beforeHood,
-  afterHood,
-  beforeDuct,
-  afterDuct,
-  beforeMotor,
-  afterMotor,
   ductDetail,
+  hoodReference,
+  ductReference,
+  motorReference,
 } as const;
+
+export type GalleryItem = {
+  slug: string;
+  title: string;
+  type: string;
+  before: string;
+  after: string;
+  objectPosition: string;
+  beforeTreatment: "grime" | "clean";
+  text: string;
+};
+
+export const GALLERY: GalleryItem[] = [
+  {
+    slug: "hotte",
+    title: "Hotte de cuisine professionnelle",
+    type: "Dégraissage de hotte et filtres",
+    before: hoodReference,
+    after: hoodReference,
+    objectPosition: "center 42%",
+    beforeTreatment: "grime",
+    text: "Comparaison sur la même prise de vue : état encrassé puis état après dégraissage des surfaces accessibles.",
+  },
+  {
+    slug: "conduit",
+    title: "Conduit d'extraction",
+    type: "Nettoyage de conduit",
+    before: ductReference,
+    after: ductReference,
+    objectPosition: "center center",
+    beforeTreatment: "grime",
+    text: "Même angle de vue : dépôts gras dans le conduit, puis état après traitement des zones accessibles.",
+  },
+  {
+    slug: "moteur",
+    title: "Moteur / caisson d'extraction",
+    type: "Nettoyage moteur et caisson",
+    before: motorReference,
+    after: motorReference,
+    objectPosition: "center 38%",
+    beforeTreatment: "grime",
+    text: "Vue identique du groupe moto-ventilateur : encrassement constaté, puis état après nettoyage hors tension.",
+  },
+];
 
 export const SERVICE_VISUALS: Record<string, { image: string; caption: string; alt: string }> = {
   "degraissage-hotte": {
-    image: afterHood,
+    image: hoodReference,
     caption: "Hotte et filtres — surfaces accessibles",
-    alt: "Hotte professionnelle en inox après dégraissage (démonstration)",
+    alt: "Hotte professionnelle en inox — détail technique",
   },
   "nettoyage-filtres": {
-    image: beforeHood,
+    image: hoodReference,
     caption: "Filtres à labyrinthe — identification et entretien",
-    alt: "Filtres de hotte professionnelle (démonstration)",
+    alt: "Filtres de hotte professionnelle — détail technique",
   },
   "nettoyage-conduit": {
-    image: afterDuct,
+    image: ductReference,
     caption: "Conduit d'extraction — sections accessibles",
-    alt: "Conduit d'extraction après traitement (démonstration)",
+    alt: "Conduit d'extraction — détail technique",
   },
   "nettoyage-moteur-caisson": {
-    image: afterMotor,
+    image: motorReference,
     caption: "Groupe moto-ventilateur — hors tension",
-    alt: "Moteur et caisson d'extraction (démonstration)",
+    alt: "Moteur et caisson d'extraction — détail technique",
   },
   "entretien-periodique": {
-    image: heroKitchen,
+    image: ductDetail,
     caption: "Calendrier d'entretien — historique conservé",
-    alt: "Cuisine professionnelle destinée à un suivi périodique",
+    alt: "Système d'extraction de cuisine professionnelle",
   },
   "diagnostic-devis": {
     image: ductDetail,
@@ -51,39 +95,12 @@ export const SERVICE_VISUALS: Record<string, { image: string; caption: string; a
   },
 };
 
-export const GALLERY = [
-  {
-    kind: "demonstration" as const,
-    title: "Hotte de cuisine professionnelle",
-    type: "Dégraissage de hotte et filtres",
-    before: beforeHood,
-    after: afterHood,
-    text: "Démonstration : hotte et filtres fortement encrassés, puis état après dégraissage complet des surfaces accessibles.",
-  },
-  {
-    kind: "demonstration" as const,
-    title: "Conduit d'extraction",
-    type: "Nettoyage de conduit",
-    before: beforeDuct,
-    after: afterDuct,
-    text: "Démonstration : section de conduit chargée en dépôts gras, puis état après traitement des zones accessibles.",
-  },
-  {
-    kind: "demonstration" as const,
-    title: "Moteur / caisson d'extraction",
-    type: "Nettoyage moteur et caisson",
-    before: beforeMotor,
-    after: afterMotor,
-    text: "Démonstration : groupe moto-ventilateur encrassé, puis état après nettoyage hors tension.",
-  },
-] as const;
-
 export const SECTORS = [
-  { name: "Restaurants", image: heroKitchen, position: "center" },
+  { name: "Restaurants", image: ductDetail, position: "center" },
   { name: "Hôtels", image: ductDetail, position: "center" },
-  { name: "Fast-foods", image: afterHood, position: "top" },
-  { name: "Boulangeries", image: heroKitchen, position: "right" },
-  { name: "Pâtisseries", image: afterHood, position: "bottom" },
+  { name: "Fast-foods", image: hoodReference, position: "top" },
+  { name: "Boulangeries", image: ductDetail, position: "right" },
+  { name: "Pâtisseries", image: hoodReference, position: "bottom" },
   { name: "Traiteurs", image: ductDetail, position: "left" },
-  { name: "Cuisines collectives", image: afterMotor, position: "center" },
+  { name: "Cuisines collectives", image: motorReference, position: "center" },
 ] as const;

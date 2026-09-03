@@ -96,7 +96,7 @@ export function ServicesExplorer() {
                   className="aspect-[16/10] w-full object-cover"
                 />
                 <figcaption className="absolute top-4 left-4 rounded-full bg-ink/80 px-2.5 py-1 text-[10px] font-semibold tracking-[0.18em] text-ink-foreground uppercase backdrop-blur">
-                  Démonstration
+                  Photo réelle
                 </figcaption>
               </figure>
 

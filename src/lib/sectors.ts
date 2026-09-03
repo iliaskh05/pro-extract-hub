@@ -1,7 +1,6 @@
-import heroKitchen from "@/assets/hero-kitchen.jpg";
 import ductDetail from "@/assets/duct-detail.jpg";
-import afterHood from "@/assets/after-hood.jpg";
-import afterMotor from "@/assets/after-motor.jpg";
+import hoodReference from "@/assets/after-hood.jpg";
+import motorReference from "@/assets/after-motor.jpg";
 
 export type Sector = {
   slug: string;
@@ -22,7 +21,7 @@ export const SECTORS: Sector[] = [
     slug: "restaurant",
     name: "Restaurants",
     businessType: "Restaurant",
-    image: heroKitchen,
+    image: ductDetail,
     imagePosition: "center",
     title: "Dégraissage de hottes pour restaurants",
     description:
@@ -71,7 +70,7 @@ export const SECTORS: Sector[] = [
     slug: "fast-food",
     name: "Fast-foods",
     businessType: "Fast-food",
-    image: afterHood,
+    image: hoodReference,
     imagePosition: "top",
     title: "Extraction en restauration rapide",
     description:
@@ -90,7 +89,7 @@ export const SECTORS: Sector[] = [
     slug: "boulangerie",
     name: "Boulangeries",
     businessType: "Boulangerie",
-    image: heroKitchen,
+    image: ductDetail,
     imagePosition: "right",
     title: "Hottes et fours en boulangerie",
     description:
@@ -109,7 +108,7 @@ export const SECTORS: Sector[] = [
     slug: "patisserie",
     name: "Pâtisseries",
     businessType: "Pâtisserie",
-    image: afterHood,
+    image: hoodReference,
     imagePosition: "bottom",
     title: "Extraction en pâtisserie",
     description:
@@ -152,7 +151,7 @@ export const SECTORS: Sector[] = [
     slug: "cuisine-collective",
     name: "Cuisines collectives",
     businessType: "Cuisine collective",
-    image: afterMotor,
+    image: motorReference,
     imagePosition: "center",
     title: "Cuisines collectives et restauration de site",
     description:
