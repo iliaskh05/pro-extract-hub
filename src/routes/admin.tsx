@@ -25,7 +25,7 @@ type Lead = Tables<"leads">;
 
 export const Route = createFileRoute("/admin")({
   validateSearch: (search: Record<string, unknown>) => ({
-    lead: typeof search.lead === "string" ? search.lead : undefined,
+    lead: typeof search['lead'] === "string" ? (search['lead'] as string) : undefined,
   }),
   head: () => ({
     meta: [
