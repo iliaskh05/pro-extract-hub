@@ -33,7 +33,9 @@ npm run dev
 | `RESEND_API_KEY`                | Serveur | Recommandé  | API Resend                            |
 | `RESEND_FROM`                   | Serveur | Recommandé  | Expéditeur vérifié                    |
 | `LEAD_NOTIFY_EMAIL`             | Serveur | Recommandé  | Notification interne                  |
-| `OPENAI_API_KEY`                | Serveur | Optionnel   | Assistant chat (fallback local sinon) |
+| `GOOGLE_AI_API_KEY`             | Serveur | Recommandé  | Assistant chat Gemini (Google AI Studio) |
+| `GOOGLE_AI_MODEL`               | Serveur | Optionnel   | Défaut `gemini-3.5-flash`             |
+| `OPENAI_API_KEY`                | Serveur | Optionnel   | Assistant chat (si pas de clé Gemini) |
 
 Données entreprise (téléphone, email, SIRET, adresse) : `src/lib/site.ts`.
 

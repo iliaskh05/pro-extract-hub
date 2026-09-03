@@ -17,7 +17,9 @@ Copier `.env.example` vers `.env` (local) ou configurer sur Lovable / Cloudflare
 | `LEAD_NOTIFY_EMAIL`             | Recommandé  | Email interne nouvelles demandes                       |
 | `VITE_WHATSAPP_NUMBER`          | Recommandé  | Format `33612345678`                                   |
 | `VITE_PLAUSIBLE_DOMAIN`         | Optionnel   | Analytics (après consentement cookies)                 |
-| `OPENAI_API_KEY`                | Optionnel   | Assistant chat (fallback règles sinon)                 |
+| `GOOGLE_AI_API_KEY`             | Recommandé  | Assistant chat Gemini (Google AI Studio)                 |
+| `GOOGLE_AI_MODEL`               | Optionnel   | Défaut `gemini-3.5-flash`                              |
+| `OPENAI_API_KEY`                | Optionnel   | Assistant chat (si pas de clé Gemini)                  |
 
 ## Données entreprise
 
@@ -42,9 +44,13 @@ Renseigner dans `src/lib/site.ts` : téléphone, email, SIRET, adresse, réseaux
 
 Configurer `VITE_WHATSAPP_NUMBER` et tester header, sticky mobile, chat, page contact.
 
-## OpenAI
+## Assistant chat (Gemini)
 
-Optionnel — l'assistant fonctionne sans clé (règles déterministes).
+1. Créer une clé sur [Google AI Studio](https://aistudio.google.com/apikey).
+2. Définir `GOOGLE_AI_API_KEY` côté serveur (Lovable / Cloudflare — jamais en `VITE_*`).
+3. Tester une question dans le widget chat du site.
+
+Sans clé, l'assistant utilise des règles déterministes (réponses basiques).
 
 ## Domaine et hébergement
 
