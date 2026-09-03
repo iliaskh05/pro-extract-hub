@@ -52,6 +52,7 @@ function statusLabel(s: string) {
 function AdminPage() {
   const [session, setSession] = useState<Session | null>(null);
   const [ready, setReady] = useState(false);
+  const [isStaff, setIsStaff] = useState<boolean | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -62,6 +63,26 @@ function AdminPage() {
     return () => sub.subscription.unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const userId = session?.user?.id;
+    if (!userId) {
+      setIsStaff(null);
+      return;
+    }
+    let active = true;
+    void supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .then(({ data }) => {
+        if (!active) return;
+        setIsStaff((data ?? []).some((r) => r.role === "admin" || r.role === "staff"));
+      });
+    return () => {
+      active = false;
+    };
+  }, [session?.user?.id]);
+
   if (!ready) {
     return (
       <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">
@@ -70,7 +91,32 @@ function AdminPage() {
     );
   }
 
-  return session ? <Dashboard /> : <AuthGate />;
+  if (!session) return <AuthGate />;
+
+  if (isStaff === null) {
+    return (
+      <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">
+        Vérification des accès…
+      </div>
+    );
+  }
+
+  if (!isStaff) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-6 text-center">
+        <h1 className="text-xl font-semibold">Accès non autorisé</h1>
+        <p className="max-w-md text-sm text-muted-foreground">
+          Votre compte n'a pas le rôle collaborateur requis pour consulter les demandes clients.
+          Contactez un administrateur.
+        </p>
+        <Button variant="outline" onClick={() => void supabase.auth.signOut()}>
+          Se déconnecter
+        </Button>
+      </div>
+    );
+  }
+
+  return <Dashboard />;
 }
 
 function AuthGate() {

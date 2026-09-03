@@ -8,6 +8,13 @@
       "when": 1788448810335,
       "tag": "0000_restore_lead_crm_columns",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1788450939625,
+      "tag": "0001_restrict_leads_to_staff_roles",
+      "breakpoints": true
     }
   ]
 }
