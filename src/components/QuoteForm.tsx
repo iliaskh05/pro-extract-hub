@@ -239,7 +239,7 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
       const issues = check.error.issues;
       const mapped: FieldErrors = {};
       for (const issue of issues) {
-        const key = String(issue.path[0] ?? "");
+        const key = String(issue.path[0] ?? "") as keyof FieldErrors;
         if (key && !mapped[key]) mapped[key] = issue.message;
       }
       setFieldErrors(mapped);

@@ -83,7 +83,7 @@ export type UrgencyLevel = (typeof URGENCY_LEVELS)[number]["value"];
 export type RequestType = (typeof REQUEST_TYPES)[number]["value"];
 export type MaintenanceFrequency = (typeof MAINTENANCE_FREQUENCIES)[number]["value"];
 
-export function urgencyToPriority(level: UrgencyLevel): string {
+export function urgencyToPriority(level: UrgencyLevel | string): string {
   if (level === "critique") return "critical";
   if (level === "prioritaire") return "high";
   return "normal";

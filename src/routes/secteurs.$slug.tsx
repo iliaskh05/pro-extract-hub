@@ -4,7 +4,7 @@ import { FinalCta } from "@/components/FinalCta";
 import { QuoteForm } from "@/components/QuoteForm";
 import { Reveal } from "@/components/Reveal";
 import { saveQuotePrefill } from "@/lib/quote-prefill";
-import { getSector, SECTORS, sectorDevisSearch } from "@/lib/sectors";
+import { getSector, SECTORS, sectorDevisSearch, type Sector } from "@/lib/sectors";
 import { SERVICES, SITE } from "@/lib/site";
 import { pageHead } from "@/lib/seo";
 
@@ -27,7 +27,7 @@ export const Route = createFileRoute("/secteurs/$slug")({
 });
 
 function SectorPage() {
-  const sector = Route.useLoaderData();
+  const sector = Route.useLoaderData() as Sector;
 
   const sectorServices = SERVICES.filter((s) => sector.services.includes(s.slug));
 
