@@ -9,7 +9,7 @@ type FranceMapData = {
   projected: Record<string, [number, number]>;
 };
 
-const MAP = franceMap as FranceMapData;
+const MAP = franceMap as unknown as FranceMapData;
 
 export function FranceMap({ highlight }: { highlight?: ZoneSlug | undefined }) {
   const reduced = usePrefersReducedMotion();

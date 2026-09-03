@@ -96,8 +96,15 @@ function validateFile(file: File) {
   return null;
 }
 
-function validateStepFields(step: number, form: FormState): Record<string, string> {
-  const errors: Record<string, string> = {};
+type FieldErrors = Partial<
+  Record<
+    "hood_length" | "filter_count" | "postal_code" | "email" | "phone" | "contact_name",
+    string
+  >
+>;
+
+function validateStepFields(step: number, form: FormState): FieldErrors {
+  const errors: FieldErrors = {};
   if (step === 1) {
     if (form.hood_length) {
       const r = parseMeterage(form.hood_length);
@@ -148,7 +155,7 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [reference, setReference] = useState<string>("");
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [attribution] = useState(readAttribution);
   const submitRemote = useServerFn(submitQuote);
   const attachRemote = useServerFn(attachLeadPhotos);
@@ -230,9 +237,9 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
     });
     if (!check.success) {
       const issues = check.error.issues;
-      const mapped: Record<string, string> = {};
+      const mapped: FieldErrors = {};
       for (const issue of issues) {
-        const key = String(issue.path[0] ?? "");
+        const key = String(issue.path[0] ?? "") as keyof FieldErrors;
         if (key && !mapped[key]) mapped[key] = issue.message;
       }
       setFieldErrors(mapped);
