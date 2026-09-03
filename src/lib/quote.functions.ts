@@ -34,6 +34,46 @@ function rateLimited(key: string) {
   return false;
 }
 
+const UPLOAD_TOKEN_TTL_MS = 30 * 60 * 1000;
+
+function tokenSecret() {
+  const secret =
+    process.env['SUPABASE_SERVICE_ROLE_KEY'] ?? process.env['SUPABASE_PUBLISHABLE_KEY'] ?? "";
+  if (!secret) throw new Error("Configuration serveur incomplète.");
+  return secret;
+}
+
+function b64url(bytes: Uint8Array) {
+  let bin = "";
+  for (const b of bytes) bin += String.fromCharCode(b);
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+async function signUploadToken(leadId: string, expiresAt: number) {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(tokenSecret()),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const sig = await crypto.subtle.sign(
+    "HMAC",
+    key,
+    new TextEncoder().encode(`${leadId}.${expiresAt}`),
+  );
+  return `${expiresAt}.${b64url(new Uint8Array(sig))}`;
+}
+
+async function verifyUploadToken(leadId: string, token: string) {
+  const [expRaw, sig] = token.split(".");
+  const expiresAt = Number(expRaw);
+  if (!expRaw || !sig || !Number.isFinite(expiresAt)) return false;
+  if (Date.now() > expiresAt) return false;
+  const expected = await signUploadToken(leadId, expiresAt);
+  return expected === token;
+}
+
 function makeRef() {
   const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let out = "";
