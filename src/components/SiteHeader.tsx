@@ -65,7 +65,7 @@ export function SiteHeader() {
         }
         setOnDarkSurface(visible.size > 0);
       },
-      { rootMargin: "-4.5rem 0px -55% 0px", threshold: 0.08 },
+      { rootMargin: "-72px 0px -55% 0px", threshold: 0.08 },
     );
 
     nodes.forEach((node) => io.observe(node));
