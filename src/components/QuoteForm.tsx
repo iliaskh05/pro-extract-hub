@@ -255,8 +255,8 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
     try {
       const result = await submitRemote({ data: check.data });
       setReference(result.reference);
-      if (result.id && result.uploads.length) {
-        await uploadSigned(result.uploads, result.id);
+      if (result.id && result.uploads.length && result.uploadToken) {
+        await uploadSigned(result.uploads, result.id, result.uploadToken);
       }
       track("Quote Submit", { city: form.city });
       clearQuotePrefill();
