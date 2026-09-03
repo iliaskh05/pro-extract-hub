@@ -190,6 +190,7 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
   async function uploadSigned(
     uploads: Array<{ slot: string; path: string; token: string }>,
     leadId: string,
+    uploadToken: string,
   ) {
     const stored: Array<{ slot: string; path: string; mime?: string; size?: number }> = [];
     for (const item of uploads) {
