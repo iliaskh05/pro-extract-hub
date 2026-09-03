@@ -353,6 +353,8 @@ export function emailHref() {
   return SITE.email.trim() ? `mailto:${SITE.email}` : null;
 }
 
+const DEFAULT_SITE_URL = "https://pro-extract-hub.lovable.app";
+
 export function siteUrl() {
-  return publicEnv("VITE_SITE_URL").replace(/\/$/, "") || "";
+  return publicEnv("VITE_SITE_URL").replace(/\/$/, "") || DEFAULT_SITE_URL;
 }
