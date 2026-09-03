@@ -17,6 +17,9 @@ import { Route as DevisRouteImport } from './routes/devis'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as MethodeRouteImport } from './routes/methode'
+import { Route as TarifsRouteImport } from './routes/tarifs'
+import { Route as SecteursIndexRouteImport } from './routes/secteurs.index'
+import { Route as SecteursSlugRouteImport } from './routes/secteurs.$slug'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
 import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
 import { Route as ZonesIndexRouteImport } from './routes/zones.index'
@@ -62,6 +65,21 @@ const MethodeRoute = MethodeRouteImport.update({
   path: '/methode',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TarifsRoute = TarifsRouteImport.update({
+  id: '/tarifs',
+  path: '/tarifs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecteursIndexRoute = SecteursIndexRouteImport.update({
+  id: '/secteurs/',
+  path: '/secteurs/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecteursSlugRoute = SecteursSlugRouteImport.update({
+  id: '/secteurs/$slug',
+  path: '/secteurs/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesIndexRoute = ServicesIndexRouteImport.update({
   id: '/services/',
   path: '/services/',
@@ -92,8 +110,11 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/methode': typeof MethodeRoute
+  '/tarifs': typeof TarifsRoute
+  '/secteurs/$slug': typeof SecteursSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/zones/$slug': typeof ZonesSlugRoute
+  '/secteurs/': typeof SecteursIndexRoute
   '/services/': typeof ServicesIndexRoute
   '/zones/': typeof ZonesIndexRoute
 }
@@ -106,8 +127,11 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/methode': typeof MethodeRoute
+  '/tarifs': typeof TarifsRoute
+  '/secteurs/$slug': typeof SecteursSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/zones/$slug': typeof ZonesSlugRoute
+  '/secteurs': typeof SecteursIndexRoute
   '/services': typeof ServicesIndexRoute
   '/zones': typeof ZonesIndexRoute
 }
@@ -121,8 +145,11 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/methode': typeof MethodeRoute
+  '/tarifs': typeof TarifsRoute
+  '/secteurs/$slug': typeof SecteursSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/zones/$slug': typeof ZonesSlugRoute
+  '/secteurs/': typeof SecteursIndexRoute
   '/services/': typeof ServicesIndexRoute
   '/zones/': typeof ZonesIndexRoute
 }
@@ -137,8 +164,11 @@ export interface FileRouteTypes {
     | '/faq'
     | '/mentions-legales'
     | '/methode'
+    | '/tarifs'
+    | '/secteurs/$slug'
     | '/services/$slug'
     | '/zones/$slug'
+    | '/secteurs/'
     | '/services/'
     | '/zones/'
   fileRoutesByTo: FileRoutesByTo
@@ -151,8 +181,11 @@ export interface FileRouteTypes {
     | '/faq'
     | '/mentions-legales'
     | '/methode'
+    | '/tarifs'
+    | '/secteurs/$slug'
     | '/services/$slug'
     | '/zones/$slug'
+    | '/secteurs'
     | '/services'
     | '/zones'
   id:
@@ -165,8 +198,11 @@ export interface FileRouteTypes {
     | '/faq'
     | '/mentions-legales'
     | '/methode'
+    | '/tarifs'
+    | '/secteurs/$slug'
     | '/services/$slug'
     | '/zones/$slug'
+    | '/secteurs/'
     | '/services/'
     | '/zones/'
   fileRoutesById: FileRoutesById
@@ -180,8 +216,11 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   MentionsLegalesRoute: typeof MentionsLegalesRoute
   MethodeRoute: typeof MethodeRoute
+  TarifsRoute: typeof TarifsRoute
+  SecteursSlugRoute: typeof SecteursSlugRoute
   ServicesSlugRoute: typeof ServicesSlugRoute
   ZonesSlugRoute: typeof ZonesSlugRoute
+  SecteursIndexRoute: typeof SecteursIndexRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
   ZonesIndexRoute: typeof ZonesIndexRoute
 }
@@ -244,6 +283,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MethodeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tarifs': {
+      id: '/tarifs'
+      path: '/tarifs'
+      fullPath: '/tarifs'
+      preLoaderRoute: typeof TarifsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/secteurs/': {
+      id: '/secteurs/'
+      path: '/secteurs'
+      fullPath: '/secteurs/'
+      preLoaderRoute: typeof SecteursIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/secteurs/$slug': {
+      id: '/secteurs/$slug'
+      path: '/secteurs/$slug'
+      fullPath: '/secteurs/$slug'
+      preLoaderRoute: typeof SecteursSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services/': {
       id: '/services/'
       path: '/services'
@@ -284,8 +344,11 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   MentionsLegalesRoute: MentionsLegalesRoute,
   MethodeRoute: MethodeRoute,
+  TarifsRoute: TarifsRoute,
+  SecteursSlugRoute: SecteursSlugRoute,
   ServicesSlugRoute: ServicesSlugRoute,
   ZonesSlugRoute: ZonesSlugRoute,
+  SecteursIndexRoute: SecteursIndexRoute,
   ServicesIndexRoute: ServicesIndexRoute,
   ZonesIndexRoute: ZonesIndexRoute,
 }

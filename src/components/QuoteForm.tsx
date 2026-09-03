@@ -1,8 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Check, ChevronLeft, ChevronRight, Loader2, Upload } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { Check, ChevronLeft, ChevronRight, Loader2, Upload, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { BUSINESS_TYPES, whatsappLink } from "@/lib/site";
+import {
+  BUSINESS_TYPES,
+  CONTACT_METHODS,
+  activeZones,
+  whatsappLink,
+  whatsappUnavailableMessage,
+  zonesLine,
+} from "@/lib/site";
+import {
+  ALLOWED_PHOTO_TYPES,
+  LEAD_PHOTOS_BUCKET,
+  MAX_PHOTO_BYTES,
+  PHOTO_SLOTS,
+  quoteSchema,
+} from "@/lib/quote-schema";
+import { attachLeadPhotos, submitQuote } from "@/lib/quote.functions";
+import {
+  clearQuotePrefill,
+  loadQuotePrefill,
+  readAttribution,
+  type QuotePrefill,
+} from "@/lib/quote-prefill";
+import {
+  parseEmail,
+  parseFilterCount,
+  parseMeterage,
+  parsePhone,
+  parsePostalCode,
+} from "@/lib/quote-validation";
+import { track } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,13 +41,6 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 const STEPS = ["Établissement", "Installation", "Localisation", "Photos", "Coordonnées"] as const;
-
-const PHOTO_SLOTS = [
-  { key: "hotte", label: "Photo hotte" },
-  { key: "filtres", label: "Photo filtres" },
-  { key: "conduit", label: "Photo conduit" },
-  { key: "moteur", label: "Photo moteur" },
-] as const;
 
 type FormState = {
   business_type: string;
@@ -29,12 +52,14 @@ type FormState = {
   requested_frequency: string;
   city: string;
   postal_code: string;
-  photos: string[];
   contact_name: string;
   company_name: string;
   phone: string;
   email: string;
   message: string;
+  preferred_contact: string;
+  consent: boolean;
+  website: string;
 };
 
 const EMPTY: FormState = {
@@ -47,131 +72,275 @@ const EMPTY: FormState = {
   requested_frequency: "",
   city: "",
   postal_code: "",
-  photos: [],
   contact_name: "",
   company_name: "",
   phone: "",
   email: "",
   message: "",
+  preferred_contact: "email",
+  consent: false,
+  website: "",
 };
 
-export function QuoteForm() {
+function buildInitial(prefill?: QuotePrefill): FormState {
+  const stored = typeof window !== "undefined" ? loadQuotePrefill() : {};
+  const merged = { ...EMPTY, ...stored, ...prefill };
+  return merged;
+}
+
+function validateFile(file: File) {
+  if (!(ALLOWED_PHOTO_TYPES as readonly string[]).includes(file.type)) {
+    return "Formats acceptés : JPG, PNG, WebP.";
+  }
+  if (file.size > MAX_PHOTO_BYTES) return "Chaque photo doit rester sous 5 Mo.";
+  return null;
+}
+
+function validateStepFields(step: number, form: FormState): Record<string, string> {
+  const errors: Record<string, string> = {};
+  if (step === 1) {
+    if (form.hood_length) {
+      const r = parseMeterage(form.hood_length);
+      if (!r.ok) errors.hood_length = r.error;
+    }
+    if (form.filter_count) {
+      const r = parseFilterCount(form.filter_count);
+      if (!r.ok) errors.filter_count = r.error;
+    }
+  }
+  if (step === 2 && form.postal_code) {
+    const r = parsePostalCode(form.postal_code);
+    if (!r.ok) errors.postal_code = r.error;
+  }
+  if (step === 4) {
+    const emailR = parseEmail(form.email);
+    if (!emailR.ok) errors.email = emailR.error;
+    const phoneR = parsePhone(form.phone);
+    if (!phoneR.ok) errors.phone = phoneR.error;
+    if (form.contact_name.trim().length < 2) {
+      errors.contact_name = "Indiquez votre nom.";
+    }
+  }
+  return errors;
+}
+
+function assignFileToSlot(
+  file: File,
+  slotKey: string,
+  setFiles: (
+    updater: (prev: Partial<Record<string, File>>) => Partial<Record<string, File>>,
+  ) => void,
+) {
+  const problem = validateFile(file);
+  if (problem) {
+    toast.error(problem);
+    return;
+  }
+  setFiles((prev) => ({ ...prev, [slotKey]: file }));
+}
+
+export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
   const [step, setStep] = useState(0);
-  const [form, setForm] = useState<FormState>(EMPTY);
+  const [form, setForm] = useState<FormState>(() => buildInitial(prefill));
+  const [files, setFiles] = useState<Partial<Record<string, File>>>({});
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [reference, setReference] = useState<string>("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [attribution] = useState(readAttribution);
+  const submitRemote = useServerFn(submitQuote);
+  const attachRemote = useServerFn(attachLeadPhotos);
 
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
 
+  useEffect(() => {
+    track("Quote Start");
+  }, []);
+
+  useEffect(() => {
+    track("Quote Step", { step: step + 1 });
+  }, [step]);
+
+  const parsed = quoteSchema.safeParse({
+    ...form,
+    business_type: form.business_type || undefined,
+    consent: form.consent ? true : undefined,
+    uploads: [],
+  });
+
   const canContinue =
     (step === 0 && !!form.business_type) ||
-    step === 1 ||
-    (step === 2 && form.city.trim().length > 1) ||
+    (step === 1 && Object.keys(validateStepFields(1, form)).length === 0) ||
+    (step === 2 &&
+      form.city.trim().length > 1 &&
+      Object.keys(validateStepFields(2, form)).length === 0) ||
     step === 3 ||
-    (step === 4 &&
-      form.contact_name.trim().length > 1 &&
-      form.phone.trim().length > 5 &&
-      /\S+@\S+\.\S+/.test(form.email));
+    (step === 4 && parsed.success);
+
+  async function uploadSigned(
+    uploads: Array<{ slot: string; path: string; token: string }>,
+    leadId: string,
+  ) {
+    const stored: Array<{ slot: string; path: string; mime?: string; size?: number }> = [];
+    for (const item of uploads) {
+      const file = files[item.slot];
+      if (!file) continue;
+      const { error: upErr } = await supabase.storage
+        .from(LEAD_PHOTOS_BUCKET)
+        .uploadToSignedUrl(item.path, item.token, file);
+      if (upErr) {
+        setUploadError(`La photo « ${item.slot} » n'a pas pu être envoyée.`);
+        continue;
+      }
+      stored.push({ slot: item.slot, path: item.path, mime: file.type, size: file.size });
+    }
+    if (stored.length) {
+      await attachRemote({ data: { leadId, photos: stored } });
+    }
+  }
 
   async function submit() {
-    setSubmitting(true);
-    setError(null);
-    const { error: insertError } = await supabase.from("leads").insert({
-      company_name: form.company_name || null,
-      contact_name: form.contact_name,
-      phone: form.phone,
-      email: form.email,
-      business_type: form.business_type,
-      city: form.city,
-      postal_code: form.postal_code || null,
-      hood_length: form.hood_length || null,
-      filter_count: form.filter_count ? Number(form.filter_count) : null,
-      duct_present: form.duct_present,
-      motor_present: form.motor_present,
-      last_cleaning: form.last_cleaning || null,
-      requested_frequency: form.requested_frequency || null,
-      photos: form.photos,
-      message: form.message || null,
-      source: "website_form",
-    });
-    setSubmitting(false);
-    if (insertError) {
-      setError("L'enregistrement a échoué. Merci de réessayer dans un instant.");
-      toast.error("Envoi impossible", { description: insertError.message });
+    if (submitting) return;
+
+    const stepErrs = validateStepFields(4, form);
+    if (Object.keys(stepErrs).length) {
+      setFieldErrors(stepErrs);
       return;
     }
-    setDone(true);
+
+    const check = quoteSchema.safeParse({
+      ...form,
+      consent: form.consent ? true : undefined,
+      source: "website_form",
+      utm_source: attribution.utm_source,
+      utm_medium: attribution.utm_medium,
+      utm_campaign: attribution.utm_campaign,
+      landing_page: attribution.landing_page,
+      service_source: attribution.service_source,
+      zone_source: attribution.zone_source,
+      uploads: Object.entries(files).map(([slot, file]) => ({
+        slot,
+        name: file!.name,
+        type: file!.type,
+        size: file!.size,
+      })),
+    });
+    if (!check.success) {
+      const issues = check.error.issues;
+      const mapped: Record<string, string> = {};
+      for (const issue of issues) {
+        const key = String(issue.path[0] ?? "");
+        if (key && !mapped[key]) mapped[key] = issue.message;
+      }
+      setFieldErrors(mapped);
+      setError(issues[0]?.message ?? "Vérifiez les champs du formulaire.");
+      return;
+    }
+
+    setSubmitting(true);
+    setError(null);
+    setUploadError(null);
+
+    try {
+      const result = await submitRemote({ data: check.data });
+      setReference(result.reference);
+      if (result.id && result.uploads.length) {
+        await uploadSigned(result.uploads, result.id);
+      }
+      track("Quote Submit", { city: form.city });
+      clearQuotePrefill();
+      setDone(true);
+    } catch (err) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : "L'enregistrement a échoué. Merci de réessayer dans un instant.";
+      setError(message);
+      toast.error("Envoi impossible", {
+        description: "Vérifiez votre connexion ou réessayez plus tard.",
+      });
+    }
+    setSubmitting(false);
   }
 
   if (done) {
-    const wa = whatsappLink("Bonjour, je viens d'envoyer une demande de devis depuis votre site.");
+    const wa = whatsappLink(
+      `Bonjour, je viens d'envoyer une demande de devis${reference ? ` (réf. #${reference})` : ""} depuis votre site.`,
+    );
     return (
-      <div className="rounded-2xl border border-border bg-card p-8 text-center shadow-card md:p-12">
-        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent/15 text-accent">
-          <Check className="size-7" />
-        </span>
-        <h2 className="mt-6 text-2xl font-bold tracking-tight md:text-3xl">
-          Votre demande a bien été prise en compte.
-        </h2>
-        <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
-          Notre équipe qualifie votre installation et revient vers vous avec une proposition
-          adaptée. Cette demande apparaît immédiatement dans l'espace CRM du prototype.
-        </p>
-        <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <Button
-            onClick={() =>
-              toast.success("Confirmation simulée", {
-                description:
-                  "Prototype : l'email transactionnel sera branché lors de la mise en production.",
-              })
-            }
-          >
-            Recevoir la confirmation par email
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => {
-              if (wa) window.open(wa, "_blank", "noopener");
-              else
-                toast.info("Prototype — WhatsApp non connecté", {
-                  description: "Le numéro WhatsApp Business sera renseigné avant la mise en ligne.",
-                });
-            }}
-          >
-            Continuer sur WhatsApp
-          </Button>
+      <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-card">
+        <div className="surface-ink relative overflow-hidden px-8 py-12 text-center md:px-12 md:py-16">
+          <div
+            className="pointer-events-none absolute -top-32 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-accent/15 blur-3xl"
+            aria-hidden="true"
+          />
+          <div className="relative">
+            <span className="step-in mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-accent/30 bg-accent/15 text-accent">
+              <Check className="size-7" />
+            </span>
+            <p className="step-in eyebrow mt-6 text-accent">Demande enregistrée</p>
+            <h2 className="step-in mt-4 text-3xl font-semibold tracking-[-0.04em] text-ink-foreground md:text-4xl">
+              Votre demande a bien été transmise.
+            </h2>
+            <p className="step-in mx-auto mt-4 max-w-md text-sm leading-relaxed text-ink-muted">
+              Votre demande a bien été enregistrée. Nous disposons maintenant des informations
+              nécessaires pour analyser votre installation.
+            </p>
+            {reference && reference !== "XXXXXX" && (
+              <p className="step-in mt-7 inline-flex items-center gap-2 rounded-full border border-ink-border bg-ink-foreground/5 px-5 py-2.5 text-xs text-ink-muted">
+                Référence :
+                <span className="font-mono text-sm tracking-[0.2em] text-ink-foreground">
+                  #{reference}
+                </span>
+              </p>
+            )}
+            {uploadError && <p className="mt-4 text-xs text-ink-muted">{uploadError}</p>}
+          </div>
         </div>
-        <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm">
-          <Link to="/admin" className="text-accent underline-offset-4 hover:underline">
-            Voir la demande dans le CRM (démo)
-          </Link>
-          <button
-            type="button"
-            className="text-muted-foreground underline-offset-4 hover:underline"
-            onClick={() => {
-              setForm(EMPTY);
-              setStep(0);
-              setDone(false);
-            }}
-          >
-            Nouvelle demande
-          </button>
+        <div className="flex flex-col items-center gap-3 px-8 py-8 md:px-12">
+          <div className="flex w-full flex-col justify-center gap-3 sm:flex-row">
+            <Button
+              onClick={() => {
+                if (wa) {
+                  track("WhatsApp Click", { from: "quote-success" });
+                  window.open(wa, "_blank", "noopener");
+                } else toast.info(whatsappUnavailableMessage().title, whatsappUnavailableMessage());
+              }}
+            >
+              Continuer sur WhatsApp
+            </Button>
+            <Button asChild variant="outline">
+              <Link to="/">Retour à l'accueil</Link>
+            </Button>
+          </div>
         </div>
       </div>
     );
   }
 
+  const progress = ((step + 1) / STEPS.length) * 100;
+
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-card">
+      <div className="h-1 bg-secondary">
+        <div
+          className="h-full bg-accent transition-[width] duration-500 ease-out"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
       <div className="border-b border-border px-6 pt-6 pb-5 md:px-8">
-        <div className="flex items-center justify-between gap-2">
+        <p className="eyebrow text-accent">
+          {String(step + 1).padStart(2, "0")} {STEPS[step]}
+        </p>
+        <div className="mt-4 flex items-center justify-between gap-2">
           {STEPS.map((label, i) => (
             <div key={label} className="flex flex-1 items-center gap-2">
               <span
                 className={cn(
-                  "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-colors",
+                  "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold transition-colors",
                   i < step
                     ? "bg-accent text-accent-foreground"
                     : i === step
@@ -183,19 +352,14 @@ export function QuoteForm() {
               </span>
               <span
                 className={cn(
-                  "hidden text-xs font-medium md:block",
+                  "hidden text-[11px] font-medium tracking-wide uppercase md:block",
                   i === step ? "text-foreground" : "text-muted-foreground",
                 )}
               >
                 {label}
               </span>
               {i < STEPS.length - 1 && (
-                <span
-                  className={cn(
-                    "h-px flex-1 transition-colors",
-                    i < step ? "bg-accent" : "bg-border",
-                  )}
-                />
+                <span className={cn("h-px flex-1", i < step ? "bg-accent" : "bg-border")} />
               )}
             </div>
           ))}
@@ -245,28 +409,50 @@ export function QuoteForm() {
                 <Input
                   id="hood_length"
                   className="mt-2"
-                  placeholder="ex. 3 mètres"
+                  inputMode="decimal"
+                  placeholder="ex. 3 ou 3,5"
                   value={form.hood_length}
-                  onChange={(e) => set("hood_length", e.target.value)}
+                  onChange={(e) => {
+                    set("hood_length", e.target.value);
+                    setFieldErrors((prev) => {
+                      const next = { ...prev };
+                      delete next.hood_length;
+                      return next;
+                    });
+                  }}
+                  aria-invalid={!!fieldErrors.hood_length}
                 />
+                {fieldErrors.hood_length && (
+                  <p className="mt-1 text-xs text-destructive">{fieldErrors.hood_length}</p>
+                )}
               </div>
               <div>
                 <Label htmlFor="filter_count">Nombre de filtres</Label>
                 <Input
                   id="filter_count"
                   className="mt-2"
-                  type="number"
-                  min={0}
+                  inputMode="numeric"
                   placeholder="ex. 6"
                   value={form.filter_count}
-                  onChange={(e) => set("filter_count", e.target.value)}
+                  onChange={(e) => {
+                    set("filter_count", e.target.value.replace(/\D/g, ""));
+                    setFieldErrors((prev) => {
+                      const next = { ...prev };
+                      delete next.filter_count;
+                      return next;
+                    });
+                  }}
+                  aria-invalid={!!fieldErrors.filter_count}
                 />
+                {fieldErrors.filter_count && (
+                  <p className="mt-1 text-xs text-destructive">{fieldErrors.filter_count}</p>
+                )}
               </div>
               <div>
                 <Label htmlFor="last_cleaning">Dernière intervention</Label>
                 <select
                   id="last_cleaning"
-                  className="mt-2 h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                  className="mt-2 h-11 w-full rounded-lg border border-input bg-background px-3.5 text-sm"
                   value={form.last_cleaning}
                   onChange={(e) => set("last_cleaning", e.target.value)}
                 >
@@ -281,7 +467,7 @@ export function QuoteForm() {
                 <Label htmlFor="requested_frequency">Fréquence souhaitée</Label>
                 <select
                   id="requested_frequency"
-                  className="mt-2 h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                  className="mt-2 h-11 w-full rounded-lg border border-input bg-background px-3.5 text-sm"
                   value={form.requested_frequency}
                   onChange={(e) => set("requested_frequency", e.target.value)}
                 >
@@ -314,7 +500,9 @@ export function QuoteForm() {
                   <span
                     className={cn(
                       "ml-3 flex h-5 w-5 items-center justify-center rounded-full border",
-                      form[key] ? "border-accent bg-accent text-accent-foreground" : "border-border",
+                      form[key]
+                        ? "border-accent bg-accent text-accent-foreground"
+                        : "border-border",
                     )}
                   >
                     {form[key] && <Check className="size-3" />}
@@ -329,7 +517,8 @@ export function QuoteForm() {
           <fieldset className="space-y-5">
             <legend className="text-xl font-bold tracking-tight md:text-2xl">Localisation</legend>
             <p className="text-sm text-muted-foreground">
-              Nous intervenons sur Paris / Île-de-France et Perpignan / Pyrénées-Orientales.
+              Nous intervenons sur {zonesLine(" et ")}. En limite de secteur, la faisabilité est
+              confirmée avant proposition.
             </p>
             <div className="grid gap-5 sm:grid-cols-2">
               <div>
@@ -338,10 +527,17 @@ export function QuoteForm() {
                   id="city"
                   className="mt-2"
                   required
+                  list="zone-cities"
+                  autoComplete="address-level2"
                   value={form.city}
                   onChange={(e) => set("city", e.target.value)}
-                  placeholder="ex. Paris"
+                  placeholder={`ex. ${activeZones()[0]?.name ?? ""}`}
                 />
+                <datalist id="zone-cities">
+                  {activeZones().map((zone) => (
+                    <option key={zone.slug} value={zone.name} />
+                  ))}
+                </datalist>
               </div>
               <div>
                 <Label htmlFor="postal_code">Code postal</Label>
@@ -349,10 +545,21 @@ export function QuoteForm() {
                   id="postal_code"
                   className="mt-2"
                   inputMode="numeric"
+                  autoComplete="postal-code"
                   value={form.postal_code}
-                  onChange={(e) => set("postal_code", e.target.value)}
-                  placeholder="ex. 75011"
+                  onChange={(e) => {
+                    set("postal_code", e.target.value.replace(/\D/g, "").slice(0, 5));
+                    setFieldErrors((prev) => {
+                      const next = { ...prev };
+                      delete next.postal_code;
+                      return next;
+                    });
+                  }}
+                  aria-invalid={!!fieldErrors.postal_code}
                 />
+                {fieldErrors.postal_code && (
+                  <p className="mt-1 text-xs text-destructive">{fieldErrors.postal_code}</p>
+                )}
               </div>
             </div>
           </fieldset>
@@ -362,40 +569,72 @@ export function QuoteForm() {
           <fieldset className="space-y-5">
             <legend className="text-xl font-bold tracking-tight md:text-2xl">Photos</legend>
             <p className="text-sm text-muted-foreground">
-              Optionnel. Prototype : l'upload est simulé, aucun fichier n'est transféré.
+              Optionnel. JPG, PNG ou WebP, 5 Mo maximum par fichier. Glissez-déposez ou touchez pour
+              ajouter.
             </p>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {PHOTO_SLOTS.map((slot) => {
-                const active = form.photos.includes(slot.key);
+                const current = files[slot.key];
                 return (
-                  <button
-                    key={slot.key}
-                    type="button"
-                    onClick={() =>
-                      set(
-                        "photos",
-                        active
-                          ? form.photos.filter((p) => p !== slot.key)
-                          : [...form.photos, slot.key],
-                      )
-                    }
-                    className={cn(
-                      "flex min-h-28 flex-col items-center justify-center gap-2 rounded-xl border border-dashed px-3 py-4 text-sm font-medium transition-all",
-                      active
-                        ? "border-accent bg-accent/10"
-                        : "border-border hover:border-accent/60 hover:bg-secondary",
+                  <div key={slot.key} className="relative">
+                    <label
+                      className={cn(
+                        "flex min-h-28 cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed px-3 py-4 text-sm font-medium transition-all",
+                        current
+                          ? "border-accent bg-accent/10"
+                          : "border-border hover:border-accent/60 hover:bg-secondary",
+                      )}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.currentTarget.classList.add("border-accent", "bg-accent/5");
+                      }}
+                      onDragLeave={(e) => {
+                        e.currentTarget.classList.remove("border-accent", "bg-accent/5");
+                      }}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        e.currentTarget.classList.remove("border-accent", "bg-accent/5");
+                        const file = e.dataTransfer.files?.[0];
+                        if (file) assignFileToSlot(file, slot.key, setFiles);
+                      }}
+                    >
+                      {current ? (
+                        <Check className="size-5 text-accent" />
+                      ) : (
+                        <Upload className="size-5 text-muted-foreground" />
+                      )}
+                      {slot.label}
+                      <span className="text-center text-[10px] text-muted-foreground">
+                        {current ? current.name : "Ajouter"}
+                      </span>
+                      <input
+                        type="file"
+                        accept={ALLOWED_PHOTO_TYPES.join(",")}
+                        className="sr-only"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          assignFileToSlot(file, slot.key, setFiles);
+                        }}
+                      />
+                    </label>
+                    {current && (
+                      <button
+                        type="button"
+                        aria-label={`Retirer ${slot.label}`}
+                        className="absolute -top-2 -right-2 flex size-6 items-center justify-center rounded-full bg-ink text-ink-foreground"
+                        onClick={() =>
+                          setFiles((prev) => {
+                            const next = { ...prev };
+                            delete next[slot.key];
+                            return next;
+                          })
+                        }
+                      >
+                        <X className="size-3" />
+                      </button>
                     )}
-                  >
-                    {active ? (
-                      <Check className="size-5 text-accent" />
-                    ) : (
-                      <Upload className="size-5 text-muted-foreground" />
-                    )}
-                    {slot.label}
-                    <span className="text-[10px] text-muted-foreground">
-                      {active ? "Ajoutée (simulée)" : "Ajouter"}
-                    </span>
-                  </button>
+                  </div>
                 );
               })}
             </div>
@@ -404,7 +643,9 @@ export function QuoteForm() {
 
         {step === 4 && (
           <fieldset className="space-y-5">
-            <legend className="text-xl font-bold tracking-tight md:text-2xl">Vos coordonnées</legend>
+            <legend className="text-xl font-bold tracking-tight md:text-2xl">
+              Vos coordonnées
+            </legend>
             <div className="grid gap-5 sm:grid-cols-2">
               <div>
                 <Label htmlFor="contact_name">Nom *</Label>
@@ -414,8 +655,19 @@ export function QuoteForm() {
                   required
                   autoComplete="name"
                   value={form.contact_name}
-                  onChange={(e) => set("contact_name", e.target.value)}
+                  onChange={(e) => {
+                    set("contact_name", e.target.value);
+                    setFieldErrors((prev) => {
+                      const next = { ...prev };
+                      delete next.contact_name;
+                      return next;
+                    });
+                  }}
+                  aria-invalid={!!fieldErrors.contact_name}
                 />
+                {fieldErrors.contact_name && (
+                  <p className="mt-1 text-xs text-destructive">{fieldErrors.contact_name}</p>
+                )}
               </div>
               <div>
                 <Label htmlFor="company_name">Entreprise</Label>
@@ -436,8 +688,19 @@ export function QuoteForm() {
                   type="tel"
                   autoComplete="tel"
                   value={form.phone}
-                  onChange={(e) => set("phone", e.target.value)}
+                  onChange={(e) => {
+                    set("phone", e.target.value);
+                    setFieldErrors((prev) => {
+                      const next = { ...prev };
+                      delete next.phone;
+                      return next;
+                    });
+                  }}
+                  aria-invalid={!!fieldErrors.phone}
                 />
+                {fieldErrors.phone && (
+                  <p className="mt-1 text-xs text-destructive">{fieldErrors.phone}</p>
+                )}
               </div>
               <div>
                 <Label htmlFor="email">Email *</Label>
@@ -448,8 +711,39 @@ export function QuoteForm() {
                   type="email"
                   autoComplete="email"
                   value={form.email}
-                  onChange={(e) => set("email", e.target.value)}
+                  onChange={(e) => {
+                    set("email", e.target.value);
+                    setFieldErrors((prev) => {
+                      const next = { ...prev };
+                      delete next.email;
+                      return next;
+                    });
+                  }}
+                  aria-invalid={!!fieldErrors.email}
                 />
+                {fieldErrors.email && (
+                  <p className="mt-1 text-xs text-destructive">{fieldErrors.email}</p>
+                )}
+              </div>
+            </div>
+            <div>
+              <p className="text-sm font-medium">Préférence de contact</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {CONTACT_METHODS.map((m) => (
+                  <button
+                    key={m.value}
+                    type="button"
+                    onClick={() => set("preferred_contact", m.value)}
+                    className={cn(
+                      "rounded-full border px-3 py-1.5 text-xs font-medium",
+                      form.preferred_contact === m.value
+                        ? "border-accent bg-accent/10"
+                        : "border-border hover:bg-secondary",
+                    )}
+                  >
+                    {m.label}
+                  </button>
+                ))}
               </div>
             </div>
             <div>
@@ -463,7 +757,37 @@ export function QuoteForm() {
                 placeholder="Contraintes d'accès, horaires souhaités…"
               />
             </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
+            <label className="flex items-start gap-3 text-sm leading-relaxed">
+              <input
+                type="checkbox"
+                className="mt-1"
+                checked={form.consent}
+                onChange={(e) => set("consent", e.target.checked)}
+              />
+              <span>
+                J'accepte que ces informations soient utilisées pour qualifier ma demande et me
+                recontacter.{" "}
+                <Link to="/confidentialite" className="underline-offset-4 hover:underline">
+                  Confidentialité
+                </Link>
+                .
+              </span>
+            </label>
+            <div className="hidden" aria-hidden="true">
+              <Label htmlFor="company_website">Site web</Label>
+              <input
+                id="company_website"
+                tabIndex={-1}
+                autoComplete="off"
+                value={form.website}
+                onChange={(e) => set("website", e.target.value)}
+              />
+            </div>
+            {error && (
+              <p className="text-sm text-destructive" role="alert">
+                {error}
+              </p>
+            )}
           </fieldset>
         )}
       </div>
@@ -477,17 +801,29 @@ export function QuoteForm() {
         >
           <ChevronLeft className="size-4" /> Retour
         </Button>
-        <span className="text-xs text-muted-foreground">
+        <span className="hidden text-xs text-muted-foreground sm:block">
           Étape {step + 1} / {STEPS.length}
         </span>
         {step < STEPS.length - 1 ? (
-          <Button type="button" disabled={!canContinue} onClick={() => setStep((s) => s + 1)}>
+          <Button
+            type="button"
+            disabled={!canContinue}
+            onClick={() => {
+              const errs = validateStepFields(step, form);
+              if (Object.keys(errs).length) {
+                setFieldErrors(errs);
+                return;
+              }
+              setFieldErrors({});
+              setStep((s) => Math.min(STEPS.length - 1, s + 1));
+            }}
+          >
             Continuer <ChevronRight className="size-4" />
           </Button>
         ) : (
           <Button type="button" disabled={!canContinue || submitting} onClick={() => void submit()}>
             {submitting && <Loader2 className="size-4 animate-spin" />}
-            Envoyer ma demande
+            {submitting ? "Envoi en cours…" : "Envoyer ma demande"}
           </Button>
         )}
       </div>

@@ -1,87 +1,171 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { SERVICES, ZONES } from "@/lib/site";
+import { ArrowRight } from "lucide-react";
+import {
+  SERVICES,
+  SITE,
+  getZone,
+  whatsappLink,
+  whatsappUnavailableMessage,
+  type ZoneSlug,
+} from "@/lib/site";
 import { Button } from "@/components/ui/button";
 import { FranceMap } from "@/components/FranceMap";
+import { PageHero } from "@/components/PageHero";
+import { Reveal } from "@/components/Reveal";
+import { MethodSteps } from "@/components/MethodSteps";
+import { FaqExplorer } from "@/components/FaqExplorer";
+import { FinalCta } from "@/components/FinalCta";
+import { MEDIA } from "@/lib/media";
+import { FAQ } from "@/lib/faq";
+import { track } from "@/lib/analytics";
+import { toast } from "sonner";
+import { pageHead, absoluteUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/zones/$slug")({
   loader: ({ params }) => {
-    const zone = ZONES.find((z) => z.slug === params.slug);
+    const zone = getZone(params.slug);
     if (!zone) throw notFound();
     return { zone };
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
-      return {
-        meta: [{ title: "Zone indisponible | Extraction Pro" }, { name: "robots", content: "noindex" }],
-      };
+      return pageHead({
+        title: `Zone indisponible | ${SITE.name}`,
+        description: "Cette zone d'intervention n'est pas disponible.",
+        path: `/zones/${params.slug}`,
+        noindex: true,
+      });
     }
     const { zone } = loaderData;
-    return {
-      meta: [
-        { title: `Dégraissage de hotte — ${zone.name} | Extraction Pro` },
-        {
-          name: "description",
-          content: `Dégraissage et entretien des systèmes d'extraction de cuisines professionnelles sur ${zone.name}.`,
-        },
-        { property: "og:title", content: `${zone.name} — Extraction Pro` },
-        { property: "og:description", content: zone.description },
-        { property: "og:url", content: `/zones/${params.slug}` },
-      ],
-      links: [{ rel: "canonical", href: `/zones/${params.slug}` }],
-      scripts: [
-        {
-          type: "application/ld+json",
-          children: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "ProfessionalService",
-            name: `Extraction Pro — ${zone.name}`,
-            areaServed: zone.name,
-          }),
-        },
-      ],
-    };
+    return pageHead({
+      title: `${zone.heroTitle} | ${SITE.name}`,
+      description: `${zone.localIntro} Devis et intervention documentée.`,
+      path: `/zones/${params.slug}`,
+      ogTitle: `${zone.name} — ${SITE.name}`,
+      ogDescription: zone.description,
+      jsonLd: {
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        name: `${SITE.name} — ${zone.name}`,
+        url: absoluteUrl(`/zones/${params.slug}`),
+        areaServed: `${zone.name} / ${zone.region}`,
+        provider: { "@type": "ProfessionalService", name: SITE.name },
+      },
+    });
   },
   component: ZoneDetail,
 });
 
 function ZoneDetail() {
   const { zone } = Route.useLoaderData();
+  const wa = whatsappLink(zone.whatsappMessage);
+  const localFaq = [
+    {
+      q: `Intervenez-vous à ${zone.name} ?`,
+      a: zone.coverage,
+    },
+    ...FAQ.filter((f) => /devis|rapport|établissement|déroule/i.test(f.q)).slice(0, 3),
+  ];
 
   return (
-    <div className="mx-auto max-w-7xl px-5 py-14 lg:px-8 lg:py-20">
-      <p className="eyebrow text-accent">Pôle {zone.short}</p>
-      <h1 className="mt-3 max-w-3xl text-3xl font-extrabold tracking-tight md:text-5xl">
-        Entretien des systèmes d'extraction — {zone.name}
-      </h1>
-      <p className="mt-4 max-w-2xl text-base text-muted-foreground">{zone.description}</p>
+    <div>
+      <PageHero
+        eyebrow={`${zone.name} · ${zone.region}`}
+        title={zone.heroTitle}
+        description={zone.localIntro}
+        image={MEDIA.heroKitchen}
+        imageAlt={`Cuisine professionnelle — ${zone.name}`}
+      >
+        <div className="flex flex-wrap gap-3">
+          <Button asChild size="lg" variant="inverse">
+            <Link to="/devis">Obtenir mon devis</Link>
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            className="border-ink-border bg-transparent text-ink-foreground hover:bg-ink-foreground/10 hover:text-ink-foreground"
+            onClick={() => {
+              if (wa) {
+                track("WhatsApp Click", { from: `zone-${zone.slug}` });
+                window.open(wa, "_blank", "noopener");
+              } else toast.info(whatsappUnavailableMessage().title, whatsappUnavailableMessage());
+            }}
+          >
+            WhatsApp
+          </Button>
+        </div>
+      </PageHero>
 
-      <div className="mt-12 grid items-start gap-12 lg:grid-cols-2">
-        <FranceMap highlight={zone.slug} />
-        <div>
-          <h2 className="text-xl font-bold tracking-tight">Prestations disponibles sur ce pôle</h2>
-          <ul className="mt-5 grid gap-3 sm:grid-cols-2">
-            {SERVICES.map((s) => (
-              <li key={s.slug}>
-                <Link
-                  to="/services/$slug"
-                  params={{ slug: s.slug }}
-                  className="block rounded-xl border border-border bg-card p-4 text-sm font-medium transition-all hover:-translate-y-0.5 hover:border-accent/60"
-                >
-                  {s.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild size="lg">
-              <Link to="/devis">Obtenir mon devis</Link>
-            </Button>
-            <Button asChild size="lg" variant="outline">
-              <Link to="/zones">Voir les deux pôles</Link>
-            </Button>
+      <section className="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
+        <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
+          <Reveal>
+            <FranceMap highlight={zone.slug as ZoneSlug} />
+          </Reveal>
+          <Reveal delay={80}>
+            <p className="eyebrow text-accent">Zone géographique</p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] md:text-4xl">
+              {zone.name}
+            </h2>
+            <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
+              {zone.coverage}
+            </p>
+            <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
+              {zone.sectorsFocus}
+            </p>
+            <ul className="mt-6 space-y-2 text-sm text-muted-foreground">
+              {zone.useful.map((item) => (
+                <li key={item}>· {item}</li>
+              ))}
+            </ul>
+
+            <h3 className="mt-12 text-lg font-semibold tracking-tight">
+              Prestations disponibles sur ce pôle
+            </h3>
+            <ul className="mt-4">
+              {SERVICES.map((s) => (
+                <li key={s.slug}>
+                  <Link
+                    to="/services/$slug"
+                    params={{ slug: s.slug }}
+                    className="group flex items-center justify-between gap-4 border-t border-border py-4 text-sm font-medium"
+                  >
+                    <span className="transition-transform duration-300 group-hover:translate-x-1">
+                      {s.title}
+                    </span>
+                    <ArrowRight className="size-4 shrink-0 text-muted-foreground transition-all duration-300 group-hover:translate-x-1 group-hover:text-accent" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="border-y border-border bg-secondary/40">
+        <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
+          <Reveal>
+            <p className="eyebrow text-accent">Méthode</p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] md:text-4xl">
+              Processus d'intervention à {zone.name}
+            </h2>
+          </Reveal>
+          <div className="mt-10">
+            <MethodSteps />
           </div>
         </div>
-      </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
+        <Reveal>
+          <p className="eyebrow text-accent">FAQ {zone.name}</p>
+          <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] md:text-4xl">
+            Les questions les plus fréquentes
+          </h2>
+        </Reveal>
+        <FaqExplorer items={localFaq} className="mt-10" />
+      </section>
+
+      <FinalCta title={`Un devis pour ${zone.name} ?`} />
     </div>
   );
 }

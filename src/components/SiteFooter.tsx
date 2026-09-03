@@ -1,40 +1,25 @@
 import { Link } from "@tanstack/react-router";
-import { SERVICES, SITE, ZONES, whatsappLink } from "@/lib/site";
+import { SERVICES, SITE, activeZones, displayValue, whatsappLink } from "@/lib/site";
+import { BrandMark } from "@/components/BrandMark";
 
 export function SiteFooter() {
   const wa = whatsappLink();
+  const zones = activeZones();
 
   return (
     <footer className="surface-ink border-t border-ink-border">
       <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-20">
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <div className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-md bg-ink-foreground/10 text-ink-foreground">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path
-                    d="M3 9.5 12 4l9 5.5M5 11v8h14v-8M9 19v-4h6v4"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
-              <span className="text-[15px] font-extrabold tracking-tight text-ink-foreground">
-                Extraction<span className="text-accent">Pro</span>
-              </span>
-            </div>
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-muted">
-              {SITE.tagline} pour les cuisines professionnelles. {SITE.launch}.
+        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-12">
+          <div className="lg:col-span-4">
+            <BrandMark inverted />
+            <p className="mt-5 max-w-xs text-sm leading-relaxed text-ink-muted">
+              {SITE.tagline} pour les cuisines professionnelles.
             </p>
-            <p className="mt-4 text-xs text-ink-muted/80">
-              Prototype de présentation — contenus de démonstration.
-            </p>
+            <p className="mt-3 text-xs text-ink-muted/80">{SITE.launch}.</p>
           </div>
 
-          <div>
-            <h2 className="eyebrow text-accent">Prestations</h2>
+          <div className="lg:col-span-2">
+            <h2 className="eyebrow text-accent">Services</h2>
             <ul className="mt-4 space-y-2.5">
               {SERVICES.map((s) => (
                 <li key={s.slug}>
@@ -50,10 +35,10 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          <div>
-            <h2 className="eyebrow text-accent">Zones d'intervention</h2>
+          <div className="lg:col-span-2">
+            <h2 className="eyebrow text-accent">Zones</h2>
             <ul className="mt-4 space-y-2.5">
-              {ZONES.map((z) => (
+              {zones.map((z) => (
                 <li key={z.slug}>
                   <Link
                     to="/zones/$slug"
@@ -75,12 +60,50 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          <div>
+          <div className="lg:col-span-2">
+            <h2 className="eyebrow text-accent">Entreprise</h2>
+            <ul className="mt-4 space-y-2.5">
+              <li>
+                <Link
+                  to="/methode"
+                  className="text-sm text-ink-muted transition-colors hover:text-ink-foreground"
+                >
+                  Notre méthode
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/faq"
+                  className="text-sm text-ink-muted transition-colors hover:text-ink-foreground"
+                >
+                  FAQ
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/contact"
+                  className="text-sm text-ink-muted transition-colors hover:text-ink-foreground"
+                >
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/devis"
+                  className="text-sm text-ink-muted transition-colors hover:text-ink-foreground"
+                >
+                  Demander un devis
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div className="lg:col-span-2">
             <h2 className="eyebrow text-accent">Contact</h2>
             <ul className="mt-4 space-y-2.5 text-sm text-ink-muted">
-              <li>Téléphone : {SITE.phonePlaceholder}</li>
-              <li>Email : {SITE.emailPlaceholder}</li>
-              <li>{SITE.addressPlaceholder}</li>
+              <li>Téléphone : {displayValue(SITE.phone, "À confirmer")}</li>
+              <li>Email : {displayValue(SITE.email, "À confirmer")}</li>
+              <li>{displayValue(SITE.address, "Adresse à confirmer")}</li>
               <li>
                 {wa ? (
                   <a
@@ -92,16 +115,8 @@ export function SiteFooter() {
                     WhatsApp
                   </a>
                 ) : (
-                  <span>WhatsApp : numéro à définir</span>
+                  <span>WhatsApp : numéro à confirmer</span>
                 )}
-              </li>
-              <li>
-                <Link
-                  to="/devis"
-                  className="transition-colors hover:text-ink-foreground"
-                >
-                  Demander un devis
-                </Link>
               </li>
             </ul>
           </div>
@@ -109,17 +124,14 @@ export function SiteFooter() {
 
         <div className="mt-14 flex flex-col gap-4 border-t border-ink-border pt-8 text-xs text-ink-muted md:flex-row md:items-center md:justify-between">
           <p>
-            © {new Date().getFullYear()} {SITE.legalName}. {SITE.siretPlaceholder}.
+            © {new Date().getFullYear()} {displayValue(SITE.legalName, SITE.name)}.
           </p>
           <nav className="flex flex-wrap gap-5" aria-label="Liens légaux">
             <Link to="/mentions-legales" className="hover:text-ink-foreground">
               Mentions légales
             </Link>
             <Link to="/confidentialite" className="hover:text-ink-foreground">
-              Politique de confidentialité
-            </Link>
-            <Link to="/admin" className="hover:text-ink-foreground">
-              Espace admin (démo)
+              Confidentialité
             </Link>
           </nav>
         </div>

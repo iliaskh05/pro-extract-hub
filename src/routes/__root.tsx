@@ -8,16 +8,24 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { WhatsAppWidget } from "@/components/WhatsAppWidget";
-import { ChatWidget } from "@/components/ChatWidget";
 import { StickyMobileCta } from "@/components/StickyMobileCta";
+import { CursorLabel } from "@/components/CursorLabel";
+import { CookieConsent } from "@/components/CookieConsent";
+import { AnalyticsGate } from "@/components/AnalyticsGate";
 import { Toaster } from "@/components/ui/sonner";
+import { SITE, activeZones, siteUrl, zonesSeoLine } from "@/lib/site";
+import { absoluteUrl, ogImageUrl } from "@/lib/seo";
+
+const ChatWidget = lazy(() =>
+  import("@/components/ChatWidget").then((m) => ({ default: m.ChatWidget })),
+);
 
 function NotFoundComponent() {
   return (
@@ -84,26 +92,31 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Dégraissage de hottes professionnelles | Extraction Pro" },
+      { title: `Dégraissage de hottes professionnelles | ${SITE.name}` },
       {
         name: "description",
-        content:
-          "Dégraissage professionnel des hottes, filtres, conduits et moteurs d'extraction pour cuisines professionnelles. Paris / Île-de-France et Perpignan / Pyrénées-Orientales.",
+        content: `Dégraissage professionnel des hottes, filtres, conduits et moteurs d'extraction pour cuisines professionnelles. ${zonesSeoLine()}.`,
       },
-      { property: "og:site_name", content: "Extraction Pro" },
+      { property: "og:site_name", content: SITE.name },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "fr_FR" },
+      { property: "og:image", content: ogImageUrl() },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "theme-color", content: "#1c2229" },
+      { name: "twitter:image", content: ogImageUrl() },
+      { name: "theme-color", content: "#0c1118" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/brand/logo-white.png", type: "image/png" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+      ...(import.meta.env["VITE_SUPABASE_URL"]
+        ? [{ rel: "preconnect", href: import.meta.env["VITE_SUPABASE_URL"] as string }]
+        : []),
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Inter:wght@400;500;600;700&display=swap",
       },
     ],
     scripts: [
@@ -112,13 +125,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "ProfessionalService",
-          name: "Extraction Pro",
+          name: SITE.name,
           description:
             "Dégraissage professionnel des hottes, filtres, conduits et systèmes d'extraction de cuisines professionnelles.",
-          areaServed: [
-            { "@type": "AdministrativeArea", name: "Paris / Île-de-France" },
-            { "@type": "AdministrativeArea", name: "Perpignan / Pyrénées-Orientales" },
-          ],
+          areaServed: activeZones().map((zone) => ({
+            "@type": "AdministrativeArea",
+            name: `${zone.name} / ${zone.region}`,
+          })),
+          image: ogImageUrl(),
+          url: siteUrl() ? absoluteUrl("/") : undefined,
         }),
       },
     ],
@@ -150,21 +165,32 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <a
+        href="#contenu"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[100] focus:rounded-md focus:bg-background focus:px-3 focus:py-2 focus:text-sm"
+      >
+        Aller au contenu
+      </a>
       <div className="flex min-h-screen flex-col">
         {!isAdmin && <SiteHeader />}
-        <main className="flex-1">
+        <main id="contenu" className="flex-1">
           <Outlet />
         </main>
         {!isAdmin && <SiteFooter />}
         {!isAdmin && (
           <>
-            <div className="pb-20 lg:pb-0" aria-hidden="true" />
+            <div className="pb-24 lg:pb-0" aria-hidden="true" />
             <StickyMobileCta />
             <WhatsAppWidget />
-            <ChatWidget />
+            <Suspense fallback={null}>
+              <ChatWidget />
+            </Suspense>
+            <CursorLabel />
           </>
         )}
       </div>
+      {!isAdmin && <CookieConsent />}
+      {!isAdmin && <AnalyticsGate />}
       <Toaster position="top-center" />
     </QueryClientProvider>
   );
