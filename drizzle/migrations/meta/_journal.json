@@ -15,6 +15,13 @@
       "when": 1788450939625,
       "tag": "0001_restrict_leads_to_staff_roles",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788480369879,
+      "tag": "0002_grant_admin_roles_to_owners",
+      "breakpoints": true
     }
   ]
 }
