@@ -209,12 +209,16 @@ function Dashboard() {
   const qc = useQueryClient();
   const { lead: leadIdFromUrl } = Route.useSearch();
   const [selected, setSelected] = useState<Lead | null>(null);
+  const [view, setView] = useState<"dashboard" | "pipeline">("dashboard");
+  const [period, setPeriod] = useState<PeriodKey>("30d");
+  const [lastUpdated, setLastUpdated] = useState(() => new Date());
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [priorityFilter, setPriorityFilter] = useState<string>("all");
   const [cityFilter, setCityFilter] = useState("");
   const [businessFilter, setBusinessFilter] = useState<string>("all");
   const [freqFilter, setFreqFilter] = useState<string>("all");
   const [dateFrom, setDateFrom] = useState("");
+
 
   const { data: leads = [], isLoading } = useQuery({
     queryKey: ["leads"],
