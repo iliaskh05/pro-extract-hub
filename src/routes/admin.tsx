@@ -16,7 +16,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import {
+  DashboardOverview,
+  PERIODS,
+  type PeriodKey,
+} from "@/components/admin/DashboardOverview";
 import { cn } from "@/lib/utils";
+
 import { toast } from "sonner";
 import type { Session } from "@supabase/supabase-js";
 import type { Tables } from "@/integrations/supabase/types";
