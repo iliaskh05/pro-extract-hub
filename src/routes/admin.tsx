@@ -575,7 +575,10 @@ function Dashboard() {
             </table>
           </div>
         </section>
+          </>
+        )}
       </div>
+
 
       <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
         <DialogContent className="max-h-[85vh] max-w-2xl overflow-y-auto">
