@@ -16,7 +16,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import {
+  DashboardOverview,
+  PERIODS,
+  type PeriodKey,
+} from "@/components/admin/DashboardOverview";
 import { cn } from "@/lib/utils";
+
 import { toast } from "sonner";
 import type { Session } from "@supabase/supabase-js";
 import type { Tables } from "@/integrations/supabase/types";
@@ -209,12 +215,16 @@ function Dashboard() {
   const qc = useQueryClient();
   const { lead: leadIdFromUrl } = Route.useSearch();
   const [selected, setSelected] = useState<Lead | null>(null);
+  const [view, setView] = useState<"dashboard" | "pipeline">("dashboard");
+  const [period, setPeriod] = useState<PeriodKey>("30d");
+  const [lastUpdated, setLastUpdated] = useState(() => new Date());
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [priorityFilter, setPriorityFilter] = useState<string>("all");
   const [cityFilter, setCityFilter] = useState("");
   const [businessFilter, setBusinessFilter] = useState<string>("all");
   const [freqFilter, setFreqFilter] = useState<string>("all");
   const [dateFrom, setDateFrom] = useState("");
+
 
   const { data: leads = [], isLoading } = useQuery({
     queryKey: ["leads"],
@@ -227,6 +237,24 @@ function Dashboard() {
       return data as Lead[];
     },
   });
+
+  useEffect(() => {
+    setLastUpdated(new Date());
+  }, [leads]);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("crm-leads")
+      .on("postgres_changes", { event: "*", schema: "public", table: "leads" }, () => {
+        void qc.invalidateQueries({ queryKey: ["leads"] });
+      })
+      .subscribe();
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [qc]);
+
+
 
   const filtered = useMemo(() => {
     return leads.filter((l) => {
@@ -327,7 +355,62 @@ function Dashboard() {
       </header>
 
       <div className="mx-auto max-w-7xl space-y-8 px-5 py-8 lg:px-8">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="inline-flex rounded-lg border border-border bg-card p-1">
+            {(
+              [
+                { value: "dashboard", label: "Tableau de bord" },
+                { value: "pipeline", label: "Pipeline" },
+              ] as const
+            ).map((t) => (
+              <button
+                key={t.value}
+                type="button"
+                onClick={() => setView(t.value)}
+                className={cn(
+                  "rounded-md px-4 py-1.5 text-xs font-semibold transition-colors",
+                  view === t.value
+                    ? "bg-ink text-ink-foreground"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+          {view === "dashboard" && (
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                <span className="size-2 animate-pulse rounded-full bg-accent" />
+                En direct · maj {lastUpdated.toLocaleTimeString("fr-FR")}
+              </span>
+              <div className="inline-flex rounded-lg border border-border bg-card p-1">
+                {PERIODS.map((p) => (
+                  <button
+                    key={p.value}
+                    type="button"
+                    onClick={() => setPeriod(p.value)}
+                    className={cn(
+                      "rounded-md px-3 py-1.5 text-[11px] font-semibold transition-colors",
+                      period === p.value
+                        ? "bg-secondary text-foreground"
+                        : "text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {view === "dashboard" ? (
+          <DashboardOverview leads={leads} period={period} isLoading={isLoading} />
+        ) : (
+          <>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
           {kpis.map((k) => (
             <div key={k.label} className="rounded-xl border border-border bg-card p-5 shadow-card">
               <p className="text-xs text-muted-foreground">{k.label}</p>
@@ -575,7 +658,10 @@ function Dashboard() {
             </table>
           </div>
         </section>
+          </>
+        )}
       </div>
+
 
       <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
         <DialogContent className="max-h-[85vh] max-w-2xl overflow-y-auto">
