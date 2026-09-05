@@ -327,7 +327,62 @@ function Dashboard() {
       </header>
 
       <div className="mx-auto max-w-7xl space-y-8 px-5 py-8 lg:px-8">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="inline-flex rounded-lg border border-border bg-card p-1">
+            {(
+              [
+                { value: "dashboard", label: "Tableau de bord" },
+                { value: "pipeline", label: "Pipeline" },
+              ] as const
+            ).map((t) => (
+              <button
+                key={t.value}
+                type="button"
+                onClick={() => setView(t.value)}
+                className={cn(
+                  "rounded-md px-4 py-1.5 text-xs font-semibold transition-colors",
+                  view === t.value
+                    ? "bg-ink text-ink-foreground"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+          {view === "dashboard" && (
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                <span className="size-2 animate-pulse rounded-full bg-accent" />
+                En direct · maj {lastUpdated.toLocaleTimeString("fr-FR")}
+              </span>
+              <div className="inline-flex rounded-lg border border-border bg-card p-1">
+                {PERIODS.map((p) => (
+                  <button
+                    key={p.value}
+                    type="button"
+                    onClick={() => setPeriod(p.value)}
+                    className={cn(
+                      "rounded-md px-3 py-1.5 text-[11px] font-semibold transition-colors",
+                      period === p.value
+                        ? "bg-secondary text-foreground"
+                        : "text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {view === "dashboard" ? (
+          <DashboardOverview leads={leads} period={period} isLoading={isLoading} />
+        ) : (
+          <>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
           {kpis.map((k) => (
             <div key={k.label} className="rounded-xl border border-border bg-card p-5 shadow-card">
               <p className="text-xs text-muted-foreground">{k.label}</p>
