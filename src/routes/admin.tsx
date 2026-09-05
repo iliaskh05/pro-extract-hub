@@ -232,6 +232,24 @@ function Dashboard() {
     },
   });
 
+  useEffect(() => {
+    setLastUpdated(new Date());
+  }, [leads]);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("crm-leads")
+      .on("postgres_changes", { event: "*", schema: "public", table: "leads" }, () => {
+        void qc.invalidateQueries({ queryKey: ["leads"] });
+      })
+      .subscribe();
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [qc]);
+
+
+
   const filtered = useMemo(() => {
     return leads.filter((l) => {
       if (statusFilter !== "all" && l.status !== statusFilter) return false;
