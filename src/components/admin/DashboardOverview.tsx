@@ -393,16 +393,39 @@ export function DashboardOverview({
           {byStatus.length === 0 ? (
             <EmptyState />
           ) : (
-            <ChartContainer config={config} className="h-[300px] w-full">
-              <PieChart>
-                <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
-                <Pie data={byStatus} dataKey="value" nameKey="name" innerRadius={60} outerRadius={95} paddingAngle={2}>
-                  {byStatus.map((s) => (
-                    <Cell key={s.name} fill={s.fill} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ChartContainer>
+            <>
+              <ChartContainer config={config} className="h-[240px] w-full">
+                <PieChart>
+                  <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
+                  <Pie
+                    data={byStatus}
+                    dataKey="value"
+                    nameKey="name"
+                    innerRadius={55}
+                    outerRadius={90}
+                    paddingAngle={2}
+                  >
+                    {byStatus.map((s) => (
+                      <Cell key={s.name} fill={s.fill} />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ChartContainer>
+              <ul className="mt-4 space-y-1.5 text-xs">
+                {byStatus.map((s) => (
+                  <li key={s.name} className="flex items-center justify-between">
+                    <span className="flex items-center gap-2">
+                      <span className="size-2.5 rounded-full" style={{ background: s.fill }} />
+                      {s.name}
+                    </span>
+                    <span className="text-muted-foreground">
+                      {s.value} · {pct(s.value, current.length)} %
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </>
+
           )}
         </Panel>
 
