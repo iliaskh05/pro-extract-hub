@@ -34,21 +34,25 @@ export const Route = createFileRoute("/devis")({
 function DevisPage() {
   return (
     <div>
-      <section className="surface-ink border-b border-ink-border">
-        <div className="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-16">
+      <section className="relative overflow-hidden border-b border-border bg-background">
+        <div
+          className="grid-fine pointer-events-none absolute inset-0 opacity-60"
+          aria-hidden="true"
+        />
+        <div className="shell relative py-14 lg:py-20">
           <p className="eyebrow text-accent">Demande de devis</p>
-          <h1 className="mt-3 max-w-2xl text-3xl font-semibold tracking-[-0.04em] text-ink-foreground sm:text-4xl">
+          <h1 className="mt-4 max-w-2xl text-[2rem] leading-[1.05] font-semibold tracking-[-0.045em] sm:text-4xl lg:text-5xl">
             Décrivez votre installation en 5 étapes
           </h1>
-          <p className="mt-4 max-w-xl text-sm leading-relaxed text-ink-muted sm:text-base">
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground">
             Plus votre description est précise, plus notre proposition sera adaptée. Aucun
             engagement à ce stade.
           </p>
-          <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-10 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
             {BENEFITS.map((b) => (
               <li
                 key={b.text}
-                className="flex items-start gap-3 rounded-xl border border-ink-border bg-ink-foreground/5 px-4 py-3 text-sm text-ink-muted"
+                className="flex items-start gap-3 bg-background px-5 py-4 text-sm text-muted-foreground"
               >
                 <b.icon className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden="true" />
                 {b.text}
