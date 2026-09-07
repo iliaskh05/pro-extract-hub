@@ -1,18 +1,19 @@
-import heroKitchen from "@/assets/duct-detail.jpg";
+import heroKitchen from "@/assets/hero-kitchen.jpg";
 import ductDetail from "@/assets/duct-detail.jpg";
-import hoodReference from "@/assets/after-hood.jpg";
-import ductReference from "@/assets/duct-detail.jpg";
-import motorReference from "@/assets/after-motor.jpg";
-import beforeDuct from "@/assets/before-duct.jpg";
-import beforeHood from "@/assets/hero-kitchen.jpg";
+import beforeHood from "@/assets/before-hood.jpg";
 import afterHood from "@/assets/after-hood.jpg";
+import beforeDuct from "@/assets/before-duct.jpg";
+import afterDuct from "@/assets/after-duct.jpg";
+import beforeMotor from "@/assets/before-motor.jpg";
 import afterMotor from "@/assets/after-motor.jpg";
 
+const hoodReference = afterHood;
+const ductReference = ductDetail;
+const motorReference = afterMotor;
+
 /**
- * Visuels du site.
- * Les paires avant/après du slider utilisent la même prise de vue (même fichier)
- * avec un traitement « encrassement » côté avant, en attendant vos photos réelles
- * dans `public/interventions/{slug}/before.jpg` et `after.jpg`.
+ * Visuels du site : uniquement des photos réelles présentes dans le dépôt.
+ * Les paires avant / après utilisent les prises de vue correspondantes.
  */
 export const MEDIA = {
   heroKitchen,
@@ -23,6 +24,8 @@ export const MEDIA = {
   beforeDuct,
   beforeHood,
   afterHood,
+  afterDuct,
+  beforeMotor,
   afterMotor,
 } as const;
 
@@ -42,31 +45,31 @@ export const GALLERY: GalleryItem[] = [
     slug: "hotte",
     title: "Hotte de cuisine professionnelle",
     type: "Dégraissage de hotte et filtres",
-    before: hoodReference,
-    after: hoodReference,
+    before: beforeHood,
+    after: afterHood,
     objectPosition: "center 42%",
-    beforeTreatment: "grime",
-    text: "Comparaison sur la même prise de vue : état encrassé puis état après dégraissage des surfaces accessibles.",
+    beforeTreatment: "clean",
+    text: "État encrassé constaté puis état après dégraissage des surfaces accessibles.",
   },
   {
     slug: "conduit",
     title: "Conduit d'extraction",
     type: "Nettoyage de conduit",
-    before: ductReference,
-    after: ductReference,
+    before: beforeDuct,
+    after: afterDuct,
     objectPosition: "center center",
-    beforeTreatment: "grime",
-    text: "Même angle de vue : dépôts gras dans le conduit, puis état après traitement des zones accessibles.",
+    beforeTreatment: "clean",
+    text: "Dépôts gras dans le conduit, puis état après traitement des zones accessibles.",
   },
   {
     slug: "moteur",
     title: "Moteur / caisson d'extraction",
     type: "Nettoyage moteur et caisson",
-    before: motorReference,
-    after: motorReference,
+    before: beforeMotor,
+    after: afterMotor,
     objectPosition: "center 38%",
-    beforeTreatment: "grime",
-    text: "Vue identique du groupe moto-ventilateur : encrassement constaté, puis état après nettoyage hors tension.",
+    beforeTreatment: "clean",
+    text: "Groupe moto-ventilateur : encrassement constaté, puis état après nettoyage hors tension.",
   },
 ];
 
