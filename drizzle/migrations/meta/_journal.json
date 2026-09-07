@@ -29,6 +29,13 @@
       "when": 1788811605264,
       "tag": "0003_revoke_execute_on_definer_functions",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1788811631456,
+      "tag": "0004_inline_staff_check_in_leads_policies",
+      "breakpoints": true
     }
   ]
 }
