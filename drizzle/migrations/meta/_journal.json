@@ -22,6 +22,13 @@
       "when": 1788480369879,
       "tag": "0002_grant_admin_roles_to_owners",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1788811605264,
+      "tag": "0003_revoke_execute_on_definer_functions",
+      "breakpoints": true
     }
   ]
 }
