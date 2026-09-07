@@ -1,39 +1,63 @@
+import { useState } from "react";
 import { Reveal } from "@/components/Reveal";
 import { SectionHeading } from "@/components/SectionHeading";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { GALLERY } from "@/lib/media";
+import { cn } from "@/lib/utils";
 
-/** Une seule preuve visuelle, en grand : le résultat en un regard. */
+/** Preuve visuelle principale : le résultat, en grand, comparable au doigt ou à la souris. */
 export function BeforeAfterShowcase() {
-  const featured = GALLERY[0]!;
+  const [index, setIndex] = useState(0);
+  const item = GALLERY[index] ?? GALLERY[0]!;
 
   return (
-    <section className="surface-ink relative overflow-hidden" data-header-tone="dark">
-      <div className="grid-tech absolute inset-0 opacity-40" aria-hidden="true" />
-      <div className="shell section-y relative">
+    <section className="bg-background">
+      <div className="shell section-y">
         <Reveal>
           <SectionHeading
-            tone="dark"
             eyebrow="Avant / Après"
-            title="Le résultat, en un regard."
-            description="Une différence visible, mesurable et réalisée sur site."
+            title="Voyez la différence."
+            description="Glissez la poignée : même cadrage, avant et après intervention."
           />
         </Reveal>
 
-        <Reveal className="mt-12 lg:mt-16" variant="mask">
+        <Reveal delay={80} className="mt-8">
+          <div className="flex flex-wrap gap-2" role="tablist" aria-label="Choisir un élément">
+            {GALLERY.map((g, i) => (
+              <button
+                key={g.slug}
+                type="button"
+                role="tab"
+                aria-selected={i === index}
+                onClick={() => setIndex(i)}
+                className={cn(
+                  "rounded-sm border px-4 py-2 text-xs font-medium tracking-[0.04em] transition-all duration-300",
+                  i === index
+                    ? "border-accent bg-accent text-accent-foreground"
+                    : "border-border text-muted-foreground hover:border-accent/40 hover:text-foreground",
+                )}
+              >
+                {g.type}
+              </button>
+            ))}
+          </div>
+        </Reveal>
+
+        <Reveal className="mt-6 lg:mt-8" variant="mask">
           <BeforeAfterSlider
-            before={featured.before}
-            after={featured.after}
-            alt={featured.title}
-            objectPosition={featured.objectPosition}
-            beforeTreatment={featured.beforeTreatment}
-            className="rounded-sm"
+            key={item.slug}
+            before={item.before}
+            after={item.after}
+            alt={item.title}
+            objectPosition={item.objectPosition}
+            beforeTreatment={item.beforeTreatment}
+            className="rounded-sm border border-border"
           />
         </Reveal>
 
         <Reveal delay={100}>
-          <p className="mt-5 text-sm text-ink-muted">
-            {featured.title} — {featured.type}.
+          <p className="mt-5 max-w-xl text-sm text-muted-foreground">
+            <span className="font-medium text-foreground">{item.title}</span> — {item.text}
           </p>
         </Reveal>
       </div>
