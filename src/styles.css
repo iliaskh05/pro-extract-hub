@@ -188,9 +188,10 @@
   }
 
   ::selection {
-    background: oklch(0.74 0.1 198 / 0.35);
+    background: rgb(26 58 143 / 0.18);
     color: var(--foreground);
   }
+
 }
 
 @utility surface-ink {
@@ -237,9 +238,46 @@
   background-size: 72px 72px;
 }
 
-@utility hero-bleed {
-  margin-top: -4rem;
+/* Trame très discrète sur fond clair */
+@utility grid-fine {
+  background-image:
+    linear-gradient(to right, rgb(17 17 17 / 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(17 17 17 / 0.035) 1px, transparent 1px);
+  background-size: 88px 88px;
 }
+
+/* Rythme vertical unique pour toutes les sections */
+@utility section-y {
+  padding-top: 4.5rem;
+  padding-bottom: 4.5rem;
+
+  @media (min-width: 768px) {
+    padding-top: 6.5rem;
+    padding-bottom: 6.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    padding-top: 8.5rem;
+    padding-bottom: 8.5rem;
+  }
+}
+
+@utility shell {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 80rem;
+  padding-inline: 1.25rem;
+
+  @media (min-width: 1024px) {
+    padding-inline: 2rem;
+  }
+}
+
+/* Le header est opaque : plus de remontée sous le header */
+@utility hero-bleed {
+  margin-top: 0;
+}
+
 
 /* Reveal au scroll — base commune à toutes les sections */
 @utility reveal {
