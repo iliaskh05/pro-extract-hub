@@ -508,3 +508,66 @@
     cursor: auto;
   }
 }
+
+/* --- Surfaces bleutées (rythme visuel) --------------------------------- */
+
+@utility surface-blue {
+  background: linear-gradient(180deg, #f7fbfd 0%, #eef7fb 45%, #f7fbfd 100%);
+}
+
+@utility grid-blue {
+  background-image:
+    linear-gradient(to right, rgb(26 58 143 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(26 58 143 / 0.06) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+
+/* --- Motion technique --------------------------------------------------- */
+
+@keyframes marker-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes halo-breathe {
+  0%,
+  100% {
+    r: 13;
+    opacity: 0.18;
+  }
+  50% {
+    r: 24;
+    opacity: 0.05;
+  }
+}
+
+@keyframes flow-dash {
+  to {
+    stroke-dashoffset: -220;
+  }
+}
+
+.marker-pop {
+  animation: marker-pop 0.7s var(--ease-premium) both;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.flow-dash {
+  stroke-dasharray: 5 12;
+  animation: flow-dash 7s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marker-pop,
+  .flow-dash {
+    animation: none !important;
+    opacity: 1;
+  }
+}
