@@ -11,7 +11,7 @@ const HomeStory = lazy(() =>
 export const Route = createFileRoute("/")({
   head: () =>
     pageHead({
-      title: "Dégraissage de hottes & conduits de cuisine pro | Salis 3 Hottes",
+      title: "Dégraissage de hottes & conduits de cuisine pro | Salis3Hottes",
       description: `Dégraissage professionnel des hottes, filtres, conduits et moteurs d'extraction pour cuisines professionnelles. ${zonesLine(" et ")}.`,
       path: "/",
       ogTitle: "Une extraction impeccable. Une cuisine plus sereine.",

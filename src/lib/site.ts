@@ -1,5 +1,5 @@
 /**
- * Source unique des données publiques Salis 3 Hottes.
+ * Source unique des données publiques Salis3Hottes.
  * Les champs vides sont des placeholders officiels — ne pas inventer de valeurs.
  */
 
@@ -13,8 +13,8 @@ function publicEnv(key: string): string {
 }
 
 export const SITE = {
-  name: "Salis 3 Hottes",
-  shortName: "Salis 3",
+  name: "Salis3Hottes",
+  shortName: "Salis3Hottes",
   legalName: "",
   legalForm: "",
   tagline: "Dégraissage & entretien des systèmes d'extraction",

@@ -108,7 +108,7 @@ export function DigitalFirst() {
                 <div className="overflow-hidden rounded-[1.85rem] bg-ink">
                   <div className="flex items-center justify-between px-5 pt-5 pb-3">
                     <span className="text-[10px] tracking-[0.2em] text-ink-muted uppercase">
-                      Salis 3 Hottes
+                      Salis3Hottes
                     </span>
                     <span className="size-1.5 rounded-full bg-accent" aria-hidden="true" />
                   </div>

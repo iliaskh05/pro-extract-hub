@@ -11,34 +11,28 @@ type FranceMapData = {
 
 const MAP = franceMap as unknown as FranceMapData;
 
+const ACCENT = "#1a3a8f";
+
 export function FranceMap({ highlight }: { highlight?: ZoneSlug | undefined }) {
   const reduced = usePrefersReducedMotion();
   const zones = activeZones();
-  const dot = (active: boolean) => (active ? "oklch(0.74 0.1 198)" : "oklch(0.74 0.1 198 / 0.55)");
+  const dot = (active: boolean) => (active ? ACCENT : "#9aa6c4");
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-ink-border surface-ink p-4 sm:p-6">
-      <div className="grid-tech absolute inset-0 opacity-25" aria-hidden="true" />
+    <div className="relative overflow-hidden rounded-sm border border-border bg-secondary/40 p-4 sm:p-8">
       <svg
         viewBox={MAP.viewBox}
-        className="relative mx-auto h-auto w-full max-w-lg"
+        className="relative mx-auto h-auto w-full max-w-md"
         role="img"
         aria-label={`Carte de France avec les pôles ${zones.map((z) => z.name).join(", ")}`}
       >
-        <defs>
-          <linearGradient id="france-fill" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="oklch(1 0 0 / 0.09)" />
-            <stop offset="100%" stopColor="oklch(0.74 0.1 198 / 0.12)" />
-          </linearGradient>
-        </defs>
-
         {MAP.paths.map((d, i) => (
           <path
             key={i}
             d={d}
-            fill="url(#france-fill)"
-            stroke="oklch(0.74 0.1 198 / 0.42)"
-            strokeWidth="1.2"
+            fill="#ffffff"
+            stroke="#d8dee6"
+            strokeWidth="1.1"
             strokeLinejoin="round"
           />
         ))}
@@ -52,49 +46,40 @@ export function FranceMap({ highlight }: { highlight?: ZoneSlug | undefined }) {
 
           return (
             <g key={z.slug}>
-              <circle cx={x} cy={y} r="22" fill={dot(on)} opacity="0.18">
+              <circle cx={x} cy={y} r="20" fill={dot(on)} opacity="0.12">
                 {!reduced && on && (
-                  <>
-                    <animate
-                      attributeName="r"
-                      values="18;28;18"
-                      dur="3.4s"
-                      begin={`${i * 0.65}s`}
-                      repeatCount="indefinite"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      values="0.24;0.05;0.24"
-                      dur="3.4s"
-                      begin={`${i * 0.65}s`}
-                      repeatCount="indefinite"
-                    />
-                  </>
+                  <animate
+                    attributeName="r"
+                    values="14;26;14"
+                    dur="3.6s"
+                    begin={`${i * 0.7}s`}
+                    repeatCount="indefinite"
+                  />
                 )}
               </circle>
               <circle
                 cx={x}
                 cy={y}
-                r="5.5"
+                r="4.5"
                 fill={dot(on)}
-                stroke="oklch(0.98 0.004 240 / 0.85)"
-                strokeWidth="1.2"
+                stroke="#ffffff"
+                strokeWidth="1.4"
                 className="transition-[fill] duration-500"
               />
               <text
-                x={labelLeft ? x - 12 : x + 12}
-                y={y - 4}
-                fill="oklch(0.98 0.004 240)"
+                x={labelLeft ? x - 11 : x + 11}
+                y={y - 3}
+                fill="#111111"
                 fontSize="12"
-                fontWeight="700"
+                fontWeight="650"
                 textAnchor={labelLeft ? "end" : "start"}
               >
                 {z.name}
               </text>
               <text
-                x={labelLeft ? x - 12 : x + 12}
-                y={y + 10}
-                fill="oklch(0.72 0.012 250)"
+                x={labelLeft ? x - 11 : x + 11}
+                y={y + 11}
+                fill="#5f6368"
                 fontSize="9.5"
                 textAnchor={labelLeft ? "end" : "start"}
               >
@@ -105,21 +90,18 @@ export function FranceMap({ highlight }: { highlight?: ZoneSlug | undefined }) {
         })}
       </svg>
 
-      <div className="relative mt-5 grid grid-cols-2 gap-2">
+      <div className="relative mt-6 grid grid-cols-2 gap-2">
         {zones.map((z) => (
           <Link
             key={z.slug}
             to="/zones/$slug"
             params={{ slug: z.slug }}
-            className="rounded-lg border border-ink-border px-3 py-2 text-center text-xs font-medium text-ink-foreground transition-colors hover:bg-ink-foreground/10"
+            className="rounded-sm border border-border bg-background px-3 py-2 text-center text-xs font-medium transition-colors hover:border-foreground/30"
           >
             {z.name}
           </Link>
         ))}
       </div>
-      <p className="relative mt-3 text-center text-xs text-ink-muted">
-        Carte métropolitaine — coordonnées GPS des pôles d'intervention.
-      </p>
     </div>
   );
 }

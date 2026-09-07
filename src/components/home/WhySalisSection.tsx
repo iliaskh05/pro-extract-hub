@@ -33,7 +33,7 @@ export function WhySalisSection() {
       />
       <div className="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-28">
         <Reveal className="max-w-2xl">
-          <p className="eyebrow text-accent">Pourquoi Salis 3 Hottes</p>
+          <p className="eyebrow text-accent">Pourquoi Salis3Hottes</p>
           <h2 className="mt-4 text-3xl leading-[1.04] font-semibold tracking-[-0.04em] sm:text-5xl">
             Plus qu'un nettoyage.
             <br />

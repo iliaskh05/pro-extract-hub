@@ -77,13 +77,13 @@ function ZoneDetail() {
         imageAlt={`Cuisine professionnelle — ${zone.name}`}
       >
         <div className="flex flex-wrap gap-3">
-          <Button asChild size="lg" variant="inverse">
+          <Button asChild size="lg" className="h-12 rounded-sm px-7">
             <Link to="/devis">Obtenir mon devis</Link>
           </Button>
           <Button
             size="lg"
             variant="outline"
-            className="border-ink-border bg-transparent text-ink-foreground hover:bg-ink-foreground/10 hover:text-ink-foreground"
+            className="h-12 rounded-sm px-7"
             onClick={() => {
               if (wa) {
                 track("WhatsApp Click", { from: `zone-${zone.slug}` });

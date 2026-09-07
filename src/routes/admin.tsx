@@ -35,13 +35,13 @@ export const Route = createFileRoute("/admin")({
   }),
   head: () => ({
     meta: [
-      { title: "Espace CRM | Salis 3 Hottes" },
+      { title: "Espace CRM | Salis3Hottes" },
       {
         name: "description",
         content: "Suivi interne des demandes de devis.",
       },
       { property: "og:title", content: "Espace CRM" },
-      { property: "og:description", content: "CRM interne Salis 3 Hottes." },
+      { property: "og:description", content: "CRM interne Salis3Hottes." },
       { name: "robots", content: "noindex" },
     ],
     links: [{ rel: "canonical", href: "/admin" }],

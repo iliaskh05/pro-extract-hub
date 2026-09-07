@@ -4,21 +4,23 @@ import { SERVICES } from "@/lib/site";
 import { SERVICE_VISUALS, GALLERY } from "@/lib/media";
 import { Reveal } from "@/components/Reveal";
 import { PageHero } from "@/components/PageHero";
+import { SectionHeading } from "@/components/SectionHeading";
+import { ServiceCard } from "@/components/ServiceCard";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { MethodSteps } from "@/components/MethodSteps";
 import { FinalCta } from "@/components/FinalCta";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { SERVICE_ICONS } from "@/lib/ui-icons";
 import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/services/")({
   head: () =>
     pageHead({
-      title: "Nos prestations d'entretien d'extraction | Salis 3 Hottes",
+      title: "Nos prestations d'entretien d'extraction | Salis3Hottes",
       description:
         "Dégraissage de hotte, nettoyage des filtres, des conduits, du moteur et du caisson, entretien périodique et diagnostic pour cuisines professionnelles.",
       path: "/services",
-      ogTitle: "Nos prestations — Salis 3 Hottes",
+      ogTitle: "Nos prestations — Salis3Hottes",
       ogDescription:
         "Six prestations d'entretien des systèmes d'extraction de cuisines professionnelles.",
     }),
@@ -37,81 +39,65 @@ function ServicesPage() {
         image={SERVICE_VISUALS["degraissage-hotte"]!.image}
         imageAlt="Hotte professionnelle en inox"
       >
-        <Button asChild size="lg" variant="inverse">
-          <Link to="/devis">Obtenir mon devis</Link>
+        <Button asChild size="lg" className="group h-12 rounded-sm px-7">
+          <Link to="/devis">
+            Demander un devis
+            <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
+          </Link>
         </Button>
       </PageHero>
 
-      <section className="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
-        <ol>
-          {SERVICES.map((s, i) => {
-            const visual = SERVICE_VISUALS[s.slug]!;
-            return (
-              <Reveal as="li" key={s.slug} delay={i * 40}>
-                <Link
-                  to="/services/$slug"
-                  params={{ slug: s.slug }}
-                  className="group grid items-center gap-6 border-t border-border py-8 lg:grid-cols-12 lg:gap-10 lg:py-12"
-                >
-                  <span className="font-mono text-[11px] tracking-[0.2em] text-accent lg:col-span-1">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span
-                    className={cn("lg:col-span-4", i % 2 === 1 && "lg:order-last lg:col-span-4")}
-                  >
-                    <h2 className="text-2xl font-semibold tracking-[-0.035em] transition-transform duration-500 group-hover:translate-x-1 lg:text-3xl">
-                      {s.title}
-                    </h2>
-                    <span className="mt-3 block max-w-sm text-sm leading-relaxed text-muted-foreground">
-                      {s.short}
-                    </span>
-                    <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium">
-                      En savoir plus
-                      <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
-                    </span>
-                  </span>
-                  <span className="overflow-hidden rounded-2xl lg:col-span-7">
-                    <img
-                      src={visual.image}
-                      alt={visual.alt}
-                      loading="lazy"
-                      className="aspect-[16/9] w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.05]"
-                    />
-                  </span>
-                </Link>
-              </Reveal>
-            );
-          })}
-        </ol>
+      <section className="bg-background">
+        <div className="shell section-y">
+          <div className="grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+            {SERVICES.map((s, i) => {
+              const Icon = SERVICE_ICONS[s.slug];
+              if (!Icon) return null;
+              return (
+                <Reveal key={s.slug} delay={i * 50} className="bg-background">
+                  <ServiceCard icon={Icon} title={s.title} text={s.short} slug={s.slug} />
+                </Reveal>
+              );
+            })}
+          </div>
+        </div>
       </section>
 
-      <section className="surface-ink">
-        <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
+      <section className="surface-ink" data-header-tone="dark">
+        <div className="shell section-y">
           <Reveal>
-            <p className="eyebrow text-accent">Avant / Après</p>
-            <h2 className="mt-4 max-w-xl text-3xl font-semibold tracking-[-0.04em] text-ink-foreground md:text-4xl">
-              Le résultat se constate
-            </h2>
+            <SectionHeading
+              tone="dark"
+              eyebrow="Avant / Après"
+              title="Le résultat, en un regard."
+              description="Une différence visible, mesurable et réalisée sur site."
+            />
           </Reveal>
-          <Reveal variant="mask" className="mt-10">
+          <Reveal variant="mask" className="mt-12">
             <BeforeAfterSlider
               before={featured.before}
               after={featured.after}
               alt={featured.title}
+              objectPosition={featured.objectPosition}
+              beforeTreatment={featured.beforeTreatment}
+              className="rounded-sm"
             />
           </Reveal>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
-        <Reveal>
-          <p className="eyebrow text-accent">Méthode</p>
-          <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] md:text-4xl">
-            Six étapes d'intervention
-          </h2>
-        </Reveal>
-        <div className="mt-10">
-          <MethodSteps />
+      <section className="bg-background">
+        <div className="shell section-y">
+          <Reveal>
+            <SectionHeading
+              eyebrow="Méthode"
+              title="Six étapes d'intervention"
+              description="Une intervention maîtrisée, de l'analyse au suivi."
+            />
+          </Reveal>
+          <div className="mt-12">
+            <MethodSteps />
+          </div>
         </div>
       </section>
 
