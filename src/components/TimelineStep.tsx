@@ -13,7 +13,7 @@ export function TimelineStep({
   n: string;
   title: string;
   text: string;
-  icon?: LucideIcon;
+  icon?: LucideIcon | undefined;
   tone?: "light" | "dark";
   className?: string;
 }) {
