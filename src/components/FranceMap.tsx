@@ -79,7 +79,8 @@ export function FranceMap({ highlight }: { highlight?: ZoneSlug | undefined }) {
           const on = !activeSlug || activeSlug === z.slug;
           const strong = activeSlug === z.slug;
           const color = on ? ACCENT : IDLE;
-          const labelLeft = x > 300;
+          // Paris à gauche pour éviter le chevauchement avec Troyes et Dijon.
+          const labelLeft = z.slug === "paris";
 
           return (
             <g
