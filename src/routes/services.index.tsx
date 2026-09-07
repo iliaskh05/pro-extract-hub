@@ -37,7 +37,7 @@ function ServicesPage() {
         image={SERVICE_VISUALS["degraissage-hotte"]!.image}
         imageAlt="Hotte professionnelle en inox"
       >
-        <Button asChild size="lg" variant="inverse">
+        <Button asChild size="lg" className="h-12 rounded-sm px-7">
           <Link to="/devis">Obtenir mon devis</Link>
         </Button>
       </PageHero>

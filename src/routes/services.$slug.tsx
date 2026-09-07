@@ -68,21 +68,21 @@ function ServiceDetail() {
         imageAlt={visual.alt}
       >
         <div className="flex flex-wrap gap-3">
-          <Button asChild size="lg" variant="inverse">
+          <Button asChild size="lg" className="h-12 rounded-sm px-7">
             <Link to="/devis">Obtenir mon devis</Link>
           </Button>
           <Button
             asChild
             size="lg"
             variant="outline"
-            className="border-ink-border bg-transparent text-ink-foreground hover:bg-ink-foreground/10 hover:text-ink-foreground"
+            className="h-12 rounded-sm px-7"
           >
             <Link to="/contact">Parler à un expert</Link>
           </Button>
         </div>
         <Link
           to="/services"
-          className="mt-6 inline-flex items-center gap-1.5 text-sm text-ink-muted transition-colors hover:text-ink-foreground"
+          className="mt-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="size-4" /> Toutes les prestations
         </Link>

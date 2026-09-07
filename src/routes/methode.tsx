@@ -30,7 +30,7 @@ function MethodPage() {
         image={MEDIA.ductDetail}
         imageAlt="Détail d'un système d'extraction professionnel"
       >
-        <Button asChild size="lg" variant="inverse">
+        <Button asChild size="lg" className="h-12 rounded-sm px-7">
           <Link to="/devis">Obtenir mon devis</Link>
         </Button>
       </PageHero>
