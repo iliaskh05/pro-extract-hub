@@ -10,11 +10,11 @@ import { pageHead } from "@/lib/seo";
 export const Route = createFileRoute("/methode")({
   head: () =>
     pageHead({
-      title: "Notre méthode d'intervention en 6 étapes | Salis 3 Hottes",
+      title: "Notre méthode d'intervention en 6 étapes | Salis3Hottes",
       description:
         "Analyse, préparation, dégraissage, contrôle, documentation et suivi : la méthode d'intervention appliquée à chaque système d'extraction.",
       path: "/methode",
-      ogTitle: "Notre méthode — Salis 3 Hottes",
+      ogTitle: "Notre méthode — Salis3Hottes",
       ogDescription: "Six étapes documentées, de l'analyse au suivi de votre installation.",
     }),
   component: MethodPage,

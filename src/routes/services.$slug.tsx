@@ -21,7 +21,7 @@ export const Route = createFileRoute("/services/$slug")({
   head: ({ params, loaderData }) => {
     if (!loaderData) {
       return pageHead({
-        title: `Prestation indisponible | Salis 3 Hottes`,
+        title: `Prestation indisponible | Salis3Hottes`,
         description: "Cette prestation n'est pas disponible.",
         path: `/services/${params.slug}`,
         noindex: true,
@@ -29,10 +29,10 @@ export const Route = createFileRoute("/services/$slug")({
     }
     const { service } = loaderData;
     return pageHead({
-      title: `${service.title} — cuisines professionnelles | Salis 3 Hottes`,
+      title: `${service.title} — cuisines professionnelles | Salis3Hottes`,
       description: service.description.slice(0, 155),
       path: `/services/${params.slug}`,
-      ogTitle: `${service.title} | Salis 3 Hottes`,
+      ogTitle: `${service.title} | Salis3Hottes`,
       ogDescription: service.short,
       ogType: "article",
       jsonLd: {
@@ -42,7 +42,7 @@ export const Route = createFileRoute("/services/$slug")({
         description: service.description,
         url: absoluteUrl(`/services/${params.slug}`),
         areaServed: activeZones().map((zone) => `${zone.name} / ${zone.region}`),
-        provider: { "@type": "ProfessionalService", name: "Salis 3 Hottes" },
+        provider: { "@type": "ProfessionalService", name: "Salis3Hottes" },
       },
     });
   },

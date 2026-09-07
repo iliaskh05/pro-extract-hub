@@ -14,11 +14,11 @@ import { pageHead } from "@/lib/seo";
 export const Route = createFileRoute("/services/")({
   head: () =>
     pageHead({
-      title: "Nos prestations d'entretien d'extraction | Salis 3 Hottes",
+      title: "Nos prestations d'entretien d'extraction | Salis3Hottes",
       description:
         "Dégraissage de hotte, nettoyage des filtres, des conduits, du moteur et du caisson, entretien périodique et diagnostic pour cuisines professionnelles.",
       path: "/services",
-      ogTitle: "Nos prestations — Salis 3 Hottes",
+      ogTitle: "Nos prestations — Salis3Hottes",
       ogDescription:
         "Six prestations d'entretien des systèmes d'extraction de cuisines professionnelles.",
     }),

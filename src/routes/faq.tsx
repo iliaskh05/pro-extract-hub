@@ -11,11 +11,11 @@ import { pageHead } from "@/lib/seo";
 export const Route = createFileRoute("/faq")({
   head: () =>
     pageHead({
-      title: "Questions fréquentes sur le dégraissage de hotte | Salis 3 Hottes",
+      title: "Questions fréquentes sur le dégraissage de hotte | Salis3Hottes",
       description:
         "Établissements accompagnés, zones desservies, déroulé d'une intervention, rapport, fréquence d'entretien : les réponses aux questions les plus fréquentes.",
       path: "/faq",
-      ogTitle: "FAQ — Salis 3 Hottes",
+      ogTitle: "FAQ — Salis3Hottes",
       ogDescription:
         "Les réponses aux questions fréquentes sur l'entretien des systèmes d'extraction.",
       jsonLd: {

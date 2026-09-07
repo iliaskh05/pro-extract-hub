@@ -98,7 +98,7 @@ export function SiteHeader() {
             !solidHeader &&
               "rounded-xl bg-ink/45 px-2.5 py-1.5 ring-1 ring-ink-foreground/15 backdrop-blur-md",
           )}
-          aria-label="Accueil Salis 3 Hottes"
+          aria-label="Accueil Salis3Hottes"
         >
           <BrandMark
             inverted={inverted || onDarkSurface}
