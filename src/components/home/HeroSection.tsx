@@ -106,7 +106,7 @@ export function HeroSection() {
         </div>
 
         <div ref={mediaRef} className="hero-copy will-change-transform" style={{ animationDelay: "0.5s" }}>
-          <figure className="relative overflow-hidden rounded-sm border border-border">
+          <figure className="hero-media relative overflow-hidden rounded-sm border border-border">
             <img
               src={MEDIA.heroKitchen}
               alt="Hotte d'extraction en inox dans une cuisine professionnelle"
@@ -115,6 +115,19 @@ export function HeroSection() {
               fetchPriority="high"
               className="aspect-[4/5] w-full object-cover lg:aspect-[3/4]"
             />
+            <span
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0b2433]/70 via-transparent to-transparent"
+              aria-hidden="true"
+            />
+            <figcaption className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-4 p-5">
+              <span className="text-[10px] tracking-[0.22em] text-white/80 uppercase">
+                Hotte · Filtres · Conduit · Moteur
+              </span>
+              <span className="flex items-center gap-2 text-[10px] tracking-[0.18em] text-white/80 uppercase">
+                <span className="size-1.5 rounded-full bg-[#b9ddeb]" aria-hidden="true" />
+                Sur site
+              </span>
+            </figcaption>
           </figure>
         </div>
       </div>

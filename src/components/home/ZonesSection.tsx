@@ -10,8 +10,9 @@ export function ZonesSection() {
   const [hovered, setHovered] = useState<ZoneSlug | undefined>(undefined);
 
   return (
-    <section className="border-t border-border bg-secondary/40">
-      <div className="shell section-y">
+    <section className="surface-blue relative overflow-hidden border-t border-border">
+      <div className="grid-blue pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
+      <div className="shell section-y relative">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
           <Reveal>
             <SectionHeading

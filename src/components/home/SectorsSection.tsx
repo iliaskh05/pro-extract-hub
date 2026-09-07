@@ -1,60 +1,87 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight } from "lucide-react";
+import {
+  ArrowRight,
+  Building2,
+  ChefHat,
+  Croissant,
+  CakeSlice,
+  Soup,
+  UtensilsCrossed,
+  Sandwich,
+  type LucideIcon,
+} from "lucide-react";
 import { Reveal } from "@/components/Reveal";
-import { SECTORS } from "@/lib/media";
-import { cn } from "@/lib/utils";
+import { SectionHeading } from "@/components/SectionHeading";
+import { SectorCard } from "@/components/SectorCard";
+import { Button } from "@/components/ui/button";
+import { SECTORS } from "@/lib/sectors";
 
-// Composition éditoriale à partir de md : deux formats larges, trois portraits, deux larges.
-const LAYOUT = [
-  "md:col-span-3 md:aspect-[16/11]",
-  "md:col-span-3 md:aspect-[16/11]",
-  "md:col-span-2 md:aspect-[4/5]",
-  "md:col-span-2 md:aspect-[4/5]",
-  "md:col-span-2 md:aspect-[4/5]",
-  "md:col-span-3 md:aspect-[16/11]",
-  "md:col-span-3 md:aspect-[16/11]",
-];
+const ICONS: Record<string, LucideIcon> = {
+  restaurant: UtensilsCrossed,
+  hotel: Building2,
+  "fast-food": Sandwich,
+  boulangerie: Croissant,
+  patisserie: CakeSlice,
+  traiteur: ChefHat,
+  "cuisine-collective": Soup,
+};
 
 export function SectorsSection() {
+  const [feature, ...rest] = SECTORS;
+  if (!feature) return null;
+
   return (
-    <section className="surface-ink relative overflow-hidden" data-header-tone="dark">
-      <div className="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-32">
-        <Reveal className="max-w-2xl">
-          <p className="eyebrow text-accent">Secteurs</p>
-          <h2 className="mt-4 text-3xl leading-[1.04] font-semibold tracking-[-0.04em] text-ink-foreground sm:text-5xl">
-            Les établissements que nous accompagnons
-          </h2>
+    <section className="bg-background">
+      <div className="shell section-y">
+        <Reveal>
+          <SectionHeading
+            eyebrow="Secteurs"
+            title="Les établissements que nous accompagnons"
+            description="Chaque activité impose ses contraintes d'accès, d'horaires et de cadence. Nous adaptons l'intervention à la vôtre."
+          />
         </Reveal>
 
-        <div className="mt-12 grid grid-cols-2 gap-3 md:grid-cols-6 md:gap-4">
-          {SECTORS.map((s, i) => (
-            <Reveal key={s.name} delay={i * 60} className={cn("aspect-[4/5]", LAYOUT[i])}>
-              <Link
-                to="/devis"
-                data-cursor="Explorer"
-                className="group cursor-swap relative block h-full w-full overflow-hidden rounded-2xl border border-ink-border"
-              >
-                <img
-                  src={s.image}
-                  alt=""
-                  loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.07]"
-                  style={{ objectPosition: s.position }}
+        <div className="mt-12 grid gap-4 lg:mt-16 lg:grid-cols-12">
+          <Reveal className="lg:col-span-7">
+            <SectorCard
+              sector={feature}
+              icon={ICONS[feature.slug] ?? UtensilsCrossed}
+              featured
+              className="aspect-[4/3] lg:aspect-[16/11]"
+            />
+          </Reveal>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:col-span-5">
+            {rest.slice(0, 2).map((s, i) => (
+              <Reveal key={s.slug} delay={60 + i * 60}>
+                <SectorCard
+                  sector={s}
+                  icon={ICONS[s.slug] ?? UtensilsCrossed}
+                  className="aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[13rem]"
                 />
-                <span
-                  className="absolute inset-0 bg-gradient-to-t from-ink via-ink/25 to-transparent opacity-85 transition-opacity duration-500 group-hover:opacity-95"
-                  aria-hidden="true"
-                />
-                <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5">
-                  <span className="text-base font-semibold tracking-tight text-ink-foreground transition-transform duration-500 ease-out group-hover:-translate-y-1 md:text-lg">
-                    {s.name}
-                  </span>
-                  <ArrowUpRight className="size-4 shrink-0 text-ink-foreground/70 transition-all duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-1.5 group-hover:text-ink-foreground" />
-                </span>
-              </Link>
+              </Reveal>
+            ))}
+          </div>
+
+          {rest.slice(2).map((s, i) => (
+            <Reveal key={s.slug} delay={i * 60} className="lg:col-span-3">
+              <SectorCard
+                sector={s}
+                icon={ICONS[s.slug] ?? UtensilsCrossed}
+                className="aspect-[4/3] lg:aspect-[4/3]"
+              />
             </Reveal>
           ))}
         </div>
+
+        <Reveal delay={120} className="mt-10">
+          <Button asChild variant="outline" size="lg" className="group h-12 rounded-sm px-6">
+            <Link to="/secteurs">
+              Voir tous les secteurs
+              <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+          </Button>
+        </Reveal>
       </div>
     </section>
   );
