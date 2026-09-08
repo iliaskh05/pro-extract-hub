@@ -64,8 +64,8 @@ export function SiteHeader() {
             className={cn(
               "transition-[height,max-width] duration-300 ease-out group-hover:opacity-90",
               scrolled
-                ? "!h-9 !max-w-[8.75rem] md:!h-10 md:!max-w-[10rem]"
-                : "!h-11 !max-w-[10.5rem] md:!h-12 md:!max-w-[12.5rem] lg:!h-[3.35rem] lg:!max-w-[14rem]",
+                ? "!h-8 !max-w-[7.5rem] md:!h-10 md:!max-w-[10rem]"
+                : "!h-9 !max-w-[8.5rem] md:!h-12 md:!max-w-[12.5rem] lg:!h-[3.35rem] lg:!max-w-[14rem]",
             )}
           />
         </Link>
@@ -94,11 +94,12 @@ export function SiteHeader() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2 lg:ml-0">
+          {/* Devis dans le header dès tablette ; sur mobile → barre sticky seule */}
           <Button
             asChild
             size="sm"
             variant={overHero ? "inverse" : "default"}
-            className="h-10 rounded-sm px-4 text-sm"
+            className="hidden h-10 rounded-sm px-4 text-sm md:inline-flex"
           >
             <Link to="/devis">Demander un devis</Link>
           </Button>
@@ -109,7 +110,7 @@ export function SiteHeader() {
             aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
             aria-expanded={open}
             className={cn(
-              "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-sm border transition-colors lg:hidden",
+              "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-sm border transition-colors lg:hidden",
               overHero
                 ? "border-white/25 text-white hover:bg-white/10"
                 : "border-border text-foreground hover:bg-secondary",
@@ -124,7 +125,7 @@ export function SiteHeader() {
         <div
           className={cn(
             "panel-in fixed inset-x-0 bottom-0 z-50 overflow-y-auto border-t border-border bg-background px-5 py-6 lg:hidden",
-            scrolled ? "top-14 md:top-16" : "top-16 md:top-20",
+            scrolled ? "top-14 md:top-16" : "top-[4.25rem] md:top-20",
           )}
         >
           <nav className="flex flex-col" aria-label="Navigation mobile">

@@ -65,7 +65,7 @@ export function CarteIdfIntervention({
         setIdfGeo({
           ...deps,
           features: deps.features.filter((f) => {
-            const code = String(f.properties.code ?? "");
+            const code = String(f.properties["code"] ?? "");
             return IDF_OUTER.includes(code);
           }),
         });
@@ -145,14 +145,14 @@ export function CarteIdfIntervention({
         }}
         width={800}
         height={640}
-        className="mx-auto h-auto w-full max-w-2xl"
+        className="mx-auto h-auto w-full max-w-2xl max-h-[42svh] sm:max-h-none"
         role="img"
         aria-label="Carte interactive des départements d'Île-de-France"
       >
         <Geographies geography={idfGeo}>
           {({ geographies }) =>
             geographies.map((geo: GeographyType) => {
-              const code = String(geo.properties.code ?? "");
+              const code = String(geo.properties["code"] ?? "");
               return (
                 <Geography
                   key={geo.rsmKey}

@@ -27,7 +27,10 @@ export function SectorsSection() {
       </div>
 
       <Reveal delay={60}>
-        <div className="flex gap-0 overflow-x-auto snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <p className="shell mb-3 text-xs text-muted-foreground lg:hidden">
+          Glissez horizontalement →
+        </p>
+        <div className="flex gap-0 overflow-x-auto snap-x snap-mandatory scroll-px-5 px-5 [-ms-overflow-style:none] [scrollbar-width:none] sm:px-0 lg:scroll-px-0 [&::-webkit-scrollbar]:hidden">
           {featured.map((s) => {
             const media = SECTOR_MEDIA[s.slug];
             return (
@@ -35,7 +38,7 @@ export function SectorsSection() {
                 key={s.slug}
                 to="/secteurs/$slug"
                 params={{ slug: s.slug }}
-                className="group relative h-[22rem] w-[78vw] shrink-0 snap-center overflow-hidden sm:h-[26rem] sm:w-[48vw] lg:h-[32rem] lg:w-[28vw] lg:snap-start"
+                className="group relative h-[20rem] w-[82vw] shrink-0 snap-center overflow-hidden sm:h-[26rem] sm:w-[48vw] lg:h-[32rem] lg:w-[28vw] lg:snap-start"
               >
                 {media ? (
                   <img

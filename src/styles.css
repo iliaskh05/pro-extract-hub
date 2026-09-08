@@ -253,8 +253,8 @@
 
 /* Rythme vertical unique pour toutes les sections */
 @utility section-y {
-  padding-top: 4.5rem;
-  padding-bottom: 4.5rem;
+  padding-top: 3.25rem;
+  padding-bottom: 3.25rem;
 
   @media (min-width: 768px) {
     padding-top: 6.5rem;
@@ -271,7 +271,11 @@
   margin-inline: auto;
   width: 100%;
   max-width: 80rem;
-  padding-inline: 1.25rem;
+  padding-inline: 1rem;
+
+  @media (min-width: 640px) {
+    padding-inline: 1.25rem;
+  }
 
   @media (min-width: 1024px) {
     padding-inline: 2rem;

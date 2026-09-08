@@ -111,7 +111,7 @@ export function ChatWidget() {
   }
 
   return (
-    <div className="fixed right-4 bottom-40 z-50 flex flex-col items-end gap-3 lg:bottom-24">
+    <div className="fixed right-4 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-50 flex flex-col items-end gap-3 lg:bottom-24">
       {open && (
         <div
           role="dialog"

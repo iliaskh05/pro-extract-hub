@@ -72,7 +72,12 @@ export function FinalCta({
           </h2>
           <p className="mx-auto mt-6 max-w-lg text-base text-white/65">{subtitle}</p>
           <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
-            <Button asChild size="lg" variant="inverse" className="group h-12 px-8 text-base">
+            <Button
+              asChild
+              size="lg"
+              variant="inverse"
+              className="group h-12 w-full px-8 text-base sm:w-auto"
+            >
               <Link to="/devis">
                 Obtenir mon devis
                 <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -81,7 +86,7 @@ export function FinalCta({
             <Button
               size="lg"
               variant="outline"
-              className="h-12 border-white/25 bg-transparent px-8 text-base text-white hover:bg-white/10 hover:text-white"
+              className="h-12 w-full border-white/25 bg-transparent px-8 text-base text-white hover:bg-white/10 hover:text-white sm:w-auto"
               onClick={() => {
                 if (wa) {
                   track("WhatsApp Click", { from: "cta" });

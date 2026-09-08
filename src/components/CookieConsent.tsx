@@ -31,7 +31,7 @@ export function CookieConsent() {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-[70] p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+    <div className="fixed inset-x-0 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-[70] p-3 sm:bottom-0 sm:p-4 sm:pb-[calc(1rem+env(safe-area-inset-bottom))] lg:bottom-0">
       <div className="mx-auto max-w-3xl rounded-2xl border border-border bg-background/95 p-5 shadow-lift backdrop-blur-xl">
         <p className="text-sm font-semibold tracking-tight">Cookies et confidentialité</p>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">

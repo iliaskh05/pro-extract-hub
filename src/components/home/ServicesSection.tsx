@@ -49,7 +49,14 @@ export function ServicesSection() {
             tone="dark"
             eyebrow="Nos prestations"
             title="Ce que nous traitons"
-            description="Survolez une prestation : la photo se fond dans la scène."
+            description={
+              <>
+                <span className="lg:hidden">Touchez une prestation pour voir la photo.</span>
+                <span className="hidden lg:inline">
+                  Survolez une prestation : la photo se fond dans la scène.
+                </span>
+              </>
+            }
           />
         </Reveal>
 
@@ -65,8 +72,9 @@ export function ServicesSection() {
                     params={{ slug: s.slug }}
                     onMouseEnter={() => setActive(i)}
                     onFocus={() => setActive(i)}
+                    onTouchStart={() => setActive(i)}
                     className={cn(
-                      "group flex items-center gap-4 border-b border-white/10 py-4 transition-colors duration-300",
+                      "group flex min-h-14 items-center gap-3 border-b border-white/10 py-3.5 transition-colors duration-300 sm:gap-4 sm:py-4",
                       on ? "border-white/30" : "hover:border-white/20",
                     )}
                   >

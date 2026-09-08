@@ -84,6 +84,30 @@ export function BeforeAfterSlider({
   }, [touched]);
 
   function onPointerDown(e: ReactPointerEvent<HTMLDivElement>) {
+    // Sur tactile : n'active le drag qu'avec un mouvement plutôt horizontal
+    if (e.pointerType === "touch") {
+      const startX = e.clientX;
+      const startY = e.clientY;
+      const onMove = (ev: PointerEvent) => {
+        const dx = Math.abs(ev.clientX - startX);
+        const dy = Math.abs(ev.clientY - startY);
+        if (dx > dy && dx > 8) {
+          setDragging(true);
+          setTouched(true);
+          setFromClientX(ev.clientX);
+          window.removeEventListener("pointermove", onMove);
+        } else if (dy > 12) {
+          window.removeEventListener("pointermove", onMove);
+        }
+      };
+      window.addEventListener("pointermove", onMove, { passive: true });
+      window.addEventListener(
+        "pointerup",
+        () => window.removeEventListener("pointermove", onMove),
+        { once: true },
+      );
+      return;
+    }
     e.preventDefault();
     setDragging(true);
     setTouched(true);
@@ -99,8 +123,8 @@ export function BeforeAfterSlider({
       role="group"
       aria-label={`Comparer avant et après — ${alt}`}
       className={cn(
-        "group relative aspect-[4/3] w-full touch-none overflow-hidden rounded-sm bg-muted select-none sm:aspect-[16/10]",
-        "cursor-ew-resize",
+        "group relative aspect-[4/3] w-full overflow-hidden rounded-sm bg-muted select-none sm:aspect-[16/10]",
+        "touch-pan-y cursor-ew-resize",
         className,
       )}
       onPointerDown={onPointerDown}

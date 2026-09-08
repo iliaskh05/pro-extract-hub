@@ -66,20 +66,64 @@ export function HoodVisualization() {
   return (
     <section
       ref={trackRef}
-      className="surface-blue relative h-[200vh] lg:h-[300vh]"
+      className="surface-blue relative h-[160vh] lg:h-[300vh]"
       aria-label="Comprendre votre système d'extraction"
     >
-      <div className="sticky top-0 flex h-[100svh] items-center overflow-hidden">
+      <div className="sticky top-14 flex h-[calc(100svh-3.5rem)] items-center overflow-hidden md:top-16 md:h-[calc(100svh-4rem)] lg:top-20 lg:h-[calc(100svh-5rem)]">
         <div className="grid-blue pointer-events-none absolute inset-0 opacity-70" aria-hidden="true" />
 
-        <div className="shell relative grid w-full items-center gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
+        <div className="shell relative grid w-full items-center gap-5 py-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16 lg:py-0">
           <div className="order-2 lg:order-1">
             <p className="eyebrow text-accent">Le système</p>
-            <h2 className="mt-4 max-w-md text-[1.75rem] leading-[1.06] font-semibold tracking-[-0.04em] sm:text-4xl lg:text-[2.75rem]">
+            <h2 className="mt-3 max-w-md text-[1.5rem] leading-[1.06] font-semibold tracking-[-0.04em] sm:mt-4 sm:text-4xl lg:text-[2.75rem]">
               De la hotte au moteur, un seul circuit.
             </h2>
 
-            <ol className="mt-6 lg:mt-10">
+            {/* Mobile : une seule étape active + pastilles */}
+            <div className="mt-5 lg:hidden">
+              <div className="flex gap-2">
+                {STAGES.map((s, i) => (
+                  <button
+                    key={s.n}
+                    type="button"
+                    aria-label={s.title}
+                    aria-pressed={i === active}
+                    onClick={() => {
+                      const el = trackRef.current;
+                      if (!el) return;
+                      const top = window.scrollY + el.getBoundingClientRect().top;
+                      const travel = Math.max(1, el.offsetHeight - window.innerHeight);
+                      window.scrollTo({
+                        top: top + ((i + 0.35) / STAGES.length) * travel,
+                        behavior: "smooth",
+                      });
+                    }}
+                    className={cn(
+                      "h-3 min-h-11 flex-1 rounded-full transition-colors",
+                      i === active ? "bg-accent" : "bg-border",
+                    )}
+                  />
+                ))}
+              </div>
+              <div className="mt-4 border-l-2 border-accent py-1 pl-4">
+                <div className="flex items-baseline gap-3">
+                  <span className="font-mono text-[11px] tracking-[0.2em] text-accent">
+                    {STAGES[active]?.n}
+                  </span>
+                  <h3 className="text-base font-semibold tracking-tight">
+                    {STAGES[active]?.title}
+                  </h3>
+                </div>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                  {STAGES[active]?.text}
+                </p>
+              </div>
+              <p className="mt-3 text-xs text-muted-foreground">
+                Faites défiler pour avancer — ou touchez une pastille.
+              </p>
+            </div>
+
+            <ol className="mt-6 hidden lg:mt-10 lg:block">
               {STAGES.map((s, i) => (
                 <li key={s.n}>
                   <div
@@ -112,7 +156,7 @@ export function HoodVisualization() {
           <div className="order-1 lg:order-2">
             <svg
               viewBox="0 0 420 340"
-              className="mx-auto h-auto max-h-[34svh] w-full max-w-xl lg:max-h-none"
+              className="mx-auto h-auto max-h-[28svh] w-full max-w-xl sm:max-h-[34svh] lg:max-h-none"
               role="img"
               aria-label="Schéma d'un système d'extraction : hotte, filtres, conduit, extraction et caisson moteur"
             >

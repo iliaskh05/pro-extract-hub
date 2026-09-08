@@ -68,7 +68,7 @@ function Stars({
 function ReviewCard({ review }: { review: GoogleReview }) {
   const initial = (review.initial ?? review.author.slice(0, 1)).toUpperCase();
   return (
-    <article className="relative flex w-[min(100%,17.5rem)] shrink-0 snap-start flex-col rounded-sm border border-border bg-background p-5 shadow-[0_8px_28px_-22px_rgb(17_17_17/0.35)] sm:w-[19.5rem]">
+    <article className="relative flex h-full w-full flex-col rounded-sm border border-border bg-background p-5 shadow-[0_8px_28px_-22px_rgb(17_17_17/0.35)]">
       <GoogleG className="absolute top-4 right-4 size-4 opacity-90" />
       <div className="flex items-start gap-3 pr-6">
         <span
@@ -107,14 +107,23 @@ export function GoogleReviewsSection() {
   const [paused, setPaused] = useState(false);
   const { rating, reviewCount, reviews, businessName } = GOOGLE_REVIEWS;
   const hasStats = typeof rating === "number" && typeof reviewCount === "number";
-  const cardStep = 328;
   const pages = Math.max(1, reviews.length);
+
+  function cardStep() {
+    const el = scrollerRef.current;
+    if (!el) return 300;
+    const first = el.querySelector<HTMLElement>("[data-review-card]");
+    if (!first) return 300;
+    const style = window.getComputedStyle(el);
+    const gap = Number.parseFloat(style.columnGap || style.gap || "16") || 16;
+    return first.offsetWidth + gap;
+  }
 
   function scrollToIndex(i: number, smooth = true) {
     const el = scrollerRef.current;
-    if (!el) return;
+    if (!el || reviews.length === 0) return;
     const next = ((i % reviews.length) + reviews.length) % reviews.length;
-    el.scrollTo({ left: next * cardStep, behavior: smooth ? "smooth" : "auto" });
+    el.scrollTo({ left: next * cardStep(), behavior: smooth ? "smooth" : "auto" });
     setPage(next);
   }
 
@@ -129,10 +138,10 @@ export function GoogleReviewsSection() {
       setPage((p) => {
         const next = (p + 1) % reviews.length;
         const el = scrollerRef.current;
-        el?.scrollTo({ left: next * cardStep, behavior: "smooth" });
+        el?.scrollTo({ left: next * cardStep(), behavior: "smooth" });
         return next;
       });
-    }, 4200);
+    }, 4800);
     return () => window.clearInterval(id);
   }, [paused, reviews.length]);
 
@@ -197,15 +206,16 @@ export function GoogleReviewsSection() {
               onMouseLeave={() => setPaused(false)}
               onFocusCapture={() => setPaused(true)}
               onBlurCapture={() => setPaused(false)}
+              onTouchStart={() => setPaused(true)}
             >
               <div className="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center">
                 <button
                   type="button"
                   aria-label="Avis précédent"
                   onClick={() => scrollBy(-1)}
-                  className="pointer-events-auto flex size-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm transition-colors hover:text-foreground"
+                  className="pointer-events-auto flex size-11 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm transition-colors hover:text-foreground"
                 >
-                  <ChevronLeft className="size-4" />
+                  <ChevronLeft className="size-5" />
                 </button>
               </div>
               <div className="pointer-events-none absolute inset-y-0 right-0 z-10 flex items-center">
@@ -213,25 +223,28 @@ export function GoogleReviewsSection() {
                   type="button"
                   aria-label="Avis suivant"
                   onClick={() => scrollBy(1)}
-                  className="pointer-events-auto flex size-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm transition-colors hover:text-foreground"
+                  className="pointer-events-auto flex size-11 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm transition-colors hover:text-foreground"
                 >
-                  <ChevronRight className="size-4" />
+                  <ChevronRight className="size-5" />
                 </button>
               </div>
 
               <div
                 ref={scrollerRef}
-                className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-10 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                className="flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth px-12 pb-2 sm:gap-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                 onScroll={() => {
                   const el = scrollerRef.current;
                   if (!el) return;
-                  setPage(Math.round(el.scrollLeft / cardStep));
+                  const step = cardStep();
+                  if (step <= 0) return;
+                  setPage(Math.round(el.scrollLeft / step));
                 }}
               >
                 {reviews.map((r, i) => (
                   <div
                     key={r.id}
-                    className="reviews-card-in shrink-0"
+                    data-review-card
+                    className="reviews-card-in w-[min(100%,17rem)] shrink-0 snap-start sm:w-[19.5rem]"
                     style={{ animationDelay: `${i * 80}ms` }}
                   >
                     <ReviewCard review={r} />
@@ -239,7 +252,7 @@ export function GoogleReviewsSection() {
                 ))}
               </div>
 
-              <div className="mt-5 flex justify-center gap-1.5">
+              <div className="mt-5 flex justify-center gap-2">
                 {Array.from({ length: pages }, (_, i) => (
                   <button
                     key={i}
@@ -247,10 +260,16 @@ export function GoogleReviewsSection() {
                     aria-label={`Avis ${i + 1}`}
                     onClick={() => scrollToIndex(i)}
                     className={cn(
-                      "h-2 rounded-full transition-all duration-300",
-                      page === i ? "w-5 bg-[#f2a60c]" : "w-2 bg-border",
+                      "min-h-11 min-w-11 rounded-full p-3 transition-all duration-300",
                     )}
-                  />
+                  >
+                    <span
+                      className={cn(
+                        "block h-2 rounded-full transition-all",
+                        page === i ? "w-5 bg-[#f2a60c]" : "w-2 bg-border",
+                      )}
+                    />
+                  </button>
                 ))}
               </div>
             </div>

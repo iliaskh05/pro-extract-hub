@@ -187,7 +187,7 @@ function RootComponent() {
         {!isAdmin && <SiteFooter />}
         {!isAdmin && (
           <>
-            <div className="pb-24 lg:pb-0" aria-hidden="true" />
+            <div className="pb-[calc(6.5rem+env(safe-area-inset-bottom))] lg:pb-0" aria-hidden="true" />
             <StickyMobileCta />
             <WhatsAppWidget />
             <Suspense fallback={null}>

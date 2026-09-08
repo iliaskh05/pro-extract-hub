@@ -5,25 +5,35 @@ import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { GALLERY } from "@/lib/media";
 import { cn } from "@/lib/utils";
 
-/** Preuve visuelle immersive : slider plein largeur, onglets légers. */
+const SHORT_LABEL: Record<string, string> = {
+  hotte: "Hotte",
+  conduit: "Conduit",
+  moteur: "Moteur",
+};
+
+/** Preuve visuelle immersive : slider plein largeur, onglets tactiles. */
 export function BeforeAfterShowcase() {
   const [index, setIndex] = useState(0);
   const item = GALLERY[index] ?? GALLERY[0]!;
 
   return (
     <section className="bg-ink text-ink-foreground" data-header-tone="dark">
-      <div className="shell section-y pb-8 lg:pb-10">
+      <div className="shell section-y pb-6 lg:pb-10">
         <Reveal>
           <SectionHeading
             tone="dark"
             eyebrow="Avant / Après"
             title="Sale → propre : glissez le curseur."
-            description="Même cadrage. Tirez la poignée pour voir l'encrassement puis le résultat."
+            description="Même cadrage. Tirez la poignée pour comparer l'encrassement et le résultat."
           />
         </Reveal>
 
-        <Reveal delay={60} className="mt-8">
-          <div className="flex flex-wrap gap-1" role="tablist" aria-label="Choisir un élément">
+        <Reveal delay={60} className="mt-6 sm:mt-8">
+          <div
+            className="flex gap-1 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            role="tablist"
+            aria-label="Choisir un élément"
+          >
             {GALLERY.map((g, i) => (
               <button
                 key={g.slug}
@@ -32,13 +42,14 @@ export function BeforeAfterShowcase() {
                 aria-selected={i === index}
                 onClick={() => setIndex(i)}
                 className={cn(
-                  "px-4 py-2.5 text-xs font-semibold tracking-[0.06em] uppercase transition-colors duration-300",
+                  "min-h-11 shrink-0 px-4 py-2.5 text-xs font-semibold tracking-[0.06em] uppercase transition-colors duration-300",
                   i === index
                     ? "bg-white text-ink"
                     : "text-white/50 hover:bg-white/10 hover:text-white",
                 )}
               >
-                {g.type}
+                <span className="sm:hidden">{SHORT_LABEL[g.slug] ?? g.type}</span>
+                <span className="hidden sm:inline">{g.type}</span>
               </button>
             ))}
           </div>
@@ -53,7 +64,7 @@ export function BeforeAfterShowcase() {
           alt={item.title}
           objectPosition={item.objectPosition}
           beforeTreatment={item.beforeTreatment}
-          className="rounded-none sm:aspect-[21/9]"
+          className="rounded-none aspect-[4/3] sm:aspect-[16/10] lg:aspect-[21/9]"
         />
       </Reveal>
 

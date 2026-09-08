@@ -140,7 +140,23 @@ function FrequencyPanel() {
           adaptée se précise après qualification de votre installation.
         </p>
 
-        <div className="overflow-x-auto">
+        {/* Mobile : cartes empilées */}
+        <ul className="space-y-2 md:hidden">
+          {FREQ_ROWS.map((row) => (
+            <li
+              key={row.type}
+              className="border border-border/80 bg-secondary/20 px-4 py-3.5"
+            >
+              <p className="text-sm font-semibold tracking-tight">{row.type}</p>
+              <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+                <span className="font-semibold text-accent">{row.usage}</span>
+                <span className="text-muted-foreground">{row.intensity}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        <div className="hidden overflow-x-auto md:block">
           <table className="w-full min-w-[36rem] text-left text-sm">
             <thead>
               <tr className="border-b border-border">
@@ -171,7 +187,7 @@ function FrequencyPanel() {
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <Button asChild className="h-11">
+          <Button asChild className="h-12 w-full sm:h-11 sm:w-auto">
             <Link to="/devis">
               Obtenir mon devis
               <ArrowRight className="size-4" />
@@ -192,7 +208,7 @@ function ModesPanel() {
           <article
             key={m.title}
             className={cn(
-              "group relative flex min-h-[22rem] flex-col justify-end overflow-hidden",
+              "group relative flex min-h-[18rem] flex-col justify-end overflow-hidden sm:min-h-[22rem]",
               m.highlight && "ring-1 ring-accent",
             )}
           >
@@ -369,25 +385,25 @@ export function HomeExploreTabs() {
             <TabsList className="h-auto w-full flex-wrap justify-start gap-1 rounded-sm bg-background p-1.5 sm:inline-flex sm:w-auto">
               <TabsTrigger
                 value="frequences"
-                className="rounded-sm px-4 py-2.5 data-[state=active]:shadow-none"
+                className="min-h-11 flex-1 rounded-sm px-3 py-2.5 text-xs sm:flex-none sm:px-4 sm:text-sm data-[state=active]:shadow-none"
               >
                 Fréquences
               </TabsTrigger>
               <TabsTrigger
                 value="modes"
-                className="rounded-sm px-4 py-2.5 data-[state=active]:shadow-none"
+                className="min-h-11 flex-1 rounded-sm px-3 py-2.5 text-xs sm:flex-none sm:px-4 sm:text-sm data-[state=active]:shadow-none"
               >
-                Modes de travail
+                Modes
               </TabsTrigger>
               <TabsTrigger
                 value="zones"
-                className="rounded-sm px-4 py-2.5 data-[state=active]:shadow-none"
+                className="min-h-11 flex-1 rounded-sm px-3 py-2.5 text-xs sm:flex-none sm:px-4 sm:text-sm data-[state=active]:shadow-none"
               >
-                Zones & IDF
+                Zones
               </TabsTrigger>
             </TabsList>
 
-            <div className="mt-8 overflow-hidden bg-background/80 p-5 backdrop-blur-sm sm:p-8 lg:p-10">
+            <div className="mt-6 overflow-hidden bg-background/80 p-4 backdrop-blur-sm sm:mt-8 sm:p-8 lg:p-10">
               <TabsContent value="frequences" className="mt-0 outline-none">
                 <FrequencyPanel />
               </TabsContent>
