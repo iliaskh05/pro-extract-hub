@@ -130,12 +130,15 @@ export function SiteHeader() {
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
         </div>
-      </div>
+        </div>
+      </header>
 
+      {/* Le panneau vit hors du <header> : le backdrop-blur du header créerait
+          un bloc conteneur et écraserait un enfant en position fixed. */}
       {open && (
         <div
           className={cn(
-            "panel-in fixed inset-x-0 bottom-0 z-50 overflow-y-auto border-t border-border bg-background px-5 py-6 lg:hidden",
+            "panel-in fixed inset-x-0 bottom-0 z-[60] flex flex-col overflow-y-auto overscroll-contain border-t border-border bg-background px-5 py-6 pb-[calc(2rem+env(safe-area-inset-bottom))] lg:hidden",
             scrolled ? "top-14 md:top-16" : "top-[4.25rem] md:top-20",
           )}
         >
@@ -146,7 +149,7 @@ export function SiteHeader() {
                 to={item.to}
                 onClick={() => setOpen(false)}
                 style={{ animationDelay: `${50 + i * 40}ms` }}
-                className="step-in border-b border-border py-4 text-lg font-semibold tracking-[-0.02em] transition-colors hover:text-accent"
+                className="step-in flex min-h-[3.25rem] items-center border-b border-border py-4 text-lg font-semibold tracking-[-0.02em] transition-colors hover:text-accent active:text-accent"
                 activeProps={{ className: "text-accent" }}
               >
                 {item.label}
@@ -160,6 +163,7 @@ export function SiteHeader() {
           </Button>
         </div>
       )}
-    </header>
+    </>
   );
+
 }
