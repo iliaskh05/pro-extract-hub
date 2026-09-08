@@ -39,15 +39,26 @@ export function SiteHeader() {
     };
   }, [open]);
 
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
   return (
-    <header
-      className={cn(
-        "fixed top-0 z-50 w-full transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300",
-        overHero
-          ? "border-b border-transparent bg-transparent"
-          : "border-b border-border bg-background/90 shadow-[0_1px_0_0_rgb(17_17_17/0.04)] backdrop-blur-xl",
-      )}
-    >
+    <>
+      <header
+        className={cn(
+          "fixed top-0 z-50 w-full transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300",
+          overHero
+            ? "border-b border-transparent bg-transparent"
+            : "border-b border-border bg-background/90 shadow-[0_1px_0_0_rgb(17_17_17/0.04)] backdrop-blur-xl",
+        )}
+      >
+
       <div
         className={cn(
           "shell flex items-center gap-4 transition-[height] duration-300 ease-out",
