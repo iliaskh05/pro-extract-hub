@@ -90,7 +90,7 @@ export function CookieConsent() {
           </div>
         )}
 
-        <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+        <div className="mt-4 grid grid-cols-2 gap-2 sm:flex sm:flex-row sm:flex-wrap">
           <Button onClick={acceptAll} className="sm:flex-1">
             Tout accepter
           </Button>
@@ -98,15 +98,16 @@ export function CookieConsent() {
             Tout refuser
           </Button>
           {manage ? (
-            <Button variant="ghost" onClick={save}>
+            <Button variant="ghost" onClick={save} className="col-span-2">
               Enregistrer
             </Button>
           ) : (
-            <Button variant="ghost" onClick={() => setManage(true)}>
+            <Button variant="ghost" onClick={() => setManage(true)} className="col-span-2">
               Personnaliser
             </Button>
           )}
         </div>
+
       </div>
     </div>
   );
