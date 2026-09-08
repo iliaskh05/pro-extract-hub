@@ -162,6 +162,7 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isAdmin = pathname.startsWith("/admin");
+  const isHome = pathname === "/";
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -173,6 +174,13 @@ function RootComponent() {
       </a>
       <div className="flex min-h-screen flex-col">
         {!isAdmin && <SiteHeader />}
+        {/* Header fixed : réserve l'espace sauf sur l'accueil (hero plein écran). */}
+        {!isAdmin && !isHome && (
+          <div
+            className="h-[4.25rem] shrink-0 md:h-20 lg:h-[5.25rem]"
+            aria-hidden="true"
+          />
+        )}
         <main id="contenu" className="flex-1">
           <Outlet />
         </main>

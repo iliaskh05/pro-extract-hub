@@ -20,9 +20,11 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isHome = pathname === "/";
+  const overHero = isHome && !scrolled && !open;
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
+    const onScroll = () => setScrolled(window.scrollY > 40);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -40,10 +42,10 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 w-full border-b bg-background/90 backdrop-blur-xl transition-[border-color,box-shadow] duration-300",
-        scrolled || open
-          ? "border-border shadow-[0_1px_0_0_rgb(17_17_17/0.04)]"
-          : "border-transparent",
+        "fixed top-0 z-50 w-full transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300",
+        overHero
+          ? "border-b border-transparent bg-transparent"
+          : "border-b border-border bg-background/90 shadow-[0_1px_0_0_rgb(17_17_17/0.04)] backdrop-blur-xl",
       )}
     >
       <div
@@ -58,6 +60,7 @@ export function SiteHeader() {
           aria-label={`Accueil ${SITE.name}`}
         >
           <BrandMark
+            inverted={overHero}
             className={cn(
               "transition-[height,max-width] duration-300 ease-out group-hover:opacity-90",
               scrolled
@@ -75,8 +78,15 @@ export function SiteHeader() {
             <Link
               key={item.to}
               to={item.to}
-              className="rounded-sm px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-              activeProps={{ className: "text-foreground" }}
+              className={cn(
+                "rounded-sm px-3 py-2 text-sm font-medium transition-colors",
+                overHero
+                  ? "text-white/70 hover:text-white"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+              activeProps={{
+                className: overHero ? "text-white" : "text-foreground",
+              }}
             >
               {item.label}
             </Link>
@@ -84,7 +94,12 @@ export function SiteHeader() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2 lg:ml-0">
-          <Button asChild size="sm" className="h-10 rounded-sm px-4 text-sm">
+          <Button
+            asChild
+            size="sm"
+            variant={overHero ? "inverse" : "default"}
+            className="h-10 rounded-sm px-4 text-sm"
+          >
             <Link to="/devis">Demander un devis</Link>
           </Button>
 
@@ -93,7 +108,12 @@ export function SiteHeader() {
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
             aria-expanded={open}
-            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-sm border border-border text-foreground transition-colors hover:bg-secondary lg:hidden"
+            className={cn(
+              "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-sm border transition-colors lg:hidden",
+              overHero
+                ? "border-white/25 text-white hover:bg-white/10"
+                : "border-border text-foreground hover:bg-secondary",
+            )}
           >
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>

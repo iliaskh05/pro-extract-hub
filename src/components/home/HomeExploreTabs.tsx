@@ -8,6 +8,7 @@ import { IleDeFranceMap } from "@/components/IleDeFranceMap";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IDF_DEPARTMENTS } from "@/lib/idf-departments";
+import { MEDIA, SERVICE_VISUALS } from "@/lib/media";
 import { saveQuotePrefill } from "@/lib/quote-prefill";
 import { activeZones, type ZoneSlug } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -70,6 +71,7 @@ const MODES = [
     icon: ClipboardList,
     title: "Intervention à l'unité",
     subtitle: "Sans engagement",
+    image: SERVICE_VISUALS["diagnostic-devis"]?.image ?? MEDIA.detailFilters,
     points: [
       "Vous contactez quand le besoin apparaît",
       "Qualification de l'installation avant proposition",
@@ -84,6 +86,7 @@ const MODES = [
     icon: CalendarRange,
     title: "Entretien périodique",
     subtitle: "Suivi dans le temps",
+    image: SERVICE_VISUALS["entretien-periodique"]?.image ?? MEDIA.detailFilters,
     points: [
       "Passages planifiés selon votre activité",
       "Historique et prochaine échéance",
@@ -98,6 +101,7 @@ const MODES = [
     icon: Siren,
     title: "Besoin prioritaire",
     subtitle: "Quand c'est critique",
+    image: SERVICE_VISUALS["degraissage-hotte"]?.image ?? MEDIA.heroKitchen,
     points: [
       "Signalement via le formulaire devis",
       "Qualification rapide de la demande",
@@ -112,55 +116,69 @@ const MODES = [
 
 function FrequencyPanel() {
   return (
-    <div className="step-in space-y-6">
-      <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
-        Repères d'usage selon le type de cuisine — pas une obligation unique. La fréquence adaptée
-        se précise après qualification de votre installation.
-      </p>
-
-      <div className="overflow-x-auto rounded-sm border border-border">
-        <table className="w-full min-w-[36rem] text-left text-sm">
-          <thead>
-            <tr className="bg-ink text-ink-foreground">
-              <th className="px-4 py-3.5 text-xs font-semibold tracking-[0.08em] uppercase">
-                Type de cuisine
-              </th>
-              <th className="px-4 py-3.5 text-xs font-semibold tracking-[0.08em] uppercase">
-                Repère d'usage
-              </th>
-              <th className="px-4 py-3.5 text-xs font-semibold tracking-[0.08em] uppercase">
-                Intensité
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {FREQ_ROWS.map((row, i) => (
-              <tr
-                key={row.type}
-                className={cn(
-                  "border-t border-border transition-colors hover:bg-secondary/50",
-                  i % 2 === 0 ? "bg-background" : "bg-secondary/25",
-                )}
-              >
-                <td className="px-4 py-3 font-medium">{row.type}</td>
-                <td className="px-4 py-3 font-semibold text-accent">{row.usage}</td>
-                <td className="px-4 py-3 text-muted-foreground">{row.intensity}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <div className="step-in grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-10">
+      <div className="relative hidden min-h-[22rem] overflow-hidden lg:block">
+        <img
+          src={MEDIA.detailFilters}
+          alt=""
+          loading="lazy"
+          className="absolute inset-0 h-full w-full object-cover"
+          aria-hidden="true"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0c10]/80 via-[#0a0c10]/25 to-transparent" />
+        <p className="absolute inset-x-0 bottom-0 p-6 font-display text-xl font-bold text-white">
+          Fréquences d'usage
+          <span className="mt-1 block text-sm font-normal text-white/65">
+            Selon le type de cuisine
+          </span>
+        </p>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3">
-        <Button asChild className="h-11 rounded-sm">
-          <Link to="/devis">
-            Obtenir mon devis
-            <ArrowRight className="size-4" />
-          </Link>
-        </Button>
-        <p className="text-xs text-muted-foreground">
-          Sans grille tarifaire affichée — devis adapté.
+      <div className="space-y-6">
+        <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
+          Repères d'usage selon le type de cuisine — pas une obligation unique. La fréquence
+          adaptée se précise après qualification de votre installation.
         </p>
+
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[36rem] text-left text-sm">
+            <thead>
+              <tr className="border-b border-border">
+                <th className="pb-3 text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
+                  Type de cuisine
+                </th>
+                <th className="pb-3 text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
+                  Repère d'usage
+                </th>
+                <th className="pb-3 text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
+                  Intensité
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {FREQ_ROWS.map((row) => (
+                <tr
+                  key={row.type}
+                  className="border-t border-border/70 transition-colors hover:bg-secondary/40"
+                >
+                  <td className="py-3 pr-3 font-medium">{row.type}</td>
+                  <td className="py-3 pr-3 font-semibold text-accent">{row.usage}</td>
+                  <td className="py-3 text-muted-foreground">{row.intensity}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3">
+          <Button asChild className="h-11">
+            <Link to="/devis">
+              Obtenir mon devis
+              <ArrowRight className="size-4" />
+            </Link>
+          </Button>
+          <p className="text-xs text-muted-foreground">Sans grille tarifaire affichée — devis adapté.</p>
+        </div>
       </div>
     </div>
   );
@@ -169,49 +187,59 @@ function FrequencyPanel() {
 function ModesPanel() {
   return (
     <div className="step-in">
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-3 md:grid-cols-3">
         {MODES.map((m) => (
           <article
             key={m.title}
             className={cn(
-              "relative flex h-full flex-col rounded-sm border bg-background p-6 transition-transform duration-500 hover:-translate-y-1",
-              m.highlight
-                ? "border-accent shadow-[0_0_0_1px_var(--color-accent)]"
-                : "border-border",
+              "group relative flex min-h-[22rem] flex-col justify-end overflow-hidden",
+              m.highlight && "ring-1 ring-accent",
             )}
           >
+            <img
+              src={m.image}
+              alt=""
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] group-hover:scale-[1.04]"
+              aria-hidden="true"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0c10]/92 via-[#0a0c10]/55 to-[#0a0c10]/20" />
             {m.highlight && (
-              <span className="absolute -top-2.5 right-4 rounded-full bg-accent px-2.5 py-0.5 text-[10px] font-semibold tracking-wide text-accent-foreground uppercase">
+              <span className="absolute top-4 right-4 z-[1] bg-accent px-2.5 py-0.5 text-[10px] font-semibold tracking-wide text-accent-foreground uppercase">
                 Recommandé
               </span>
             )}
-            <m.icon className="size-5 text-accent" aria-hidden="true" />
-            <h3 className="mt-4 text-lg font-semibold tracking-tight">{m.title}</h3>
-            <p className="mt-1 text-sm text-muted-foreground">{m.subtitle}</p>
-            <ul className="mt-5 flex-1 space-y-2.5">
-              {m.points.map((p) => (
-                <li key={p} className="flex gap-2 text-sm leading-snug text-muted-foreground">
-                  <Check className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden="true" />
-                  <span>{p}</span>
-                </li>
-              ))}
-            </ul>
-            <Link
-              to="/devis"
-              onClick={() =>
-                saveQuotePrefill({
-                  landing_page: "/",
-                  service_source: "home-tabs-modes",
-                  need_type: m.need,
-                  request_type: m.request,
-                  message: `Je souhaite : ${m.title}.`,
-                })
-              }
-              className="group mt-6 inline-flex items-center gap-1.5 text-sm font-medium"
-            >
-              Préparer mon devis
-              <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-            </Link>
+            <div className="relative p-6">
+              <m.icon className="size-5 text-white/80" aria-hidden="true" />
+              <h3 className="font-display mt-4 text-xl font-bold tracking-tight text-white">
+                {m.title}
+              </h3>
+              <p className="mt-1 text-sm text-white/60">{m.subtitle}</p>
+              <ul className="mt-5 space-y-2">
+                {m.points.map((p) => (
+                  <li key={p} className="flex gap-2 text-sm leading-snug text-white/75">
+                    <Check className="mt-0.5 size-4 shrink-0 text-white/90" aria-hidden="true" />
+                    <span>{p}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/devis"
+                onClick={() =>
+                  saveQuotePrefill({
+                    landing_page: "/",
+                    service_source: "home-tabs-modes",
+                    need_type: m.need,
+                    ...(m.request ? { request_type: m.request } : {}),
+                    message: `Je souhaite : ${m.title}.`,
+                  })
+                }
+                className="group/link mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-white"
+              >
+                Préparer mon devis
+                <ArrowRight className="size-4 transition-transform group-hover/link:translate-x-1" />
+              </Link>
+            </div>
           </article>
         ))}
       </div>
@@ -314,7 +342,7 @@ function ZonesPanel() {
             </Button>
           </div>
 
-          <div className="rounded-sm border border-border bg-background p-3 sm:p-4">
+          <div className="bg-secondary/30 p-2 sm:p-3">
             <FranceMap highlight={hovered} />
           </div>
         </div>
@@ -359,7 +387,7 @@ export function HomeExploreTabs() {
               </TabsTrigger>
             </TabsList>
 
-            <div className="mt-8 rounded-sm border border-border bg-background p-5 sm:p-8">
+            <div className="mt-8 overflow-hidden bg-background/80 p-5 backdrop-blur-sm sm:p-8 lg:p-10">
               <TabsContent value="frequences" className="mt-0 outline-none">
                 <FrequencyPanel />
               </TabsContent>

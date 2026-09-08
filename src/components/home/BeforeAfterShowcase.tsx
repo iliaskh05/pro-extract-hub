@@ -5,24 +5,25 @@ import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { GALLERY } from "@/lib/media";
 import { cn } from "@/lib/utils";
 
-/** Preuve visuelle principale : glisser le curseur sale ↔ propre. */
+/** Preuve visuelle immersive : slider plein largeur, onglets légers. */
 export function BeforeAfterShowcase() {
   const [index, setIndex] = useState(0);
   const item = GALLERY[index] ?? GALLERY[0]!;
 
   return (
-    <section className="border-y border-border bg-secondary/25">
-      <div className="shell section-y">
+    <section className="bg-ink text-ink-foreground" data-header-tone="dark">
+      <div className="shell section-y pb-8 lg:pb-10">
         <Reveal>
           <SectionHeading
+            tone="dark"
             eyebrow="Avant / Après"
             title="Sale → propre : glissez le curseur."
-            description="Même cadrage. Tirez la poignée pour voir l'encrassement puis le résultat après dégraissage."
+            description="Même cadrage. Tirez la poignée pour voir l'encrassement puis le résultat."
           />
         </Reveal>
 
         <Reveal delay={60} className="mt-8">
-          <div className="flex flex-wrap gap-2" role="tablist" aria-label="Choisir un élément">
+          <div className="flex flex-wrap gap-1" role="tablist" aria-label="Choisir un élément">
             {GALLERY.map((g, i) => (
               <button
                 key={g.slug}
@@ -31,10 +32,10 @@ export function BeforeAfterShowcase() {
                 aria-selected={i === index}
                 onClick={() => setIndex(i)}
                 className={cn(
-                  "rounded-sm border px-4 py-2.5 text-xs font-semibold tracking-[0.04em] transition-all duration-300",
+                  "px-4 py-2.5 text-xs font-semibold tracking-[0.06em] uppercase transition-colors duration-300",
                   i === index
-                    ? "border-accent bg-accent text-accent-foreground"
-                    : "border-border bg-background text-muted-foreground hover:border-accent/40 hover:text-foreground",
+                    ? "bg-white text-ink"
+                    : "text-white/50 hover:bg-white/10 hover:text-white",
                 )}
               >
                 {g.type}
@@ -42,28 +43,25 @@ export function BeforeAfterShowcase() {
             ))}
           </div>
         </Reveal>
+      </div>
 
-        <Reveal className="relative mt-6 lg:mt-8">
-          <BeforeAfterSlider
-            key={item.slug}
-            before={item.before}
-            after={item.after}
-            alt={item.title}
-            objectPosition={item.objectPosition}
-            beforeTreatment={item.beforeTreatment}
-            className="border border-border shadow-lift"
-          />
-          {item.demonstration && (
-            <p className="absolute top-4 left-4 z-10 rounded-sm border border-border bg-background/95 px-3 py-1 text-[10px] font-semibold tracking-[0.14em] text-foreground uppercase backdrop-blur">
-              Démonstration visuelle
-            </p>
-          )}
-        </Reveal>
+      <Reveal className="relative">
+        <BeforeAfterSlider
+          key={item.slug}
+          before={item.before}
+          after={item.after}
+          alt={item.title}
+          objectPosition={item.objectPosition}
+          beforeTreatment={item.beforeTreatment}
+          className="rounded-none sm:aspect-[21/9]"
+        />
+      </Reveal>
 
-        <Reveal delay={100}>
-          <p className="mt-5 max-w-xl text-sm text-muted-foreground">
-            <span className="font-medium text-foreground">{item.title}</span> — {item.text}
-            {item.demonstration ? " (démonstration — photos d'intervention réelles à venir)." : ""}
+      <div className="shell pt-5 pb-16 lg:pb-24">
+        <Reveal delay={80}>
+          <p className="max-w-xl text-sm text-white/55">
+            <span className="font-medium text-white/85">{item.title}</span> — {item.text}
+            {item.demonstration ? " (démonstration visuelle)." : ""}
           </p>
         </Reveal>
       </div>
