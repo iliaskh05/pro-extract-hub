@@ -43,7 +43,7 @@ export function BeforeAfterShowcase() {
           </div>
         </Reveal>
 
-        <Reveal className="mt-6 lg:mt-8" variant="mask">
+        <Reveal className="relative mt-6 lg:mt-8" variant="mask">
           <BeforeAfterSlider
             key={item.slug}
             before={item.before}
@@ -53,11 +53,17 @@ export function BeforeAfterShowcase() {
             beforeTreatment={item.beforeTreatment}
             className="rounded-sm border border-border"
           />
+          {item.demonstration && (
+            <p className="absolute top-4 left-4 z-10 rounded-sm border border-border bg-background/90 px-3 py-1 text-[10px] font-semibold tracking-[0.14em] text-foreground uppercase backdrop-blur">
+              Démonstration visuelle
+            </p>
+          )}
         </Reveal>
 
         <Reveal delay={100}>
           <p className="mt-5 max-w-xl text-sm text-muted-foreground">
             <span className="font-medium text-foreground">{item.title}</span> — {item.text}
+            {item.demonstration ? " (démonstration — photos d'intervention réelles à venir)." : ""}
           </p>
         </Reveal>
       </div>

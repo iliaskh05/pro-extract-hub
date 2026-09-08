@@ -1,6 +1,10 @@
-import ductDetail from "@/assets/duct-detail.jpg";
-import hoodReference from "@/assets/after-hood.jpg";
-import motorReference from "@/assets/after-motor.jpg";
+import sectorRestaurant from "@/assets/generated/sector-restaurant.jpg";
+import sectorHotel from "@/assets/generated/sector-hotel.jpg";
+import sectorFastFood from "@/assets/generated/sector-fast-food.jpg";
+import sectorBakery from "@/assets/generated/sector-bakery.jpg";
+import sectorPastry from "@/assets/generated/sector-pastry.jpg";
+import sectorCaterer from "@/assets/generated/sector-caterer.jpg";
+import sectorCollective from "@/assets/generated/sector-collective.jpg";
 
 export type Sector = {
   slug: string;
@@ -21,7 +25,7 @@ export const SECTORS: Sector[] = [
     slug: "restaurant",
     name: "Restaurants",
     businessType: "Restaurant",
-    image: ductDetail,
+    image: sectorRestaurant,
     imagePosition: "center",
     title: "Dégraissage de hottes pour restaurants",
     description:
@@ -48,7 +52,7 @@ export const SECTORS: Sector[] = [
     slug: "hotel",
     name: "Hôtels",
     businessType: "Hôtel",
-    image: ductDetail,
+    image: sectorHotel,
     imagePosition: "center",
     title: "Entretien des hottes en hôtellerie",
     description:
@@ -70,7 +74,7 @@ export const SECTORS: Sector[] = [
     slug: "fast-food",
     name: "Fast-foods",
     businessType: "Fast-food",
-    image: hoodReference,
+    image: sectorFastFood,
     imagePosition: "top",
     title: "Extraction en restauration rapide",
     description:
@@ -89,7 +93,7 @@ export const SECTORS: Sector[] = [
     slug: "boulangerie",
     name: "Boulangeries",
     businessType: "Boulangerie",
-    image: ductDetail,
+    image: sectorBakery,
     imagePosition: "right",
     title: "Hottes et fours en boulangerie",
     description:
@@ -108,7 +112,7 @@ export const SECTORS: Sector[] = [
     slug: "patisserie",
     name: "Pâtisseries",
     businessType: "Pâtisserie",
-    image: hoodReference,
+    image: sectorPastry,
     imagePosition: "bottom",
     title: "Extraction en pâtisserie",
     description:
@@ -127,7 +131,7 @@ export const SECTORS: Sector[] = [
     slug: "traiteur",
     name: "Traiteurs",
     businessType: "Traiteur",
-    image: ductDetail,
+    image: sectorCaterer,
     imagePosition: "left",
     title: "Cuisines de traiteur",
     description:
@@ -151,7 +155,7 @@ export const SECTORS: Sector[] = [
     slug: "cuisine-collective",
     name: "Cuisines collectives",
     businessType: "Cuisine collective",
-    image: motorReference,
+    image: sectorCollective,
     imagePosition: "center",
     title: "Cuisines collectives et restauration de site",
     description:

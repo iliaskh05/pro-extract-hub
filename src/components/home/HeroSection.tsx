@@ -70,8 +70,8 @@ export function HeroSection() {
             className="hero-copy mt-7 max-w-md text-base leading-relaxed text-muted-foreground md:text-lg"
             style={{ animationDelay: "0.56s" }}
           >
-            Hottes, filtres, conduits et moteurs d'extraction : un entretien technique, documenté
-            et adapté à votre cuisine professionnelle.
+            Hottes, filtres, conduits et moteurs d'extraction : un entretien technique, documenté et
+            adapté à votre cuisine professionnelle.
           </p>
 
           <div
@@ -80,7 +80,7 @@ export function HeroSection() {
           >
             <Button asChild size="lg" className="group h-12 rounded-sm px-7 text-base">
               <Link to="/devis">
-                Demander un devis
+                Obtenir mon devis
                 <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
             </Button>
@@ -105,7 +105,11 @@ export function HeroSection() {
           </p>
         </div>
 
-        <div ref={mediaRef} className="hero-copy will-change-transform" style={{ animationDelay: "0.5s" }}>
+        <div
+          ref={mediaRef}
+          className="hero-copy will-change-transform"
+          style={{ animationDelay: "0.5s" }}
+        >
           <figure className="hero-media relative overflow-hidden rounded-sm border border-border">
             <img
               src={MEDIA.heroKitchen}
@@ -113,7 +117,7 @@ export function HeroSection() {
               width={1600}
               height={1104}
               fetchPriority="high"
-              className="aspect-[4/5] w-full object-cover lg:aspect-[3/4]"
+              className="hero-kenburns aspect-[4/5] w-full object-cover lg:aspect-[3/4]"
             />
             <span
               className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0b2433]/70 via-transparent to-transparent"

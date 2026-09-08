@@ -7,7 +7,11 @@ const STEPS = [
   { n: "02", t: "Analyse de l'installation", d: "Nous qualifions la configuration et les accès." },
   { n: "03", t: "Proposition", d: "Vous recevez une proposition adaptée à votre cuisine." },
   { n: "04", t: "Planification", d: "Le créneau est arrêté avec vous, selon votre service." },
-  { n: "05", t: "Intervention", d: "Les éléments concernés sont traités et contrôlés." },
+  {
+    n: "05",
+    t: "Intervention & contrôles",
+    d: "Traitement des éléments accessibles, photos et points de contrôle consignés.",
+  },
   { n: "06", t: "Suivi", d: "Rapport, points d'attention et prochaine échéance." },
 ];
 

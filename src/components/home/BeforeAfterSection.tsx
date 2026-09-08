@@ -22,7 +22,8 @@ export function BeforeAfterSection() {
             </h2>
           </div>
           <p className="max-w-xs text-sm leading-relaxed text-ink-muted">
-            Comparaisons sur le même angle de vue — glissez pour voir la transformation.
+            Glissez pour comparer. Les paires actuelles sont des démonstrations visuelles sur le
+            même angle — remplacées dès que vos photos d'intervention sont disponibles.
           </p>
         </Reveal>
 
@@ -34,6 +35,11 @@ export function BeforeAfterSection() {
             objectPosition={featured.objectPosition}
             beforeTreatment={featured.beforeTreatment}
           />
+          {featured.demonstration && (
+            <p className="absolute top-4 left-4 z-10 rounded-full border border-ink-border bg-ink/80 px-3 py-1 text-[10px] font-semibold tracking-[0.16em] text-ink-foreground uppercase backdrop-blur">
+              Démonstration visuelle
+            </p>
+          )}
         </Reveal>
         <div className="mt-3 flex justify-end">
           <button
@@ -63,6 +69,11 @@ export function BeforeAfterSection() {
                     style={{ objectPosition: g.objectPosition }}
                   />
                   <span className="absolute inset-0 bg-ink/0 transition-colors duration-500 group-hover:bg-ink/25" />
+                  {g.demonstration && (
+                    <span className="absolute top-3 left-3 rounded-full bg-ink/75 px-2 py-0.5 text-[9px] font-semibold tracking-[0.14em] text-ink-foreground uppercase">
+                      Démo
+                    </span>
+                  )}
                 </span>
                 <span className="block p-5">
                   <span className="block text-sm font-semibold tracking-tight text-ink-foreground">
@@ -91,13 +102,15 @@ export function BeforeAfterSection() {
               />
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <p className="text-xs text-muted-foreground">
-                  Type d'intervention : {selected.type}
+                  {selected.demonstration
+                    ? "Démonstration visuelle — photos d'intervention réelles à venir."
+                    : `Type d'intervention : ${selected.type}`}
                 </p>
                 <Link
                   to="/devis"
                   className="text-sm font-medium underline-offset-4 hover:underline"
                 >
-                  Obtenir un devis pour ce type d'installation
+                  Obtenir mon devis pour ce type d'installation
                 </Link>
               </div>
             </>

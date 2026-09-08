@@ -219,9 +219,13 @@
 }
 
 /* Logo officiel transparent : rendu net, sans pastille */
+.brand-mark {
+  isolation: isolate;
+}
 .brand-mark img {
   image-rendering: auto;
   -webkit-user-drag: none;
+  filter: drop-shadow(0 1px 0 rgb(0 0 0 / 0.04));
 }
 
 @utility eyebrow {
@@ -343,6 +347,26 @@
 
 .hero-media {
   animation: hero-media 1.7s var(--ease-premium) both;
+}
+
+@keyframes hero-kenburns {
+  from {
+    transform: scale(1.04);
+  }
+  to {
+    transform: scale(1.12);
+  }
+}
+
+.hero-kenburns {
+  animation: hero-kenburns 18s var(--ease-soft) alternate infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-kenburns {
+    animation: none;
+  }
 }
 
 .hero-copy {

@@ -35,11 +35,11 @@ export function ProblemSection() {
                 <figure className="relative overflow-hidden rounded-2xl">
                   <img
                     src={MEDIA.beforeHood}
-                    alt="Filtres de hotte professionnelle fortement encrassés — démonstration"
+                    alt="Hotte professionnelle — démonstration visuelle"
                     loading="lazy"
                     width={1200}
                     height={1500}
-                    className="aspect-[4/5] w-full object-cover"
+                    className="aspect-[4/5] w-full object-cover brightness-[0.55] contrast-125 saturate-50 sepia-[0.35]"
                   />
                   <figcaption className="absolute top-4 left-4 rounded-full bg-ink/80 px-2.5 py-1 text-[10px] font-semibold tracking-[0.18em] text-ink-foreground uppercase backdrop-blur">
                     Démonstration

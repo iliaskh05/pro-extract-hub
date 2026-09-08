@@ -107,7 +107,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/brand/logo-white.png", type: "image/png" },
+      { rel: "icon", href: "/brand/icon.png", type: "image/png" },
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       ...(import.meta.env["VITE_SUPABASE_URL"]
         ? [{ rel: "preconnect", href: import.meta.env["VITE_SUPABASE_URL"] as string }]

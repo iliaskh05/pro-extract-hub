@@ -25,7 +25,7 @@ npm run dev
 | `VITE_SITE_URL`                 | Public  | Oui         | URL canonique sans slash final        |
 | `VITE_SUPABASE_URL`             | Public  | Oui         | URL projet Supabase                   |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | Public  | Oui         | Clé anon / publishable                |
-| `VITE_WHATSAPP_NUMBER`          | Public  | Recommandé  | Format `33612345678`                  |
+| `VITE_WHATSAPP_NUMBER`          | Public  | Recommandé  | Format `33612345678` (ex. `212669200560`) |
 | `VITE_PLAUSIBLE_DOMAIN`         | Public  | Optionnel   | Analytics (consentement requis)       |
 | `SUPABASE_URL`                  | Serveur | Oui         | Même URL que ci-dessus                |
 | `SUPABASE_PUBLISHABLE_KEY`      | Serveur | Oui         | Clé publishable                       |

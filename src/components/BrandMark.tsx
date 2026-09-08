@@ -4,9 +4,9 @@ import logoWhite from "@/assets/brand/logo-white.png";
 import logoBlack from "@/assets/brand/logo-black.png";
 
 /**
- * Logo flottant sans fond.
- * - Fond sombre (hero / footer) → blanc
- * - Fond clair (header au scroll) → noir
+ * Logo Salis 3 Hottes — fond transparent.
+ * - inverted : fond sombre → version blanche
+ * - sinon : fond clair → version noire
  */
 export function BrandMark({
   className,
@@ -14,13 +14,12 @@ export function BrandMark({
   compact = false,
 }: {
   className?: string;
-  /** true = fond sombre → logo blanc ; false = fond clair → logo noir */
   inverted?: boolean;
   compact?: boolean;
 }) {
   const size = compact
-    ? "w-[8.5rem] sm:w-[9.5rem]"
-    : "w-[10.5rem] sm:w-[12rem] md:w-[13rem] lg:w-[14rem]";
+    ? "h-10 w-auto max-w-[9.5rem] sm:h-11 sm:max-w-[10.5rem]"
+    : "h-11 w-auto max-w-[11rem] sm:h-12 sm:max-w-[12.5rem] md:h-14 md:max-w-[14rem]";
 
   return (
     <span
@@ -33,24 +32,24 @@ export function BrandMark({
       <img
         src={logoWhite}
         alt={inverted ? SITE.name : ""}
-        width={830}
-        height={496}
+        width={800}
+        height={459}
         decoding="async"
         aria-hidden={!inverted}
         className={cn(
-          "block h-auto w-full object-contain object-left select-none transition-opacity duration-300",
+          "block h-full w-auto max-w-full object-contain object-left select-none transition-opacity duration-300",
           inverted ? "opacity-100" : "pointer-events-none absolute inset-0 opacity-0",
         )}
       />
       <img
         src={logoBlack}
         alt={inverted ? "" : SITE.name}
-        width={830}
-        height={496}
+        width={800}
+        height={459}
         decoding="async"
         aria-hidden={inverted}
         className={cn(
-          "block h-auto w-full object-contain object-left select-none transition-opacity duration-300",
+          "block h-full w-auto max-w-full object-contain object-left select-none transition-opacity duration-300",
           inverted ? "pointer-events-none absolute inset-0 opacity-0" : "opacity-100",
         )}
       />

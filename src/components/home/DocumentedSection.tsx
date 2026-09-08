@@ -120,7 +120,7 @@ export function DocumentedSection() {
             <div className="relative aspect-[3/2] w-full overflow-hidden rounded-2xl bg-secondary sm:aspect-[16/11]">
               <StageVisual index={0} active={active}>
                 <img
-                  src={MEDIA.ductDetail}
+                  src={MEDIA.detailFilters}
                   alt="Relevé technique d'une installation d'extraction"
                   loading="lazy"
                   className="h-full w-full object-cover"
@@ -130,7 +130,7 @@ export function DocumentedSection() {
 
               <StageVisual index={1} active={active}>
                 <img
-                  src={MEDIA.beforeDuct}
+                  src={MEDIA.ductDetail}
                   alt="Traitement d'un conduit d'extraction — démonstration"
                   loading="lazy"
                   className="h-full w-full object-cover"
@@ -143,9 +143,9 @@ export function DocumentedSection() {
                   <figure className="relative">
                     <img
                       src={MEDIA.beforeHood}
-                      alt="Hotte avant intervention — démonstration"
+                      alt="Hotte — démonstration avant (traitement visuel)"
                       loading="lazy"
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-cover brightness-[0.55] contrast-125 saturate-50 sepia-[0.35]"
                     />
                     <figcaption className="absolute top-3 left-3 rounded-full bg-ink/80 px-2.5 py-1 text-[10px] font-semibold tracking-[0.18em] text-ink-foreground uppercase">
                       Avant

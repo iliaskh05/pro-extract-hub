@@ -41,24 +41,28 @@ export function SiteHeader() {
     <header
       className={cn(
         "sticky top-0 z-50 w-full border-b bg-background/90 backdrop-blur-xl transition-[border-color,box-shadow] duration-300",
-        scrolled || open ? "border-border shadow-[0_1px_0_0_rgb(17_17_17/0.04)]" : "border-transparent",
+        scrolled || open
+          ? "border-border shadow-[0_1px_0_0_rgb(17_17_17/0.04)]"
+          : "border-transparent",
       )}
     >
       <div
         className={cn(
-          "shell flex items-center gap-3 transition-[height] duration-300 ease-out",
-          scrolled ? "h-14 md:h-16" : "h-16 md:h-20 lg:h-24",
+          "shell flex items-center gap-4 transition-[height] duration-300 ease-out",
+          scrolled ? "h-14 md:h-16" : "h-[4.25rem] md:h-20 lg:h-[5.25rem]",
         )}
       >
         <Link
           to="/"
-          className="inline-flex min-w-0 shrink items-center transition-opacity hover:opacity-80"
+          className="group inline-flex min-w-0 shrink items-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label={`Accueil ${SITE.name}`}
         >
           <BrandMark
             className={cn(
-              "transition-[width] duration-300 ease-out",
-              scrolled ? "w-[7rem] md:w-[8.5rem]" : "w-[7.5rem] md:w-[10rem] lg:w-[11.5rem]",
+              "transition-[height,max-width] duration-300 ease-out group-hover:opacity-90",
+              scrolled
+                ? "!h-9 !max-w-[8.75rem] md:!h-10 md:!max-w-[10rem]"
+                : "!h-11 !max-w-[10.5rem] md:!h-12 md:!max-w-[12.5rem] lg:!h-[3.35rem] lg:!max-w-[14rem]",
             )}
           />
         </Link>

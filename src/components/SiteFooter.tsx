@@ -10,8 +10,8 @@ export function SiteFooter() {
       <div className="shell py-14 lg:py-20">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-12">
           <div className="lg:col-span-4">
-            <BrandMark className="w-[9rem]" />
-            <p className="mt-5 max-w-xs text-sm leading-relaxed text-muted-foreground">
+            <BrandMark className="!h-14 !max-w-[13rem] md:!h-16 md:!max-w-[15rem]" />
+            <p className="mt-6 max-w-xs text-sm leading-relaxed text-muted-foreground">
               {SITE.tagline} pour les cuisines professionnelles.
             </p>
           </div>
