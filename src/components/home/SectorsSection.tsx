@@ -2,9 +2,6 @@ import { Link } from "@tanstack/react-router";
 import {
   ArrowRight,
   Building2,
-  ChefHat,
-  Croissant,
-  CakeSlice,
   Soup,
   UtensilsCrossed,
   Sandwich,
@@ -20,15 +17,19 @@ const ICONS: Record<string, LucideIcon> = {
   restaurant: UtensilsCrossed,
   hotel: Building2,
   "fast-food": Sandwich,
-  boulangerie: Croissant,
-  patisserie: CakeSlice,
-  traiteur: ChefHat,
   "cuisine-collective": Soup,
 };
 
+const HOME_SLUGS = ["restaurant", "hotel", "fast-food", "cuisine-collective"] as const;
+
+/** Accueil : 4 secteurs max — le reste sur /secteurs. */
 export function SectorsSection() {
-  const [feature, ...rest] = SECTORS;
-  if (!feature) return null;
+  const featured = HOME_SLUGS.map((slug) => SECTORS.find((s) => s.slug === slug)).filter(
+    Boolean,
+  ) as typeof SECTORS;
+
+  const [primary, ...rest] = featured;
+  if (!primary) return null;
 
   return (
     <section className="bg-background">
@@ -37,41 +38,31 @@ export function SectorsSection() {
           <SectionHeading
             eyebrow="Secteurs"
             title="Les établissements que nous accompagnons"
-            description="Chaque activité impose ses contraintes d'accès, d'horaires et de cadence. Nous adaptons l'intervention à la vôtre."
+            description="Quelques profils représentatifs. La liste complète est sur la page secteurs."
           />
         </Reveal>
 
         <div className="mt-12 grid gap-4 lg:mt-16 lg:grid-cols-12">
           <Reveal className="lg:col-span-7">
             <SectorCard
-              sector={feature}
-              icon={ICONS[feature.slug] ?? UtensilsCrossed}
+              sector={primary}
+              icon={ICONS[primary.slug] ?? UtensilsCrossed}
               featured
               className="aspect-[4/3] lg:aspect-[16/11]"
             />
           </Reveal>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:col-span-5">
-            {rest.slice(0, 2).map((s, i) => (
+          <div className="grid gap-4 sm:grid-cols-2 lg:col-span-5 lg:grid-cols-1">
+            {rest.map((s, i) => (
               <Reveal key={s.slug} delay={60 + i * 60}>
                 <SectorCard
                   sector={s}
                   icon={ICONS[s.slug] ?? UtensilsCrossed}
-                  className="aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[13rem]"
+                  className="aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[8.5rem]"
                 />
               </Reveal>
             ))}
           </div>
-
-          {rest.slice(2).map((s, i) => (
-            <Reveal key={s.slug} delay={i * 60} className="lg:col-span-3">
-              <SectorCard
-                sector={s}
-                icon={ICONS[s.slug] ?? UtensilsCrossed}
-                className="aspect-[4/3] lg:aspect-[4/3]"
-              />
-            </Reveal>
-          ))}
         </div>
 
         <Reveal delay={120} className="mt-10">
