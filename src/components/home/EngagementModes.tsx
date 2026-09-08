@@ -65,7 +65,7 @@ export function EngagementModes() {
                       landing_page: "/",
                       service_source: "engagement-modes",
                       need_type: m.need,
-                      request_type: m.request,
+                      request_type: m.request ?? "",
                       message: `Je souhaite : ${m.title}.`,
                     })
                   }

@@ -32,16 +32,19 @@ export function CookieConsent() {
 
   return (
     <div className="fixed inset-x-0 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-[70] p-3 sm:bottom-0 sm:p-4 sm:pb-[calc(1rem+env(safe-area-inset-bottom))] lg:bottom-0">
-      <div className="mx-auto max-w-3xl rounded-2xl border border-border bg-background/95 p-5 shadow-lift backdrop-blur-xl">
+      <div className="mx-auto max-w-3xl rounded-2xl border border-border bg-background/95 p-4 shadow-lift backdrop-blur-xl sm:p-5">
         <p className="text-sm font-semibold tracking-tight">Cookies et confidentialité</p>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Les cookies essentiels assurent le fonctionnement du site. Les mesures d'audience et les
-          cookies marketing ne sont déposés qu'avec votre accord.{" "}
+        <p className="mt-1.5 text-[0.8125rem] leading-relaxed text-muted-foreground sm:mt-2 sm:text-sm">
+          Les cookies essentiels assurent le fonctionnement du site.{" "}
+          <span className="hidden sm:inline">
+            Les mesures d'audience et les cookies marketing ne sont déposés qu'avec votre accord.{" "}
+          </span>
           <Link to="/confidentialite" className="underline-offset-4 hover:underline">
             Politique de confidentialité
           </Link>
           .
         </p>
+
 
         {manage && (
           <div className="mt-4 space-y-3 text-sm">
@@ -87,7 +90,7 @@ export function CookieConsent() {
           </div>
         )}
 
-        <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+        <div className="mt-4 grid grid-cols-2 gap-2 sm:flex sm:flex-row sm:flex-wrap">
           <Button onClick={acceptAll} className="sm:flex-1">
             Tout accepter
           </Button>
@@ -95,15 +98,16 @@ export function CookieConsent() {
             Tout refuser
           </Button>
           {manage ? (
-            <Button variant="ghost" onClick={save}>
+            <Button variant="ghost" onClick={save} className="col-span-2">
               Enregistrer
             </Button>
           ) : (
-            <Button variant="ghost" onClick={() => setManage(true)}>
+            <Button variant="ghost" onClick={() => setManage(true)} className="col-span-2">
               Personnaliser
             </Button>
           )}
         </div>
+
       </div>
     </div>
   );
