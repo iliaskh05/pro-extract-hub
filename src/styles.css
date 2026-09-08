@@ -478,6 +478,10 @@
   animation: step-in 0.55s var(--ease-premium) both;
 }
 
+.reviews-card-in {
+  animation: step-in 0.55s var(--ease-premium) both;
+}
+
 .airflow-line {
   stroke-dasharray: 26 210;
   animation: airflow 3.4s linear infinite;
@@ -511,6 +515,7 @@
   .panel-in,
   .handle-hint,
   .step-in,
+  .reviews-card-in,
   .airflow-line {
     animation: none !important;
     opacity: 1;

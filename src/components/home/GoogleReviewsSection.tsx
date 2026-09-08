@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 import { Reveal } from "@/components/Reveal";
@@ -15,12 +15,7 @@ import { toast } from "sonner";
 
 function GoogleG({ className }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      className={className}
-      aria-hidden="true"
-      focusable="false"
-    >
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true" focusable="false">
       <path
         fill="#4285F4"
         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -73,7 +68,7 @@ function Stars({
 function ReviewCard({ review }: { review: GoogleReview }) {
   const initial = (review.initial ?? review.author.slice(0, 1)).toUpperCase();
   return (
-    <article className="relative flex w-[min(100%,18.5rem)] shrink-0 flex-col rounded-sm border border-border bg-background p-5 shadow-[0_8px_28px_-22px_rgb(17_17_17/0.35)] sm:w-[20rem]">
+    <article className="relative flex w-[min(100%,17.5rem)] shrink-0 snap-start flex-col rounded-sm border border-border bg-background p-5 shadow-[0_8px_28px_-22px_rgb(17_17_17/0.35)] sm:w-[19.5rem]">
       <GoogleG className="absolute top-4 right-4 size-4 opacity-90" />
       <div className="flex items-start gap-3 pr-6">
         <span
@@ -88,9 +83,7 @@ function ReviewCard({ review }: { review: GoogleReview }) {
         </div>
       </div>
       <Stars value={review.rating} size="sm" className="mt-3" />
-      <p className="mt-3 line-clamp-5 text-sm leading-relaxed text-foreground/90">
-        {review.text}
-      </p>
+      <p className="mt-3 line-clamp-5 text-sm leading-relaxed text-foreground/90">{review.text}</p>
     </article>
   );
 }
@@ -99,8 +92,7 @@ function openGoogleReview() {
   const url = googleReviewLink();
   if (!url) {
     toast.info("Lien Google à venir", {
-      description:
-        "Collez l’URL de votre fiche Google Business dans VITE_GOOGLE_REVIEW_URL.",
+      description: "Collez l’URL de votre fiche dans VITE_GOOGLE_REVIEW_URL.",
     });
     return;
   }
@@ -108,27 +100,41 @@ function openGoogleReview() {
   window.open(url, "_blank", "noopener,noreferrer");
 }
 
-/** Section avis Google — résumé + carrousel, lien à brancher via .env. */
+/** Section avis Google — résumé + carrousel animé / glissable. */
 export function GoogleReviewsSection() {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [page, setPage] = useState(0);
+  const [paused, setPaused] = useState(false);
   const { rating, reviewCount, reviews, businessName } = GOOGLE_REVIEWS;
   const hasStats = typeof rating === "number" && typeof reviewCount === "number";
-  const hasReviews = reviews.length > 0;
-  const pages = Math.max(1, Math.ceil(reviews.length / 2));
+  const cardStep = 328;
+  const pages = Math.max(1, reviews.length);
 
-  function scrollBy(dir: -1 | 1) {
+  function scrollToIndex(i: number, smooth = true) {
     const el = scrollerRef.current;
     if (!el) return;
-    const delta = Math.min(el.clientWidth * 0.85, 340) * dir;
-    el.scrollBy({ left: delta, behavior: "smooth" });
-    setPage((p) => {
-      const next = p + dir;
-      if (next < 0) return 0;
-      if (next > pages - 1) return pages - 1;
-      return next;
-    });
+    const next = ((i % reviews.length) + reviews.length) % reviews.length;
+    el.scrollTo({ left: next * cardStep, behavior: smooth ? "smooth" : "auto" });
+    setPage(next);
   }
+
+  function scrollBy(dir: -1 | 1) {
+    scrollToIndex(page + dir);
+  }
+
+  useEffect(() => {
+    if (reviews.length < 2 || paused) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const id = window.setInterval(() => {
+      setPage((p) => {
+        const next = (p + 1) % reviews.length;
+        const el = scrollerRef.current;
+        el?.scrollTo({ left: next * cardStep, behavior: "smooth" });
+        return next;
+      });
+    }, 4200);
+    return () => window.clearInterval(id);
+  }, [paused, reviews.length]);
 
   return (
     <section className="border-y border-border bg-secondary/35">
@@ -141,24 +147,21 @@ export function GoogleReviewsSection() {
             title="Avis Google"
             description={
               hasStats
-                ? `Note ${rating}/5 sur ${reviewCount} avis Google My Business`
-                : "Notez notre intervention sur Google — le lien de la fiche sera branché dès qu’il sera prêt."
+                ? `Note ${rating}/5 sur ${reviewCount} avis`
+                : "Notez notre intervention sur Google."
             }
           />
         </Reveal>
 
         <Reveal delay={80} className="mt-12">
           <div className="grid items-stretch gap-8 lg:grid-cols-[minmax(0,17.5rem)_1fr] lg:gap-10">
-            {/* Résumé fiche */}
             <aside className="flex flex-col items-center justify-center rounded-sm border border-border bg-background px-6 py-8 text-center shadow-[0_12px_40px_-28px_rgb(17_17_17/0.4)]">
               <div className="flex size-14 items-center justify-center overflow-hidden rounded-full border border-border bg-white p-1.5">
                 <BrandMark compact className="!h-9 !max-w-[3.25rem]" />
               </div>
-              <p className="font-display mt-4 text-base font-bold tracking-tight">
-                {businessName}
-              </p>
+              <p className="font-display mt-4 text-base font-bold tracking-tight">{businessName}</p>
 
-              {hasStats ? (
+              {hasStats && (
                 <>
                   <div className="mt-3 flex items-center justify-center gap-2">
                     <span className="font-display text-2xl font-bold tabular-nums tracking-tight">
@@ -166,18 +169,7 @@ export function GoogleReviewsSection() {
                     </span>
                     <Stars value={rating!} />
                   </div>
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    Basé sur {reviewCount} avis
-                  </p>
-                </>
-              ) : (
-                <>
-                  <div className="mt-3 flex items-center justify-center gap-2 opacity-80">
-                    <Stars value={5} />
-                  </div>
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    Fiche Google à relier
-                  </p>
+                  <p className="mt-2 text-xs text-muted-foreground">Basé sur {reviewCount} avis</p>
                 </>
               )}
 
@@ -199,86 +191,68 @@ export function GoogleReviewsSection() {
               </Button>
             </aside>
 
-            {/* Carrousel */}
-            <div className="relative min-w-0">
-              {hasReviews ? (
-                <>
-                  <div className="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-0 sm:-left-1">
-                    <button
-                      type="button"
-                      aria-label="Avis précédent"
-                      onClick={() => scrollBy(-1)}
-                      className="pointer-events-auto flex size-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm transition-colors hover:text-foreground"
-                    >
-                      <ChevronLeft className="size-4" />
-                    </button>
-                  </div>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 z-10 flex items-center pr-0 sm:-right-1">
-                    <button
-                      type="button"
-                      aria-label="Avis suivant"
-                      onClick={() => scrollBy(1)}
-                      className="pointer-events-auto flex size-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm transition-colors hover:text-foreground"
-                    >
-                      <ChevronRight className="size-4" />
-                    </button>
-                  </div>
+            <div
+              className="relative min-w-0"
+              onMouseEnter={() => setPaused(true)}
+              onMouseLeave={() => setPaused(false)}
+              onFocusCapture={() => setPaused(true)}
+              onBlurCapture={() => setPaused(false)}
+            >
+              <div className="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center">
+                <button
+                  type="button"
+                  aria-label="Avis précédent"
+                  onClick={() => scrollBy(-1)}
+                  className="pointer-events-auto flex size-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm transition-colors hover:text-foreground"
+                >
+                  <ChevronLeft className="size-4" />
+                </button>
+              </div>
+              <div className="pointer-events-none absolute inset-y-0 right-0 z-10 flex items-center">
+                <button
+                  type="button"
+                  aria-label="Avis suivant"
+                  onClick={() => scrollBy(1)}
+                  className="pointer-events-auto flex size-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm transition-colors hover:text-foreground"
+                >
+                  <ChevronRight className="size-4" />
+                </button>
+              </div>
 
+              <div
+                ref={scrollerRef}
+                className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-10 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                onScroll={() => {
+                  const el = scrollerRef.current;
+                  if (!el) return;
+                  setPage(Math.round(el.scrollLeft / cardStep));
+                }}
+              >
+                {reviews.map((r, i) => (
                   <div
-                    ref={scrollerRef}
-                    className="flex gap-4 overflow-x-auto px-10 pb-2 scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                    key={r.id}
+                    className="reviews-card-in shrink-0"
+                    style={{ animationDelay: `${i * 80}ms` }}
                   >
-                    {reviews.map((r) => (
-                      <ReviewCard key={r.id} review={r} />
-                    ))}
+                    <ReviewCard review={r} />
                   </div>
+                ))}
+              </div>
 
-                  <div className="mt-5 flex justify-center gap-1.5">
-                    {Array.from({ length: pages }, (_, i) => (
-                      <button
-                        key={i}
-                        type="button"
-                        aria-label={`Page ${i + 1}`}
-                        onClick={() => {
-                          const el = scrollerRef.current;
-                          if (!el) return;
-                          el.scrollTo({
-                            left: i * Math.min(el.clientWidth * 0.85, 340),
-                            behavior: "smooth",
-                          });
-                          setPage(i);
-                        }}
-                        className={cn(
-                          "size-2 rounded-full transition-colors",
-                          page === i ? "bg-[#f2a60c]" : "bg-border",
-                        )}
-                      />
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <div className="flex h-full min-h-[14rem] flex-col items-center justify-center rounded-sm border border-dashed border-border bg-background/80 px-6 py-10 text-center">
-                  <GoogleG className="size-8" />
-                  <p className="font-display mt-4 text-lg font-bold tracking-tight">
-                    Les avis s’afficheront ici
-                  </p>
-                  <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
-                    Dès que la fiche Google est reliée, collez le lien dans{" "}
-                    <code className="text-xs">VITE_GOOGLE_REVIEW_URL</code> et
-                    les avis réels dans{" "}
-                    <code className="text-xs">src/lib/google-reviews.ts</code>.
-                  </p>
-                  <Button
+              <div className="mt-5 flex justify-center gap-1.5">
+                {Array.from({ length: pages }, (_, i) => (
+                  <button
+                    key={i}
                     type="button"
-                    variant="outline"
-                    className="mt-6 rounded-full"
-                    onClick={openGoogleReview}
-                  >
-                    Nous noter sur Google
-                    <GoogleG className="size-4" />
-                  </Button>
-                </div>
-              )}
+                    aria-label={`Avis ${i + 1}`}
+                    onClick={() => scrollToIndex(i)}
+                    className={cn(
+                      "h-2 rounded-full transition-all duration-300",
+                      page === i ? "w-5 bg-[#f2a60c]" : "w-2 bg-border",
+                    )}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </Reveal>

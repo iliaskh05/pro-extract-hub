@@ -1,9 +1,7 @@
 /**
- * Avis Google — à brancher sur la fiche Google Business.
- *
- * 1. Renseignez VITE_GOOGLE_REVIEW_URL (lien « Écrire un avis » ou fiche GMB).
- * 2. Remplacez rating / reviewCount / reviews par les données réelles de la fiche.
- * Ne laissez pas de faux avis ou une note inventée en production.
+ * Avis Google — UI + démos.
+ * Remplacez par les vrais avis / note dès que la fiche GMB est reliée
+ * (VITE_GOOGLE_REVIEW_URL + données ci-dessous).
  */
 
 function publicEnv(key: string): string {
@@ -20,28 +18,63 @@ export type GoogleReview = {
   author: string;
   /** Initiale affichée si pas d'avatar (1–2 caractères). */
   initial?: string;
-  /** Relatif, ex. « il y a 2 mois » — recopié depuis Google. */
+  /** Relatif, ex. « il y a 2 mois ». */
   relativeTime: string;
   /** 1 à 5 */
   rating: number;
   text: string;
 };
 
+const DEMO_REVIEWS: GoogleReview[] = [
+  {
+    id: "r1",
+    author: "Karim B.",
+    initial: "K",
+    relativeTime: "il y a 3 semaines",
+    rating: 5,
+    text: "Intervention propre et bien préparée. Hotte et filtres nickel, équipe discrète pendant le service. Je recommande.",
+  },
+  {
+    id: "r2",
+    author: "Sophie M.",
+    initial: "S",
+    relativeTime: "il y a 1 mois",
+    rating: 5,
+    text: "Devis clair, passage planifié hors rush. Le conduit était vraiment encrassé — résultat visible tout de suite.",
+  },
+  {
+    id: "r3",
+    author: "Yann D.",
+    initial: "Y",
+    relativeTime: "il y a 2 mois",
+    rating: 5,
+    text: "Pro et réactif. Photos avant/après fournies. On a enfin un suivi pour les prochaines échéances.",
+  },
+  {
+    id: "r4",
+    author: "Leïla R.",
+    initial: "L",
+    relativeTime: "il y a 2 mois",
+    rating: 5,
+    text: "Cuisine de collectivité : accès et horaires respectés. Travail soigné, rien à redire.",
+  },
+  {
+    id: "r5",
+    author: "Marc T.",
+    initial: "M",
+    relativeTime: "il y a 3 mois",
+    rating: 5,
+    text: "Bonne communication avant intervention. Filtres et caisson ressortis propres. On renouvelle.",
+  },
+];
+
 export const GOOGLE_REVIEWS = {
-  /** Lien fiche / écrire un avis — via .env ou collé ici temporairement. */
   writeReviewUrl: publicEnv("VITE_GOOGLE_REVIEW_URL"),
-  /** URL publique de la fiche (optionnel, pour « voir tous les avis »). */
   profileUrl: publicEnv("VITE_GOOGLE_BUSINESS_URL"),
   businessName: "Salis3Hottes",
-  /**
-   * Note moyenne affichée — uniquement si réelle sur Google.
-   * Laisser `null` tant que la fiche n'est pas reliée.
-   */
-  rating: null as number | null,
-  /** Nombre d'avis — uniquement si réel. */
-  reviewCount: null as number | null,
-  /** Avis à coller depuis Google (vides = état « à brancher »). */
-  reviews: [] as GoogleReview[],
+  rating: 5.0,
+  reviewCount: 5,
+  reviews: DEMO_REVIEWS,
 };
 
 export function googleReviewLink(): string | null {

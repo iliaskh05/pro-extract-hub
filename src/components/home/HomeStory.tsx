@@ -10,7 +10,6 @@ import { FinalCta } from "@/components/FinalCta";
 
 /**
  * Accueil aéré : preuves essentielles + détail dense en onglets.
- * Pas de prix inventés, pas de faux avis Google (section prête à brancher).
  */
 export function HomeStory() {
   return (

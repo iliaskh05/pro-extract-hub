@@ -170,7 +170,8 @@ export function IleDeFranceMap({
 
         <div className="border-t border-border p-4">
           <Link
-            to="/zones/paris"
+            to="/zones/$slug"
+            params={{ slug: "paris" }}
             className="group inline-flex items-center gap-1.5 text-sm font-semibold text-accent"
           >
             Page zone Paris / IDF
