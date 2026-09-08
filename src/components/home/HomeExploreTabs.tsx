@@ -4,8 +4,10 @@ import { ArrowRight, CalendarRange, Check, ClipboardList, MapPin, Siren } from "
 import { Reveal } from "@/components/Reveal";
 import { SectionHeading } from "@/components/SectionHeading";
 import { FranceMap } from "@/components/FranceMap";
+import { IleDeFranceMap } from "@/components/IleDeFranceMap";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { IDF_DEPARTMENTS } from "@/lib/idf-departments";
 import { saveQuotePrefill } from "@/lib/quote-prefill";
 import { activeZones, type ZoneSlug } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -219,57 +221,104 @@ function ModesPanel() {
 
 function ZonesPanel() {
   const [hovered, setHovered] = useState<ZoneSlug | undefined>();
+  const [view, setView] = useState<"idf" | "france">("idf");
   const zones = activeZones();
+  const deptCodes = IDF_DEPARTMENTS.map((d) => d.code).join(" · ");
 
   return (
-    <div className="step-in grid gap-8 lg:grid-cols-2 lg:gap-12">
-      <div>
-        <p className="text-sm leading-relaxed text-muted-foreground">
-          Quatre pôles réellement desservis. En limite de secteur, la faisabilité est confirmée
-          avant proposition — nous n'annonçons pas de villes non couvertes.
-        </p>
+    <div className="step-in space-y-10">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="max-w-2xl">
+          <p className="font-display text-lg font-semibold tracking-[-0.03em] sm:text-xl">
+            Zones d'intervention
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            Quatre pôles réellement desservis. Le pôle Paris détaille les{" "}
+            <span className="font-medium text-foreground">8 départements d'Île-de-France</span>{" "}
+            ({deptCodes}). En limite de secteur, la faisabilité est confirmée avant proposition.
+          </p>
+        </div>
+        <div className="inline-flex rounded-sm border border-border bg-secondary/40 p-1">
+          <button
+            type="button"
+            onClick={() => setView("idf")}
+            className={cn(
+              "rounded-sm px-3.5 py-2 text-xs font-semibold tracking-wide transition-colors",
+              view === "idf" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground",
+            )}
+          >
+            Île-de-France
+          </button>
+          <button
+            type="button"
+            onClick={() => setView("france")}
+            className={cn(
+              "rounded-sm px-3.5 py-2 text-xs font-semibold tracking-wide transition-colors",
+              view === "france"
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground",
+            )}
+          >
+            France · 4 pôles
+          </button>
+        </div>
+      </div>
 
-        <ul className="mt-6 divide-y divide-border rounded-sm border border-border bg-background">
-          {zones.map((z) => (
-            <li key={z.slug}>
-              <Link
-                to="/zones/$slug"
-                params={{ slug: z.slug }}
-                onMouseEnter={() => setHovered(z.slug)}
-                onMouseLeave={() => setHovered(undefined)}
-                onFocus={() => setHovered(z.slug)}
-                onBlur={() => setHovered(undefined)}
-                className={cn(
-                  "group flex items-center justify-between gap-4 px-4 py-4 transition-colors hover:bg-secondary/60",
-                  hovered === z.slug && "bg-secondary/60",
-                )}
-              >
-                <span className="min-w-0">
-                  <span className="flex items-center gap-2 text-sm font-semibold">
-                    <MapPin className="size-3.5 text-accent" aria-hidden="true" />
-                    {z.name}
-                  </span>
-                  <span className="mt-0.5 block pl-5 text-xs text-muted-foreground">
-                    {z.region}
-                  </span>
-                </span>
-                <ArrowRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1" />
+      {view === "idf" ? (
+        <div className="space-y-4">
+          <IleDeFranceMap />
+          <p className="text-xs leading-relaxed text-muted-foreground">
+            Schéma interactif : survolez un département pour afficher le détail. Couverture au
+            plus près des sites accessibles — pas une annonce de chaque commune IDF.
+          </p>
+        </div>
+      ) : (
+        <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
+          <div>
+            <ul className="divide-y divide-border rounded-sm border border-border bg-background">
+              {zones.map((z) => (
+                <li key={z.slug}>
+                  <Link
+                    to="/zones/$slug"
+                    params={{ slug: z.slug }}
+                    onMouseEnter={() => setHovered(z.slug)}
+                    onMouseLeave={() => setHovered(undefined)}
+                    onFocus={() => setHovered(z.slug)}
+                    onBlur={() => setHovered(undefined)}
+                    className={cn(
+                      "group flex items-center justify-between gap-4 px-4 py-4 transition-colors hover:bg-secondary/60",
+                      hovered === z.slug && "bg-secondary/60",
+                    )}
+                  >
+                    <span className="min-w-0">
+                      <span className="flex items-center gap-2 text-sm font-semibold">
+                        <MapPin className="size-3.5 text-accent" aria-hidden="true" />
+                        {z.name}
+                      </span>
+                      <span className="mt-0.5 block pl-5 text-xs text-muted-foreground">
+                        {z.region}
+                        {z.slug === "paris" ? ` · ${deptCodes}` : ""}
+                      </span>
+                    </span>
+                    <ArrowRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <Button asChild variant="outline" className="mt-6">
+              <Link to="/zones">
+                Voir toutes les zones
+                <ArrowRight className="size-4" />
               </Link>
-            </li>
-          ))}
-        </ul>
+            </Button>
+          </div>
 
-        <Button asChild variant="outline" className="mt-6 h-11 rounded-sm">
-          <Link to="/zones">
-            Voir toutes les zones
-            <ArrowRight className="size-4" />
-          </Link>
-        </Button>
-      </div>
-
-      <div className="rounded-sm border border-border bg-background p-3 sm:p-4">
-        <FranceMap highlight={hovered} />
-      </div>
+          <div className="rounded-sm border border-border bg-background p-3 sm:p-4">
+            <FranceMap highlight={hovered} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -283,7 +332,7 @@ export function HomeExploreTabs() {
           <SectionHeading
             eyebrow="À retenir"
             title="Fréquences, modes et zones"
-            description="L'essentiel pour décider — sans surcharger l'accueil. Choisissez un onglet."
+            description="Repères d'usage, modes de travail, et détail des zones — dont les départements d'Île-de-France."
           />
         </Reveal>
 
@@ -306,7 +355,7 @@ export function HomeExploreTabs() {
                 value="zones"
                 className="rounded-sm px-4 py-2.5 data-[state=active]:shadow-none"
               >
-                Pôles d'intervention
+                Zones & IDF
               </TabsTrigger>
             </TabsList>
 

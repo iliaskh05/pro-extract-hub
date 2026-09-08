@@ -5,11 +5,12 @@ import { BeforeAfterShowcase } from "@/components/home/BeforeAfterShowcase";
 import { MethodSection } from "@/components/home/MethodSection";
 import { HomeExploreTabs } from "@/components/home/HomeExploreTabs";
 import { SectorsSection } from "@/components/home/SectorsSection";
+import { GoogleReviewsSection } from "@/components/home/GoogleReviewsSection";
 import { FinalCta } from "@/components/FinalCta";
 
 /**
  * Accueil aéré : preuves essentielles + détail dense en onglets.
- * Pas de prix inventés, pas de faux avis Google.
+ * Pas de prix inventés, pas de faux avis Google (section prête à brancher).
  */
 export function HomeStory() {
   return (
@@ -21,6 +22,7 @@ export function HomeStory() {
       <MethodSection />
       <HomeExploreTabs />
       <SectorsSection />
+      <GoogleReviewsSection />
       <FinalCta />
     </div>
   );

@@ -10,11 +10,13 @@ import {
 } from "@/lib/site";
 import { Button } from "@/components/ui/button";
 import { FranceMap } from "@/components/FranceMap";
+import { IleDeFranceMap } from "@/components/IleDeFranceMap";
 import { PageHero } from "@/components/PageHero";
 import { Reveal } from "@/components/Reveal";
 import { MethodSteps } from "@/components/MethodSteps";
 import { FaqExplorer } from "@/components/FaqExplorer";
 import { FinalCta } from "@/components/FinalCta";
+import { IDF_DEPARTMENTS } from "@/lib/idf-departments";
 import { MEDIA } from "@/lib/media";
 import { FAQ } from "@/lib/faq";
 import { track } from "@/lib/analytics";
@@ -103,7 +105,7 @@ function ZoneDetail() {
           </Reveal>
           <Reveal delay={80}>
             <p className="eyebrow text-accent">Zone géographique</p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] md:text-4xl">
+            <h2 className="font-display mt-4 text-3xl font-bold tracking-[-0.045em] md:text-4xl">
               {zone.name}
             </h2>
             <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
@@ -118,7 +120,7 @@ function ZoneDetail() {
               ))}
             </ul>
 
-            <h3 className="mt-12 text-lg font-semibold tracking-tight">
+            <h3 className="font-display mt-12 text-lg font-bold tracking-tight">
               Prestations disponibles sur ce pôle
             </h3>
             <ul className="mt-4">
@@ -139,6 +141,39 @@ function ZoneDetail() {
             </ul>
           </Reveal>
         </div>
+
+        {zone.slug === "paris" && (
+          <Reveal className="mt-16 space-y-6" delay={60}>
+            <div>
+              <p className="eyebrow text-accent">Île-de-France</p>
+              <h2 className="font-display mt-3 text-2xl font-bold tracking-[-0.04em] md:text-3xl">
+                Départements desservis depuis Paris
+              </h2>
+              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                Survolez la carte : Paris (75), Hauts-de-Seine (92), Seine-Saint-Denis (93),
+                Val-de-Marne (94), Val-d'Oise (95), Yvelines (78), Essonne (91) et Seine-et-Marne
+                (77).
+              </p>
+            </div>
+            <IleDeFranceMap />
+            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {IDF_DEPARTMENTS.map((d) => (
+                <li
+                  key={d.code}
+                  className="rounded-sm border border-border bg-secondary/30 px-4 py-3"
+                >
+                  <p className="font-display text-sm font-bold tracking-tight">
+                    {d.name}{" "}
+                    <span className="font-mono text-xs font-medium text-muted-foreground">
+                      ({d.code})
+                    </span>
+                  </p>
+                  <p className="mt-1 text-xs leading-snug text-muted-foreground">{d.hub}</p>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+        )}
       </section>
 
       <section className="border-y border-border bg-secondary/40">

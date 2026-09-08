@@ -48,6 +48,7 @@ export const PENDING_COMPANY_INFO = [
   "Comptes sociaux",
   "Photos d'interventions réelles",
   "Précision du rayon d'intervention autour de Paris, Perpignan, Troyes et Dijon",
+  "URL fiche Google Business + avis réels (VITE_GOOGLE_REVIEW_URL / google-reviews.ts)",
 ] as const;
 
 /** WhatsApp — format international sans "+" ni espaces (ex. 33600000000). */
@@ -91,19 +92,20 @@ export const ZONES: Zone[] = [
     region: "Île-de-France",
     short: "Paris",
     description:
-      "Interventions sur Paris et les établissements professionnels réellement accessibles en Île-de-France.",
+      "Interventions sur Paris (75) et les départements d'Île-de-France réellement accessibles depuis ce pôle : 92, 93, 94, 95, 78, 91, 77.",
     active: true,
     heroTitle: "Dégraissage de hottes à Paris",
     localIntro:
-      "Paris concentre une densité exceptionnelle de cuisines professionnelles : restaurants, hôtels, traiteurs et enseignes alimentaires. Nous intervenons sur les systèmes d'extraction après qualification de l'accès, des horaires et de la configuration technique.",
+      "Paris concentre une densité exceptionnelle de cuisines professionnelles : restaurants, hôtels, traiteurs et enseignes alimentaires. Depuis ce pôle, nous desservons aussi les départements franciliens accessibles — avec confirmation de faisabilité en limite de secteur.",
     coverage:
-      "Le pôle parisien couvre Paris et les communes immédiatement accessibles en Île-de-France. En limite de secteur, la faisabilité est confirmée avant toute proposition.",
+      "Pôle Paris / Île-de-France : Paris (75), Hauts-de-Seine (92), Seine-Saint-Denis (93), Val-de-Marne (94), Val-d'Oise (95), Yvelines (78), Essonne (91) et Seine-et-Marne (77). Nous citons ces départements pour clarifier le bassin d'intervention ; en périphérie éloignée, la faisabilité est confirmée avant proposition.",
     sectorsFocus:
       "Restauration urbaine, hôtellerie, cuisine de collectivité et enseignes dont le service ne peut pas s'interrompre longtemps.",
     useful: [
       "Qualification à distance à partir de photos et d'un relevé simple",
       "Créneaux pensés pour limiter l'impact sur le service",
       "Documentation photo et compte rendu après passage",
+      "Huit départements IDF listés — couverture au plus près des sites accessibles",
     ],
     whatsappMessage: "Bonjour, je souhaite demander un devis pour mon établissement à Paris.",
     map: { x: 284.4, y: 148.56 },
