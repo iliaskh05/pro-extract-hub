@@ -6,6 +6,12 @@
   "engines": {
     "node": ">=20"
   },
+  "overrides": {
+    "react-simple-maps": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    }
+  },
   "scripts": {
     "dev": "vite dev",
     "build": "npm run generate:seo && vite build",
