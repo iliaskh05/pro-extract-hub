@@ -1,9 +1,8 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 /**
- * Lovable defaults Nitro to Cloudflare.
- * Sur Vercel, on pin le preset `vercel` pour générer `.vercel/output`.
- * (NITRO_PRESET / VERCEL env détectés aussi automatiquement.)
+ * Sur Vercel (VERCEL=1) : preset Nitro `vercel` + runtime Node 20.
+ * Ailleurs (Lovable) : auto-détection Nitro (Cloudflare).
  */
 const onVercel =
   process.env["VERCEL"] === "1" ||
@@ -12,12 +11,21 @@ const onVercel =
 
 export default defineConfig({
   tanstackStart: {
-    // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     server: { entry: "server" },
   },
   nitro: onVercel
     ? {
         preset: "vercel",
+        vercel: {
+          functions: {
+            runtime: "nodejs20.x",
+          },
+        },
       }
     : true,
+  vite: {
+    build: {
+      chunkSizeWarningLimit: 1400,
+    },
+  },
 });

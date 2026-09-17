@@ -4,18 +4,13 @@
   "sideEffects": false,
   "type": "module",
   "engines": {
-    "node": ">=20"
-  },
-  "overrides": {
-    "react-simple-maps": {
-      "react": "$react",
-      "react-dom": "$react-dom"
-    }
+    "node": "20.x"
   },
   "scripts": {
     "dev": "vite dev",
     "build": "npm run generate:seo && vite build",
-    "generate:seo": "node scripts/generate-sitemap.mjs && node scripts/build-france-map.mjs",
+    "generate:seo": "node scripts/generate-sitemap.mjs && node scripts/build-france-map.mjs && node scripts/build-idf-map.mjs",
+    "start": "node .output/server/index.mjs",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
@@ -67,7 +62,6 @@
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.71.2",
     "react-resizable-panels": "^4.6.5",
-    "react-simple-maps": "^3.0.0",
     "recharts": "^2.15.4",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.5.0",
