@@ -75,12 +75,26 @@ npm run preview   # test local optionnel
 
 ## Déploiement Vercel
 
-1. Connecter le dépôt GitHub.
-2. Framework : détection automatique (Vite / TanStack Start via Nitro).
-3. Ajouter toutes les variables d'environnement (serveur + `VITE_*`).
-4. Build command : `npm run build`
-5. Output : géré par Nitro (pas de configuration `vercel.json` requise dans ce repo).
-6. Définir le domaine personnalisé et aligner `VITE_SITE_URL`.
+1. Connecter le dépôt GitHub sur [vercel.com/new](https://vercel.com/new).
+2. Framework : **TanStack Start** (déjà fixé dans `vercel.json`).
+3. **Ne pas** renseigner un Output Directory custom (`dist`, `.output`, etc.) — Nitro génère `.vercel/output`.
+4. Build Command : `npm run build` (défaut via `vercel.json`).
+5. Node.js : **20.x** (Settings → General → Node.js Version).
+6. Ajouter les variables d'environnement (serveur + `VITE_*`) — voir tableau ci-dessus.
+7. Définir le domaine et aligner `VITE_SITE_URL`.
+
+Fichiers utiles :
+- `vercel.json` — framework + commandes
+- `vite.config.ts` — preset Nitro `vercel` quand `VERCEL=1`
+
+### Erreurs fréquentes
+
+| Symptôme | Cause | Correctif |
+| --- | --- | --- |
+| Build OK mais 404 / ERR_FUNCTION | Output Directory forcé à `dist` | Laisser vide / Auto |
+| `cloudflare` / Workers dans les logs | Mauvais preset Nitro | Vérifier `VERCEL=1` et redeploy |
+| `npm ci` échoue | Lockfile désynchronisé | `npm install` puis commit `package-lock.json` |
+| Module not found `nitro` | Dependance manquante | `nitro` doit être dans `devDependencies` |
 
 ## En-têtes HTTP
 
