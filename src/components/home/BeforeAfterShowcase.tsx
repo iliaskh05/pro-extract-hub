@@ -6,7 +6,8 @@ import { GALLERY } from "@/lib/media";
 import { cn } from "@/lib/utils";
 
 const SHORT_LABEL: Record<string, string> = {
-  hotte: "Hotte",
+  filtres: "Filtres",
+  "filtres-macro": "Gros plan",
   conduit: "Conduit",
   moteur: "Moteur",
 };
