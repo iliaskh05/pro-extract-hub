@@ -34,8 +34,8 @@ function PrivacyPage() {
         Politique de confidentialité
       </h1>
       <p className="mt-3 text-sm text-muted-foreground">
-        Dernière mise à jour : {TODO} — document à faire valider juridiquement avant publication
-        définitive.
+        Dernière mise à jour : 22 septembre 2026 — document à faire valider juridiquement avant
+        publication définitive.
       </p>
 
       <div className="mt-8 space-y-7 text-sm leading-relaxed text-muted-foreground">
@@ -55,9 +55,10 @@ function PrivacyPage() {
             <br />
             Téléphone : {displayValue(SITE.phone, TODO)}
             <br />
-            Contact données personnelles : {displayValue(SITE.email, TODO)}
+            Contact données personnelles : par téléphone au {SITE.phone} ou par e-mail à{" "}
+            {displayValue(SITE.email, TODO)}
           </p>
-          <p>Aucun délégué à la protection des données n'est désigné à ce jour ({TODO}).</p>
+          <p>Aucun délégué à la protection des données n'est désigné à ce jour.</p>
         </Section>
 
         <Section title="2. Données collectées">
@@ -134,8 +135,9 @@ function PrivacyPage() {
               publicitaire ni revente de données.
             </li>
             <li>
-              Partenaires d'intervention éventuels, uniquement pour exécuter la prestation demandée
-              : {TODO}.
+              Partenaires intervenants qualifiés mobilisés uniquement pour exécuter la prestation
+              demandée ({SITE.name} agit comme coordonnateur). La liste des partenaires mobilisés
+              pour votre intervention est disponible sur demande.
             </li>
           </ul>
           <p>Vos données ne sont ni vendues, ni louées, ni échangées.</p>
@@ -143,12 +145,22 @@ function PrivacyPage() {
 
         <Section title="5. Durées de conservation">
           <ul className="list-disc space-y-1 pl-5">
-            <li>Demande de devis sans suite : {TODO} (usage courant : 3 ans après le dernier contact).</li>
-            <li>Client avec prestation réalisée : {TODO} (documents comptables : 10 ans).</li>
-            <li>Photos transmises : {TODO}.</li>
-            <li>Journaux techniques de sécurité : {TODO} (usage courant : 6 à 12 mois).</li>
+            <li>Demande de devis sans suite : 3 ans après le dernier contact.</li>
+            <li>
+              Client avec prestation réalisée : données de contact 3 ans après la fin de la relation
+              commerciale ; pièces comptables et factures 10 ans (obligation légale).
+            </li>
+            <li>
+              Photos transmises : le temps du traitement de la demande ; supprimées au plus tard 12
+              mois après le dernier contact si aucune prestation n'est réalisée.
+            </li>
+            <li>Journaux techniques de sécurité : 12 mois maximum.</li>
             <li>Preuve du consentement cookies : 6 mois, puis nouvelle demande.</li>
           </ul>
+          <p>
+            Ces durées correspondent aux recommandations courantes de la CNIL ; la direction peut
+            les ajuster et le document sera alors mis à jour.
+          </p>
         </Section>
 
         <Section title="6. Transferts hors Union européenne">
@@ -158,8 +170,8 @@ function PrivacyPage() {
             la Commission européenne. Liste et localisation exactes des prestataires : {TODO}.
           </p>
           <p>
-            Les polices d'écriture sont actuellement chargées depuis Google Fonts, ce qui transmet
-            votre adresse IP à Google. Une internalisation des polices est prévue ({TODO}).
+            Les polices d'écriture sont hébergées sur le site lui-même : aucune adresse IP n'est
+            transmise à un service de polices tiers.
           </p>
         </Section>
 
@@ -170,10 +182,10 @@ function PrivacyPage() {
             directives post-mortem.
           </p>
           <p>
-            Pour les exercer : écrivez à {displayValue(SITE.email, TODO)} ou par courrier à{" "}
-            {displayValue(SITE.address, TODO)}, en précisant votre demande. Une réponse vous sera
-            apportée sous un mois ; une preuve d'identité peut être demandée en cas de doute
-            raisonnable.
+            Pour les exercer : par téléphone au {SITE.phone}, par e-mail à{" "}
+            {displayValue(SITE.email, TODO)} ou par courrier à {displayValue(SITE.address, TODO)},
+            en précisant votre demande. Une réponse vous sera apportée sous un mois ; une preuve
+            d'identité peut être demandée en cas de doute raisonnable.
           </p>
           <p>
             Si la réponse ne vous satisfait pas, vous pouvez saisir la CNIL —{" "}

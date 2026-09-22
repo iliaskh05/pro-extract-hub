@@ -18,8 +18,9 @@ export const Route = createFileRoute("/mentions-legales")({
       <h1 className="text-3xl font-extrabold tracking-tight md:text-4xl">Mentions légales</h1>
       <div className="mt-8 space-y-6 text-sm leading-relaxed text-muted-foreground">
         <p className="rounded-xl border border-border bg-secondary/50 p-5 text-foreground">
-          Les mentions marquées {TODO} doivent être renseignées avant la publication officielle.
-          Aucune information légale n'est inventée ici.
+          Seules les informations fournies par la direction restent marquées {TODO}. Les durées de
+          conservation, la date de mise à jour et le cadre des données sont déjà renseignés dans la
+          politique de confidentialité.
         </p>
         <section>
           <h2 className="text-base font-semibold text-foreground">Éditeur du site</h2>
@@ -28,13 +29,14 @@ export const Route = createFileRoute("/mentions-legales")({
             <br />
             Forme juridique : {displayValue(SITE.legalForm, TODO)}
             <br />
-            Capital social : {displayValue(SITE.capital, TODO)}
+            Capital social : {displayValue(SITE.capital, `${TODO} (non applicable si entreprise individuelle)`)}
             <br />
             Siège social : {displayValue(SITE.address, TODO)}
             <br />
             SIREN : {displayValue(SITE.siren, TODO)} — SIRET : {displayValue(SITE.siret, TODO)}
             <br />
-            RCS : {TODO} — TVA intracommunautaire : {displayValue(SITE.vat, TODO)}
+            RCS : {TODO} (selon immatriculation) — TVA intracommunautaire :{" "}
+            {displayValue(SITE.vat, `${TODO} (selon régime de TVA)`)}
           </p>
         </section>
         <section>

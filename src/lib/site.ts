@@ -38,11 +38,14 @@ export const SITE = {
 
 export const PENDING_COMPANY_INFO = [
   "Dénomination légale et forme juridique",
-  "Adresse du siège",
-  "SIRET / SIREN / TVA",
+  "Adresse du siège (ou domiciliation commerciale)",
+  "SIRET / SIREN / TVA (selon régime)",
+  "RCS et capital social (uniquement si société immatriculée)",
+  "Directeur de la publication (nom du dirigeant)",
   "Email professionnel",
+  "Hébergeur (nom, adresse, téléphone)",
+  "Assurance responsabilité civile professionnelle (assureur et couverture)",
   "Horaires de contact",
-  "Hébergeur et directeur de publication",
   "Comptes sociaux",
   "Photos d'interventions réelles",
   "Précision du rayon d'intervention autour de Paris, Perpignan, Troyes et Dijon",
