@@ -6,7 +6,8 @@ import { GALLERY } from "@/lib/media";
 import { cn } from "@/lib/utils";
 
 const SHORT_LABEL: Record<string, string> = {
-  hotte: "Hotte",
+  filtres: "Filtres",
+  "filtres-macro": "Gros plan",
   conduit: "Conduit",
   moteur: "Moteur",
 };
@@ -73,6 +74,9 @@ export function BeforeAfterShowcase() {
           <p className="max-w-xl text-sm text-white/55">
             <span className="font-medium text-white/85">{item.title}</span> — {item.text}
             {item.demonstration ? " (démonstration visuelle)." : ""}
+            {item.credit ? (
+              <span className="mt-1 block text-xs text-white/35">{item.credit}</span>
+            ) : null}
           </p>
         </Reveal>
       </div>
