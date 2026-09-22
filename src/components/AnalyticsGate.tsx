@@ -1,20 +1,24 @@
-import { useEffect, useState } from "react";
-import { plausibleDomain, readConsent } from "@/lib/analytics";
+import { useEffect } from "react";
+import { plausibleDomain } from "@/lib/analytics";
+import { useCategoryConsent } from "@/hooks/use-consent";
 
+/**
+ * Charge la mesure d'audience uniquement après consentement explicite.
+ * Le refus (ou le retrait) empêche l'injection du script et le retire du DOM.
+ */
 export function AnalyticsGate() {
-  const [allowed, setAllowed] = useState(false);
+  const allowed = useCategoryConsent("analytics");
   const domain = plausibleDomain();
 
   useEffect(() => {
-    const sync = () => setAllowed(!!readConsent()?.analytics && !!domain);
-    sync();
-    window.addEventListener("s3h-consent", sync);
-    return () => window.removeEventListener("s3h-consent", sync);
-  }, [domain]);
+    const existing = document.querySelector("script[data-s3h-analytics]");
 
-  useEffect(() => {
-    if (!allowed || !domain) return;
-    if (document.querySelector("script[data-s3h-analytics]")) return;
+    if (!allowed || !domain) {
+      existing?.remove();
+      return;
+    }
+    if (existing) return;
+
     const script = document.createElement("script");
     script.defer = true;
     script.setAttribute("data-s3h-analytics", "true");

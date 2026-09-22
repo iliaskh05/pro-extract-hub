@@ -794,13 +794,19 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
               />
               <span>
                 J'accepte que ces informations soient utilisées pour qualifier ma demande et me
-                recontacter.{" "}
-                <Link to="/confidentialite" className="underline-offset-4 hover:underline">
-                  Confidentialité
-                </Link>
-                .
+                recontacter.
               </span>
             </label>
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              Les informations demandées servent uniquement à traiter votre demande de devis et à
+              vous recontacter. Elles ne sont pas utilisées à des fins publicitaires et ne sont pas
+              transmises à des tiers en dehors de l'exécution de la prestation. Vous disposez de
+              droits d'accès, de rectification, d'effacement et d'opposition, détaillés dans notre{" "}
+              <Link to="/confidentialite" className="underline underline-offset-4">
+                politique de confidentialité
+              </Link>
+              .
+            </p>
             <div className="hidden" aria-hidden="true">
               <Label htmlFor="company_website">Site web</Label>
               <input
