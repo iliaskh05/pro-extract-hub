@@ -11,7 +11,10 @@ export function StickyMobileCta() {
   const tel = phoneHref();
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-3 py-2.5 pb-[calc(0.65rem+env(safe-area-inset-bottom))] backdrop-blur-xl lg:hidden">
+    <nav
+      aria-label="Actions rapides"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-3 py-2.5 pb-[calc(0.65rem+env(safe-area-inset-bottom))] backdrop-blur-xl lg:hidden"
+    >
       <div className="mx-auto flex max-w-lg gap-2">
         {tel && (
           <a
@@ -43,6 +46,6 @@ export function StickyMobileCta() {
           Obtenir mon devis
         </Link>
       </div>
-    </div>
+    </nav>
   );
 }

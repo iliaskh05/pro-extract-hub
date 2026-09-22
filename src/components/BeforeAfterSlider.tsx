@@ -111,6 +111,12 @@ export function BeforeAfterSlider({
       e.preventDefault();
       setTouched(true);
       setPos(e.key === "Home" ? 0 : 100);
+    } else if (e.key === "PageDown" || e.key === "PageUp") {
+      e.preventDefault();
+      setTouched(true);
+      setPos((current) =>
+        Math.min(100, Math.max(0, current + (e.key === "PageUp" ? 10 : -10))),
+      );
     }
   }
 
