@@ -41,6 +41,7 @@ export function BeforeAfterShowcase() {
                 type="button"
                 role="tab"
                 aria-selected={i === index}
+                aria-controls="before-after-panel"
                 onClick={() => setIndex(i)}
                 className={cn(
                   "min-h-11 shrink-0 px-4 py-2.5 text-xs font-semibold tracking-[0.06em] uppercase transition-colors duration-300",
@@ -57,7 +58,7 @@ export function BeforeAfterShowcase() {
         </Reveal>
       </div>
 
-      <Reveal className="relative">
+      <Reveal id="before-after-panel" role="tabpanel" className="relative">
         <BeforeAfterSlider
           key={item.slug}
           before={item.before}
@@ -71,11 +72,11 @@ export function BeforeAfterShowcase() {
 
       <div className="shell pt-5 pb-16 lg:pb-24">
         <Reveal delay={80}>
-          <p className="max-w-xl text-sm text-white/55">
+          <p className="max-w-xl text-sm text-ink-muted">
             <span className="font-medium text-white/85">{item.title}</span> — {item.text}
             {item.demonstration ? " (démonstration visuelle)." : ""}
             {item.credit ? (
-              <span className="mt-1 block text-xs text-white/35">{item.credit}</span>
+              <span className="mt-1 block text-xs text-ink-muted">{item.credit}</span>
             ) : null}
           </p>
         </Reveal>

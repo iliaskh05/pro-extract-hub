@@ -13,12 +13,17 @@ export function AuthGate() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   async function submit() {
     setLoading(true);
+    setErrorMessage("");
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
-    if (error) toast.error("Connexion impossible", { description: error.message });
+    if (error) {
+      setErrorMessage("Connexion impossible. Vérifiez votre email et votre mot de passe.");
+      toast.error("Connexion impossible", { description: error.message });
+    }
   }
 
   return (
@@ -73,8 +78,9 @@ export function AuthGate() {
             />
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
-            Se connecter
+            {loading ? "Connexion en cours…" : "Se connecter"}
           </Button>
+          {errorMessage && <p role="alert" className="text-sm text-destructive">{errorMessage}</p>}
         </form>
       </div>
     </div>

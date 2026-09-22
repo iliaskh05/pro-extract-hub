@@ -322,7 +322,12 @@ export function DashboardOverview({
         {current.length === 0 ? (
           <EmptyState />
         ) : (
-          <ChartContainer config={config} className="h-[260px] w-full">
+          <ChartContainer
+            config={config}
+            className="h-[260px] w-full"
+            role="img"
+            aria-label="Évolution des demandes reçues et gagnées sur la période sélectionnée"
+          >
             <AreaChart data={timeSeries} margin={{ left: 4, right: 8, top: 8 }}>
               <defs>
                 <linearGradient id="demandesFill" x1="0" y1="0" x2="0" y2="1">
@@ -362,6 +367,11 @@ export function DashboardOverview({
               />
             </AreaChart>
           </ChartContainer>
+          <table className="sr-only">
+            <caption>Évolution des demandes</caption>
+            <thead><tr><th>Période</th><th>Demandes</th><th>Gagnées</th></tr></thead>
+            <tbody>{timeSeries.map((row) => <tr key={row.label}><th>{row.label}</th><td>{row.demandes}</td><td>{row.gagnees}</td></tr>)}</tbody>
+          </table>
         )}
       </Panel>
 
@@ -371,7 +381,7 @@ export function DashboardOverview({
             <EmptyState />
           ) : (
             <>
-              <ChartContainer config={config} className="h-[240px] w-full">
+              <ChartContainer config={config} className="h-[240px] w-full" aria-hidden="true">
                 <BarChart data={byZone} layout="vertical" margin={{ left: 8, right: 16 }}>
                   <CartesianGrid horizontal={false} strokeDasharray="3 3" />
                   <XAxis
@@ -412,7 +422,7 @@ export function DashboardOverview({
             <EmptyState />
           ) : (
             <>
-              <ChartContainer config={config} className="h-[240px] w-full">
+              <ChartContainer config={config} className="h-[240px] w-full" aria-hidden="true">
                 <PieChart>
                   <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
                   <Pie
@@ -475,7 +485,8 @@ export function DashboardOverview({
           {byBusiness.length === 0 ? (
             <EmptyState />
           ) : (
-            <ChartContainer config={config} className="h-[240px] w-full">
+            <>
+            <ChartContainer config={config} className="h-[240px] w-full" role="img" aria-label="Répartition des demandes par type d'établissement">
               <BarChart data={byBusiness} margin={{ left: 4, right: 8 }}>
                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
                 <XAxis
@@ -499,6 +510,12 @@ export function DashboardOverview({
                 <Bar dataKey="demandes" fill="var(--color-demandes)" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ChartContainer>
+            <table className="sr-only">
+              <caption>Demandes par type d'établissement</caption>
+              <thead><tr><th>Type</th><th>Demandes</th></tr></thead>
+              <tbody>{byBusiness.map((row) => <tr key={row.type}><th>{row.type}</th><td>{row.demandes}</td></tr>)}</tbody>
+            </table>
+            </>
           )}
         </Panel>
       </div>
