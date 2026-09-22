@@ -182,10 +182,10 @@ function PrivacyPage() {
             directives post-mortem.
           </p>
           <p>
-            Pour les exercer : écrivez à {displayValue(SITE.email, TODO)} ou par courrier à{" "}
-            {displayValue(SITE.address, TODO)}, en précisant votre demande. Une réponse vous sera
-            apportée sous un mois ; une preuve d'identité peut être demandée en cas de doute
-            raisonnable.
+            Pour les exercer : par téléphone au {SITE.phone}, par e-mail à{" "}
+            {displayValue(SITE.email, TODO)} ou par courrier à {displayValue(SITE.address, TODO)},
+            en précisant votre demande. Une réponse vous sera apportée sous un mois ; une preuve
+            d'identité peut être demandée en cas de doute raisonnable.
           </p>
           <p>
             Si la réponse ne vous satisfait pas, vous pouvez saisir la CNIL —{" "}
