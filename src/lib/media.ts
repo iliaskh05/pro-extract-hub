@@ -8,6 +8,10 @@ import bakeryOvens from "@/assets/real/bakery-ovens.jpg";
 import patisserieCase from "@/assets/real/patisserie-case.jpg";
 import cateringTrays from "@/assets/real/catering-trays.jpg";
 import cafeteriaLine from "@/assets/real/cafeteria-line.jpg";
+import filterCloggedWide from "@/assets/real/filter-clogged-wide.jpg";
+import filterCleanWide from "@/assets/real/filter-clean-wide.jpg";
+import filterCloggedMacro from "@/assets/real/filter-clogged-macro.jpg";
+import filterCleanMacro from "@/assets/real/filter-clean-macro.jpg";
 
 const heroKitchen = kitchenWide;
 const detailFilters = steelTexture;
@@ -24,19 +28,22 @@ const sectorBakery = bakeryOvens;
 const sectorPastry = patisserieCase;
 const sectorCaterer = cateringTrays;
 const sectorCollective = cafeteriaLine;
-const baHood = hoodCookline;
 const baDuct = kitchenWide;
 const baMotor = kitchenFan;
 
 /**
- * Visuels du site — photographie documentaire réelle (Unsplash, licence libre).
- * Avant/après : même angle + traitement `grime` = démonstration
+ * Visuels du site — photographie documentaire réelle.
+ * Avant/après filtres : photos réelles d'un même filtre encrassé puis lavé
+ * (Wikimedia Commons, CC BY-SA 4.0 — crédit affiché sous le comparateur).
+ * Conduit / moteur : même angle + traitement `grime` = démonstration
  * jusqu'à `public/interventions/{slug}/before.jpg|after.jpg`.
  */
 function interventionPair(slug: string, fallback: string) {
   void slug;
   return { before: fallback, after: fallback, demonstration: true as const };
 }
+
+const CC_FILTER_CREDIT = "Photo réelle — Wikimedia Commons, CC BY-SA 4.0";
 
 export const MEDIA = {
   heroKitchen,
@@ -45,8 +52,8 @@ export const MEDIA = {
   hoodReference: serviceHood,
   ductReference: serviceDuct,
   motorReference: serviceMotor,
-  beforeHood: baHood,
-  afterHood: baHood,
+  beforeHood: filterCloggedMacro,
+  afterHood: filterCleanMacro,
   beforeDuct: baDuct,
   afterDuct: baDuct,
   beforeMotor: baMotor,
