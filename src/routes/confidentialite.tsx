@@ -165,8 +165,9 @@ function PrivacyPage() {
 
         <Section title="6. Transferts hors Union européenne">
           <p>
-            Le site vise un hébergement dans l'Union européenne. Certains prestataires techniques
-            peuvent opérer des transferts hors UE encadrés par les clauses contractuelles types de
+            Le site est hébergé par Vercel Inc., société de droit américain dont le réseau de
+            diffusion sert le site depuis des serveurs situés notamment dans l'Union européenne.
+            Les transferts éventuels hors UE sont encadrés par les clauses contractuelles types de
             la Commission européenne. Liste et localisation exactes des prestataires : {TODO}.
           </p>
           <p>
