@@ -1,12 +1,14 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { PENDING_COMPANY_INFO, SITE, displayValue } from "@/lib/site";
 import { pageHead } from "@/lib/seo";
+
+const TODO = "[À COMPLÉTER]";
 
 export const Route = createFileRoute("/mentions-legales")({
   head: () =>
     pageHead({
       title: `Mentions légales | ${SITE.name}`,
-      description: `Mentions légales du site ${SITE.name}.`,
+      description: `Mentions légales du site ${SITE.name} : éditeur, directeur de publication, hébergeur et contact.`,
       path: "/mentions-legales",
       ogTitle: `Mentions légales — ${SITE.name}`,
       ogDescription: "Informations légales du site.",
@@ -16,38 +18,50 @@ export const Route = createFileRoute("/mentions-legales")({
       <h1 className="text-3xl font-extrabold tracking-tight md:text-4xl">Mentions légales</h1>
       <div className="mt-8 space-y-6 text-sm leading-relaxed text-muted-foreground">
         <p className="rounded-xl border border-border bg-secondary/50 p-5 text-foreground">
-          Certaines mentions restent à compléter par la direction avant publication officielle.
+          Les mentions marquées {TODO} doivent être renseignées avant la publication officielle.
           Aucune information légale n'est inventée ici.
         </p>
         <section>
-          <h2 className="text-base font-semibold text-foreground">Éditeur</h2>
+          <h2 className="text-base font-semibold text-foreground">Éditeur du site</h2>
           <p className="mt-2">
-            {displayValue(SITE.legalName, `${SITE.name} — dénomination légale à confirmer`)}
-            {SITE.legalForm ? ` — ${SITE.legalForm}` : ""}
+            Raison sociale : {displayValue(SITE.legalName, TODO)}
             <br />
-            Siège : {displayValue(SITE.address, "Adresse à confirmer")}
+            Forme juridique : {displayValue(SITE.legalForm, TODO)}
             <br />
-            SIRET : {displayValue(SITE.siret, "À confirmer")}
-            {SITE.vat ? ` — TVA : ${SITE.vat}` : ""}
-            {SITE.capital ? ` — Capital : ${SITE.capital}` : ""}
+            Capital social : {displayValue(SITE.capital, TODO)}
+            <br />
+            Siège social : {displayValue(SITE.address, TODO)}
+            <br />
+            SIREN : {displayValue(SITE.siren, TODO)} — SIRET : {displayValue(SITE.siret, TODO)}
+            <br />
+            RCS : {TODO} — TVA intracommunautaire : {displayValue(SITE.vat, TODO)}
           </p>
         </section>
         <section>
-          <h2 className="text-base font-semibold text-foreground">Directeur de publication</h2>
-          <p className="mt-2">{displayValue(SITE.director, "À confirmer")}</p>
+          <h2 className="text-base font-semibold text-foreground">Directeur de la publication</h2>
+          <p className="mt-2">{displayValue(SITE.director, TODO)}</p>
         </section>
         <section>
           <h2 className="text-base font-semibold text-foreground">Contact</h2>
           <p className="mt-2">
-            Téléphone : {displayValue(SITE.phone, "À confirmer")}
+            Téléphone : {displayValue(SITE.phone, TODO)}
             <br />
-            Email : {displayValue(SITE.email, "À confirmer")}
+            E-mail : {displayValue(SITE.email, TODO)}
           </p>
         </section>
         <section>
-          <h2 className="text-base font-semibold text-foreground">Hébergement</h2>
+          <h2 className="text-base font-semibold text-foreground">Hébergeur</h2>
           <p className="mt-2">
-            {displayValue(SITE.hosting, "Hébergeur à préciser lors de la mise en production.")}
+            {displayValue(SITE.hosting, `Nom, adresse et téléphone de l'hébergeur : ${TODO}`)}
+          </p>
+        </section>
+        <section>
+          <h2 className="text-base font-semibold text-foreground">
+            Activité réglementée et assurance
+          </h2>
+          <p className="mt-2">
+            Assurance responsabilité civile professionnelle (assureur et couverture
+            géographique) : {TODO}.
           </p>
         </section>
         <section>
@@ -56,6 +70,16 @@ export const Route = createFileRoute("/mentions-legales")({
             Les contenus, la marque {SITE.name} et les visuels officiels sont protégés. Les
             photographies d'installation identifiées « Démonstration » ne représentent pas des
             chantiers clients.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-base font-semibold text-foreground">Données personnelles et cookies</h2>
+          <p className="mt-2">
+            Le traitement des données et la gestion des cookies sont décrits dans la{" "}
+            <Link to="/confidentialite" className="underline-offset-4 hover:underline">
+              politique de confidentialité
+            </Link>
+            .
           </p>
         </section>
         <section>
