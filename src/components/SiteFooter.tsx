@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { SERVICES, SITE, activeZones, displayValue } from "@/lib/site";
 import { BrandMark } from "@/components/BrandMark";
+import { openConsentManager } from "@/lib/analytics";
 
 export function SiteFooter() {
   const zones = activeZones();
