@@ -31,6 +31,9 @@ export function ruleBasedAnswer(input: string): string {
   if (has(t, ["perpignan", "pyrénées", "pyrenees", "66"])) {
     return "Oui, nous intervenons à Perpignan et sur les établissements réellement accessibles depuis ce pôle. Je peux vous aider à préparer votre demande de devis.";
   }
+  if (has(t, ["lyon", "rhône", "rhone", "69"])) {
+    return "Oui, nous intervenons à Lyon et sur les établissements réellement accessibles depuis ce pôle. Je peux vous aider à préparer votre demande de devis.";
+  }
   if (has(t, ["où interven", "zones d", "vos zones", "vos pôles", "vos poles", "secteur"])) {
     return `Nos pôles d'intervention sont ${zonesLine(" et ")}. Indiquez-moi votre ville et je vous oriente.`;
   }
