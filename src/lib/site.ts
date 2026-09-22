@@ -25,8 +25,8 @@ export const SITE = {
   siren: "",
   vat: "",
   capital: "",
-  director: "",
-  hosting: "",
+  director: "Mohammedi Imame Mahjoubi",
+  hosting: "Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis",
   hours: "",
   launch: "Début d'activité : septembre 2026",
   social: {
