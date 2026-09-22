@@ -20,7 +20,7 @@ export const SITE = {
   tagline: "Dégraissage & entretien des systèmes d'extraction",
   phone: "+33 6 23 38 15 73",
   email: "",
-  address: "",
+  address: "07 rue Jean Zay, 10600 La Chapelle-Saint-Luc",
   siret: "",
   siren: "",
   vat: "",
@@ -38,12 +38,9 @@ export const SITE = {
 
 export const PENDING_COMPANY_INFO = [
   "Dénomination légale et forme juridique",
-  "Adresse du siège (ou domiciliation commerciale)",
   "SIRET / SIREN / TVA (selon régime)",
   "RCS et capital social (uniquement si société immatriculée)",
-  "Directeur de la publication (nom du dirigeant)",
   "Email professionnel",
-  "Hébergeur (nom, adresse, téléphone)",
   "Assurance responsabilité civile professionnelle (assureur et couverture)",
   "Horaires de contact",
   "Comptes sociaux",
