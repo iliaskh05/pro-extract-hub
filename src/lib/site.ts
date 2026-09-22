@@ -18,7 +18,7 @@ export const SITE = {
   legalName: "",
   legalForm: "",
   tagline: "Dégraissage & entretien des systèmes d'extraction",
-  phone: "",
+  phone: "+33 6 23 38 15 73",
   email: "",
   address: "",
   siret: "",
@@ -40,9 +40,7 @@ export const PENDING_COMPANY_INFO = [
   "Dénomination légale et forme juridique",
   "Adresse du siège",
   "SIRET / SIREN / TVA",
-  "Téléphone professionnel",
   "Email professionnel",
-  "Numéro WhatsApp Business",
   "Horaires de contact",
   "Hébergeur et directeur de publication",
   "Comptes sociaux",
@@ -51,8 +49,11 @@ export const PENDING_COMPANY_INFO = [
   "URL fiche Google Business + avis réels (VITE_GOOGLE_REVIEW_URL / google-reviews.ts)",
 ] as const;
 
+/** Numéro de contact et WhatsApp de l'entreprise — format international sans "+" ni espaces. */
+export const COMPANY_PHONE_E164 = "33623381573";
+
 /** WhatsApp — format international sans "+" ni espaces (ex. 33600000000). */
-export const WHATSAPP_NUMBER = publicEnv("VITE_WHATSAPP_NUMBER");
+export const WHATSAPP_NUMBER = publicEnv("VITE_WHATSAPP_NUMBER") || COMPANY_PHONE_E164;
 
 export const WHATSAPP_DEFAULT_MESSAGE =
   "Bonjour, je souhaite un devis pour le dégraissage de mon système d'extraction.";
