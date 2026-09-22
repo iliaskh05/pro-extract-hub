@@ -1,10 +1,10 @@
-import sectorRestaurant from "@/assets/generated/sector-restaurant.jpg";
-import sectorHotel from "@/assets/generated/sector-hotel.jpg";
-import sectorFastFood from "@/assets/generated/sector-fast-food.jpg";
-import sectorBakery from "@/assets/generated/sector-bakery.jpg";
-import sectorPastry from "@/assets/generated/sector-pastry.jpg";
-import sectorCaterer from "@/assets/generated/sector-caterer.jpg";
-import sectorCollective from "@/assets/generated/sector-collective.jpg";
+import sectorRestaurant from "@/assets/real/hood-cookline.jpg";
+import sectorHotel from "@/assets/real/kitchen-bw-service.jpg";
+import sectorFastFood from "@/assets/real/grill-smoke.jpg";
+import sectorBakery from "@/assets/real/bakery-ovens.jpg";
+import sectorPastry from "@/assets/real/patisserie-case.jpg";
+import sectorCaterer from "@/assets/real/catering-trays.jpg";
+import sectorCollective from "@/assets/real/cafeteria-line.jpg";
 
 export type Sector = {
   slug: string;

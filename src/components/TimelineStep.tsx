@@ -28,20 +28,14 @@ export function TimelineStep({
       )}
     >
       <span
-        className={cn(
-          "absolute top-0 left-0 h-px w-px lg:h-px",
-          dark ? "bg-accent" : "bg-accent",
-        )}
+        className={cn("absolute top-0 left-0 h-px w-px lg:h-px", dark ? "bg-accent" : "bg-accent")}
         aria-hidden="true"
       />
       <div className="flex items-center gap-3">
         <span className="font-mono text-[11px] tracking-[0.22em] text-accent">{n}</span>
         {Icon && (
           <Icon
-            className={cn(
-              "size-4 stroke-[1.4]",
-              dark ? "text-ink-muted" : "text-muted-foreground",
-            )}
+            className={cn("size-4 stroke-[1.4]", dark ? "text-ink-muted" : "text-muted-foreground")}
             aria-hidden="true"
           />
         )}

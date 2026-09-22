@@ -1,44 +1,17 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { urgencyToPriority } from "@/lib/quote-options";
+import { clientKey, isRateLimited } from "@/lib/rate-limit.server";
 import { quoteSchema, LEAD_PHOTOS_BUCKET, type PhotoRecord } from "./quote-schema";
 
 const WINDOW_MS = 60 * 60 * 1000;
 const MAX_PER_WINDOW = 6;
-const attempts = new Map<string, number[]>();
-
-async function clientKey() {
-  try {
-    const { getRequest } = await import("@tanstack/react-start/server");
-    const req = getRequest();
-    return (
-      req.headers.get("cf-connecting-ip") ??
-      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-      req.headers.get("x-real-ip") ??
-      "unknown"
-    );
-  } catch {
-    return "unknown";
-  }
-}
-
-function rateLimited(key: string) {
-  const now = Date.now();
-  const recent = (attempts.get(key) ?? []).filter((t) => now - t < WINDOW_MS);
-  if (recent.length >= MAX_PER_WINDOW) {
-    attempts.set(key, recent);
-    return true;
-  }
-  recent.push(now);
-  attempts.set(key, recent);
-  return false;
-}
 
 const UPLOAD_TOKEN_TTL_MS = 30 * 60 * 1000;
 
 function tokenSecret() {
   const secret =
-    process.env['SUPABASE_SERVICE_ROLE_KEY'] ?? process.env['SUPABASE_PUBLISHABLE_KEY'] ?? "";
+    process.env["SUPABASE_SERVICE_ROLE_KEY"] ?? process.env["SUPABASE_PUBLISHABLE_KEY"] ?? "";
   if (!secret) throw new Error("Configuration serveur incomplète.");
   return secret;
 }
@@ -87,7 +60,7 @@ export const submitQuote = createServerFn({ method: "POST" })
     if (data.website) {
       return { ok: true as const, reference: "XXXXXX", uploads: [] as never[], uploadToken: "" };
     }
-    if (rateLimited(await clientKey())) {
+    if (isRateLimited("submit-quote", await clientKey(), MAX_PER_WINDOW, WINDOW_MS)) {
       throw new Error("Trop de demandes depuis cette connexion. Réessayez dans une heure.");
     }
 

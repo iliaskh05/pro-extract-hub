@@ -21,8 +21,7 @@ const buttonVariants = cva(
       variant: {
         default:
           "bg-primary text-primary-foreground shadow-[0_1px_0_rgb(255_255_255/0.12)_inset,0_10px_28px_-16px_rgb(17_17_17/0.55)] hover:bg-[#1c1c1c] hover:shadow-[0_1px_0_rgb(255_255_255/0.14)_inset,0_14px_36px_-14px_rgb(17_17_17/0.6)]",
-        destructive:
-          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+        destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:
           "border border-foreground/18 bg-background text-foreground shadow-[0_1px_0_rgb(17_17_17/0.03)] hover:border-foreground/35 hover:bg-secondary",
         secondary:
@@ -33,6 +32,8 @@ const buttonVariants = cva(
           "bg-ink-foreground text-ink shadow-[0_10px_28px_-16px_rgb(255_255_255/0.35)] hover:bg-white",
         accent:
           "bg-accent text-accent-foreground shadow-[0_1px_0_rgb(255_255_255/0.18)_inset,0_12px_32px_-18px_rgb(26_58_143/0.65)] hover:brightness-110",
+        signal:
+          "border border-signal/50 bg-signal/12 text-signal shadow-[0_1px_0_rgb(255_255_255/0.05)_inset] hover:bg-signal/20 hover:border-signal/70",
       },
       size: {
         default: "h-11 px-5 py-2",

@@ -20,9 +20,7 @@ const depsRes = await fetch(DEPS_URL);
 if (!depsRes.ok) throw new Error(`deps geojson: ${depsRes.status}`);
 const deps = await depsRes.json();
 
-const features = deps.features.filter((f) =>
-  IDF_CODES.includes(String(f.properties?.code ?? "")),
-);
+const features = deps.features.filter((f) => IDF_CODES.includes(String(f.properties?.code ?? "")));
 
 if (features.length < 8) {
   throw new Error(`Expected 8 IDF departments, got ${features.length}`);
@@ -63,8 +61,7 @@ function ringToPath(ring) {
 }
 
 function geometryToPaths(geometry) {
-  const polygons =
-    geometry.type === "Polygon" ? [geometry.coordinates] : geometry.coordinates;
+  const polygons = geometry.type === "Polygon" ? [geometry.coordinates] : geometry.coordinates;
   const paths = [];
   for (const polygon of polygons) {
     for (const ring of polygon) paths.push(ringToPath(ring));
@@ -82,8 +79,7 @@ for (const feature of features) {
 }
 
 mkdirSync(outDir, { recursive: true });
-writeFileSync(
-  outFile,
-  JSON.stringify({ viewBox: `0 0 ${width} ${height}`, regions }),
+writeFileSync(outFile, JSON.stringify({ viewBox: `0 0 ${width} ${height}`, regions }));
+console.log(
+  `[map] idf-map.json généré (${regions.length} polygones, ${IDF_CODES.length} départements)`,
 );
-console.log(`[map] idf-map.json généré (${regions.length} polygones, ${IDF_CODES.length} départements)`);

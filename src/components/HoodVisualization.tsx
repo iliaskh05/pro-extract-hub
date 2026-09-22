@@ -70,7 +70,10 @@ export function HoodVisualization() {
       aria-label="Comprendre votre système d'extraction"
     >
       <div className="sticky top-14 flex h-[calc(100svh-3.5rem)] items-center overflow-hidden md:top-16 md:h-[calc(100svh-4rem)] lg:top-20 lg:h-[calc(100svh-5rem)]">
-        <div className="grid-blue pointer-events-none absolute inset-0 opacity-70" aria-hidden="true" />
+        <div
+          className="grid-blue pointer-events-none absolute inset-0 opacity-70"
+          aria-hidden="true"
+        />
 
         <div className="shell relative grid w-full items-center gap-5 py-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16 lg:py-0">
           <div className="order-2 lg:order-1">
@@ -129,9 +132,7 @@ export function HoodVisualization() {
                   <div
                     className={cn(
                       "border-l-2 py-2.5 pl-5 transition-all duration-500 lg:py-3.5",
-                      i === active
-                        ? "border-accent opacity-100"
-                        : "border-border opacity-45",
+                      i === active ? "border-accent opacity-100" : "border-border opacity-45",
                     )}
                   >
                     <div className="flex items-baseline gap-3">

@@ -1,6 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { clientKey, isRateLimited } from "@/lib/rate-limit.server";
 import { SYSTEM_PROMPT, ruleBasedAnswer } from "./chat-rules";
+
+const WINDOW_MS = 10 * 60 * 1000;
+const MAX_PER_WINDOW = 20;
 
 const schema = z.object({
   messages: z
@@ -79,6 +83,10 @@ async function askGemini(
 export const askAssistant = createServerFn({ method: "POST" })
   .validator((data: unknown) => schema.parse(data))
   .handler(async ({ data }) => {
+    if (isRateLimited("chat-assistant", await clientKey(), MAX_PER_WINDOW, WINDOW_MS)) {
+      throw new Error("Trop de messages envoyés. Réessayez dans quelques minutes.");
+    }
+
     const last = data.messages[data.messages.length - 1]?.content ?? "";
     const fallback = ruleBasedAnswer(last);
 

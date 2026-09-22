@@ -20,7 +20,10 @@ export function ServicesSection() {
   const visual = SERVICE_VISUALS[current.slug];
 
   return (
-    <section className="relative overflow-hidden bg-ink text-ink-foreground" data-header-tone="dark">
+    <section
+      className="relative overflow-hidden bg-ink text-ink-foreground"
+      data-header-tone="dark"
+    >
       {/* Photos fusionnées en fond */}
       <div className="absolute inset-0" aria-hidden="true">
         {SERVICES.map((s, i) => {

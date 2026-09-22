@@ -176,10 +176,7 @@ function RootComponent() {
         {!isAdmin && <SiteHeader />}
         {/* Header fixed : réserve l'espace sauf sur l'accueil (hero plein écran). */}
         {!isAdmin && !isHome && (
-          <div
-            className="h-[4.25rem] shrink-0 md:h-20 lg:h-[5.25rem]"
-            aria-hidden="true"
-          />
+          <div className="h-[4.25rem] shrink-0 md:h-20 lg:h-[5.25rem]" aria-hidden="true" />
         )}
         <main id="contenu" className="flex-1">
           <Outlet />
@@ -187,7 +184,10 @@ function RootComponent() {
         {!isAdmin && <SiteFooter />}
         {!isAdmin && (
           <>
-            <div className="pb-[calc(6.5rem+env(safe-area-inset-bottom))] lg:pb-0" aria-hidden="true" />
+            <div
+              className="pb-[calc(6.5rem+env(safe-area-inset-bottom))] lg:pb-0"
+              aria-hidden="true"
+            />
             <StickyMobileCta />
             <WhatsAppWidget />
             <Suspense fallback={null}>

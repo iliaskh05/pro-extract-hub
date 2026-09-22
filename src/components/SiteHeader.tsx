@@ -58,78 +58,77 @@ export function SiteHeader() {
             : "border-b border-border bg-background/90 shadow-[0_1px_0_0_rgb(17_17_17/0.04)] backdrop-blur-xl",
         )}
       >
-
-      <div
-        className={cn(
-          "shell flex items-center gap-4 transition-[height] duration-300 ease-out",
-          scrolled ? "h-14 md:h-16" : "h-[4.25rem] md:h-20 lg:h-[5.25rem]",
-        )}
-      >
-        <Link
-          to="/"
-          className="group inline-flex min-w-0 shrink items-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          aria-label={`Accueil ${SITE.name}`}
+        <div
+          className={cn(
+            "shell flex items-center gap-4 transition-[height] duration-300 ease-out",
+            scrolled ? "h-14 md:h-16" : "h-[4.25rem] md:h-20 lg:h-[5.25rem]",
+          )}
         >
-          <BrandMark
-            inverted={overHero}
-            className={cn(
-              "transition-[height,max-width] duration-300 ease-out group-hover:opacity-90",
-              scrolled
-                ? "!h-8 !max-w-[7.5rem] md:!h-10 md:!max-w-[10rem]"
-                : "!h-9 !max-w-[8.5rem] md:!h-12 md:!max-w-[12.5rem] lg:!h-[3.35rem] lg:!max-w-[14rem]",
-            )}
-          />
-        </Link>
-
-        <nav
-          className="mx-auto hidden items-center gap-0.5 lg:flex"
-          aria-label="Navigation principale"
-        >
-          {NAV.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
+          <Link
+            to="/"
+            className="group inline-flex min-w-0 shrink items-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label={`Accueil ${SITE.name}`}
+          >
+            <BrandMark
+              inverted={overHero}
               className={cn(
-                "rounded-sm px-3 py-2 text-sm font-medium transition-colors",
-                overHero
-                  ? "text-white/70 hover:text-white"
-                  : "text-muted-foreground hover:text-foreground",
+                "transition-[height,max-width] duration-300 ease-out group-hover:opacity-90",
+                scrolled
+                  ? "!h-8 !max-w-[7.5rem] md:!h-10 md:!max-w-[10rem]"
+                  : "!h-9 !max-w-[8.5rem] md:!h-12 md:!max-w-[12.5rem] lg:!h-[3.35rem] lg:!max-w-[14rem]",
               )}
-              activeProps={{
-                className: overHero ? "text-white" : "text-foreground",
-              }}
+            />
+          </Link>
+
+          <nav
+            className="mx-auto hidden items-center gap-0.5 lg:flex"
+            aria-label="Navigation principale"
+          >
+            {NAV.map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={cn(
+                  "rounded-sm px-3 py-2 text-sm font-medium transition-colors",
+                  overHero
+                    ? "text-white/70 hover:text-white"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+                activeProps={{
+                  className: overHero ? "text-white" : "text-foreground",
+                }}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="ml-auto flex items-center gap-2 lg:ml-0">
+            {/* Devis dans le header dès tablette ; sur mobile → barre sticky seule */}
+            <Button
+              asChild
+              size="sm"
+              variant={overHero ? "inverse" : "default"}
+              className="hidden h-10 rounded-sm px-4 text-sm md:inline-flex"
             >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+              <Link to="/devis">Demander un devis</Link>
+            </Button>
 
-        <div className="ml-auto flex items-center gap-2 lg:ml-0">
-          {/* Devis dans le header dès tablette ; sur mobile → barre sticky seule */}
-          <Button
-            asChild
-            size="sm"
-            variant={overHero ? "inverse" : "default"}
-            className="hidden h-10 rounded-sm px-4 text-sm md:inline-flex"
-          >
-            <Link to="/devis">Demander un devis</Link>
-          </Button>
-
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
-            aria-expanded={open}
-            className={cn(
-              "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-sm border transition-colors lg:hidden",
-              overHero
-                ? "border-white/25 text-white hover:bg-white/10"
-                : "border-border text-foreground hover:bg-secondary",
-            )}
-          >
-            {open ? <X className="size-5" /> : <Menu className="size-5" />}
-          </button>
-        </div>
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
+              aria-expanded={open}
+              className={cn(
+                "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-sm border transition-colors lg:hidden",
+                overHero
+                  ? "border-white/25 text-white hover:bg-white/10"
+                  : "border-border text-foreground hover:bg-secondary",
+              )}
+            >
+              {open ? <X className="size-5" /> : <Menu className="size-5" />}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -165,5 +164,4 @@ export function SiteHeader() {
       )}
     </>
   );
-
 }

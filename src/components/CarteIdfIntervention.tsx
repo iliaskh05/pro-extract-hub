@@ -29,11 +29,7 @@ type Props = {
 };
 
 /** Carte IDF interactive (SVG pré-généré, 8 départements). */
-export function CarteIdfIntervention({
-  className,
-  activeCode = "75",
-  onActiveChange,
-}: Props) {
+export function CarteIdfIntervention({ className, activeCode = "75", onActiveChange }: Props) {
   function activate(code: string) {
     onActiveChange?.(code);
   }

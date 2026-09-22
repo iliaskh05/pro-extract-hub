@@ -1,10 +1,18 @@
 import { useEffect, useRef } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, FileCheck2, Moon, ShieldCheck, PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MEDIA } from "@/lib/media";
-import { SITE, zonesHeroLine } from "@/lib/site";
+import { SITE, phoneHref, zonesHeroLine } from "@/lib/site";
+import { saveQuotePrefill } from "@/lib/quote-prefill";
 import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
+import { track } from "@/lib/analytics";
+
+const REASSURANCE = [
+  { icon: ShieldCheck, text: "Conforme normes ERP & assurances" },
+  { icon: Moon, text: "Intervention de nuit sans arrêt de service" },
+  { icon: FileCheck2, text: "Attestation officielle remise après intervention" },
+] as const;
 
 /**
  * Premier viewport : photo full-bleed, marque en signal héroïque.
@@ -82,10 +90,7 @@ export function HeroSection() {
             <span className="hero-line block" style={{ animationDelay: "0.22s" }}>
               La performance commence
             </span>
-            <span
-              className="hero-line block text-white/70"
-              style={{ animationDelay: "0.38s" }}
-            >
+            <span className="hero-line block text-white/70" style={{ animationDelay: "0.38s" }}>
               par une hotte propre.
             </span>
           </h1>
@@ -94,32 +99,92 @@ export function HeroSection() {
             className="hero-copy mt-4 max-w-md text-[0.9375rem] leading-relaxed text-white/72 sm:mt-6 sm:text-base md:text-lg"
             style={{ animationDelay: "0.52s" }}
           >
-            Hottes, filtres, conduits et moteurs : entretien technique documenté pour les
-            cuisines professionnelles.
+            Hottes, filtres, conduits et moteurs : entretien technique documenté pour les cuisines
+            professionnelles.
           </p>
 
-          <div className="hero-copy mt-7 sm:mt-9" style={{ animationDelay: "0.64s" }}>
+          <ul
+            className="hero-copy mt-6 flex flex-col gap-2.5 sm:mt-8 sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-2.5"
+            style={{ animationDelay: "0.6s" }}
+          >
+            {REASSURANCE.map((item) => (
+              <li
+                key={item.text}
+                className="flex items-center gap-2 text-[0.8125rem] text-white/75"
+              >
+                <item.icon
+                  className="size-4 shrink-0 stroke-[1.5] text-white/50"
+                  aria-hidden="true"
+                />
+                {item.text}
+              </li>
+            ))}
+          </ul>
+
+          <div
+            className="hero-copy mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row"
+            style={{ animationDelay: "0.7s" }}
+          >
             <Button
               asChild
               size="lg"
               variant="inverse"
               className="group h-12 w-full px-8 text-base sm:w-auto"
             >
-              <Link to="/devis">
-                Obtenir mon devis
+              <Link
+                to="/devis"
+                onClick={() => saveQuotePrefill({ landing_page: "/", service_source: "hero" })}
+              >
+                Demander un devis en 2 min
                 <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
             </Button>
+            <EmergencyCta />
           </div>
 
           <p
             className="hero-copy mt-6 text-xs tracking-[0.12em] text-white/50 uppercase sm:mt-10 sm:text-[11px] sm:tracking-[0.22em]"
-            style={{ animationDelay: "0.76s" }}
+            style={{ animationDelay: "0.82s" }}
           >
             {zonesHeroLine()}
           </p>
         </div>
       </div>
     </section>
+  );
+}
+
+/** Bascule vers l'appel direct si le téléphone est configuré, sinon vers le devis urgent. */
+function EmergencyCta() {
+  const tel = phoneHref();
+
+  if (tel) {
+    return (
+      <Button asChild size="lg" variant="signal" className="h-12 w-full px-8 text-base sm:w-auto">
+        <a href={tel} onClick={() => track("Phone Click", { from: "hero" })}>
+          <PhoneCall className="size-4" />
+          Appel d'urgence 24/7
+        </a>
+      </Button>
+    );
+  }
+
+  return (
+    <Button asChild size="lg" variant="signal" className="h-12 w-full px-8 text-base sm:w-auto">
+      <Link
+        to="/devis"
+        onClick={() =>
+          saveQuotePrefill({
+            need_type: "intervention_urgente",
+            message: "Demande d'intervention urgente.",
+            landing_page: "/",
+            service_source: "hero-urgence",
+          })
+        }
+      >
+        <PhoneCall className="size-4" />
+        Urgence 24/7
+      </Link>
+    </Button>
   );
 }

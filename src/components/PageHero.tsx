@@ -21,7 +21,10 @@ export function PageHero({
 }) {
   return (
     <section className="relative overflow-hidden border-b border-border bg-background">
-      <div className="grid-fine pointer-events-none absolute inset-0 opacity-60" aria-hidden="true" />
+      <div
+        className="grid-fine pointer-events-none absolute inset-0 opacity-60"
+        aria-hidden="true"
+      />
       <div
         className={cn(
           "shell relative grid items-center gap-10 lg:gap-16",
@@ -55,7 +58,10 @@ export function PageHero({
         </div>
 
         {image && (
-          <figure className="hero-copy overflow-hidden rounded-sm border border-border" style={{ animationDelay: "0.42s" }}>
+          <figure
+            className="hero-copy overflow-hidden rounded-sm border border-border"
+            style={{ animationDelay: "0.42s" }}
+          >
             <img
               src={image}
               alt={imageAlt ?? ""}

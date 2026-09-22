@@ -71,12 +71,7 @@ function ServiceDetail() {
           <Button asChild size="lg" className="h-12 rounded-sm px-7">
             <Link to="/devis">Obtenir mon devis</Link>
           </Button>
-          <Button
-            asChild
-            size="lg"
-            variant="outline"
-            className="h-12 rounded-sm px-7"
-          >
+          <Button asChild size="lg" variant="outline" className="h-12 rounded-sm px-7">
             <Link to="/contact">Parler à un expert</Link>
           </Button>
         </div>

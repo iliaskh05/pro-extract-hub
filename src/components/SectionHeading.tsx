@@ -25,15 +25,9 @@ export function SectionHeading({
   const dark = tone === "dark";
   return (
     <div
-      className={cn(
-        "max-w-2xl",
-        align === "center" && "mx-auto max-w-3xl text-center",
-        className,
-      )}
+      className={cn("max-w-2xl", align === "center" && "mx-auto max-w-3xl text-center", className)}
     >
-      {eyebrow && (
-        <p className={cn("eyebrow", dark ? "text-accent" : "text-accent")}>{eyebrow}</p>
-      )}
+      {eyebrow && <p className={cn("eyebrow", dark ? "text-accent" : "text-accent")}>{eyebrow}</p>}
       <h2
         className={cn(
           "font-display mt-4 text-[1.85rem] leading-[1.05] font-bold tracking-[-0.045em] sm:text-4xl lg:text-[2.85rem]",

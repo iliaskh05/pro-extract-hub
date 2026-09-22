@@ -331,8 +331,20 @@ export function DashboardOverview({
                 </linearGradient>
               </defs>
               <CartesianGrid vertical={false} strokeDasharray="3 3" />
-              <XAxis dataKey="label" tickLine={false} axisLine={false} fontSize={11} minTickGap={16} />
-              <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={28} fontSize={11} />
+              <XAxis
+                dataKey="label"
+                tickLine={false}
+                axisLine={false}
+                fontSize={11}
+                minTickGap={16}
+              />
+              <YAxis
+                allowDecimals={false}
+                tickLine={false}
+                axisLine={false}
+                width={28}
+                fontSize={11}
+              />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Area
                 type="monotone"
@@ -362,7 +374,13 @@ export function DashboardOverview({
               <ChartContainer config={config} className="h-[240px] w-full">
                 <BarChart data={byZone} layout="vertical" margin={{ left: 8, right: 16 }}>
                   <CartesianGrid horizontal={false} strokeDasharray="3 3" />
-                  <XAxis type="number" allowDecimals={false} fontSize={11} tickLine={false} axisLine={false} />
+                  <XAxis
+                    type="number"
+                    allowDecimals={false}
+                    fontSize={11}
+                    tickLine={false}
+                    axisLine={false}
+                  />
                   <YAxis
                     type="category"
                     dataKey="zone"
@@ -425,7 +443,6 @@ export function DashboardOverview({
                 ))}
               </ul>
             </>
-
           )}
         </Panel>
 
@@ -461,8 +478,23 @@ export function DashboardOverview({
             <ChartContainer config={config} className="h-[240px] w-full">
               <BarChart data={byBusiness} margin={{ left: 4, right: 8 }}>
                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                <XAxis dataKey="type" fontSize={10} tickLine={false} axisLine={false} interval={0} angle={-20} height={48} textAnchor="end" />
-                <YAxis allowDecimals={false} width={28} fontSize={11} tickLine={false} axisLine={false} />
+                <XAxis
+                  dataKey="type"
+                  fontSize={10}
+                  tickLine={false}
+                  axisLine={false}
+                  interval={0}
+                  angle={-20}
+                  height={48}
+                  textAnchor="end"
+                />
+                <YAxis
+                  allowDecimals={false}
+                  width={28}
+                  fontSize={11}
+                  tickLine={false}
+                  axisLine={false}
+                />
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <Bar dataKey="demandes" fill="var(--color-demandes)" radius={[4, 4, 0, 0]} />
               </BarChart>

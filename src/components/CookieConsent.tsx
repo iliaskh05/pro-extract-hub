@@ -37,14 +37,14 @@ export function CookieConsent() {
         <p className="mt-1.5 text-[0.8125rem] leading-relaxed text-muted-foreground sm:mt-2 sm:text-sm">
           Les cookies essentiels assurent le fonctionnement du site.{" "}
           <span className="hidden sm:inline">
-            Les mesures d'audience et les cookies marketing ne sont déposés qu'avec votre accord.{" "}
+            Les mesures d'audience et les cookies marketing ne sont déposés qu'avec votre
+            accord.{" "}
           </span>
           <Link to="/confidentialite" className="underline-offset-4 hover:underline">
             Politique de confidentialité
           </Link>
           .
         </p>
-
 
         {manage && (
           <div className="mt-4 space-y-3 text-sm">
@@ -107,7 +107,6 @@ export function CookieConsent() {
             </Button>
           )}
         </div>
-
       </div>
     </div>
   );

@@ -20,22 +20,22 @@ npm run dev
 
 ## Variables d'environnement
 
-| Variable                        | Scope   | Obligatoire | Description                           |
-| ------------------------------- | ------- | ----------- | ------------------------------------- |
-| `VITE_SITE_URL`                 | Public  | Oui         | URL canonique sans slash final        |
-| `VITE_SUPABASE_URL`             | Public  | Oui         | URL projet Supabase                   |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` | Public  | Oui         | Clé anon / publishable                |
+| Variable                        | Scope   | Obligatoire | Description                               |
+| ------------------------------- | ------- | ----------- | ----------------------------------------- |
+| `VITE_SITE_URL`                 | Public  | Oui         | URL canonique sans slash final            |
+| `VITE_SUPABASE_URL`             | Public  | Oui         | URL projet Supabase                       |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Public  | Oui         | Clé anon / publishable                    |
 | `VITE_WHATSAPP_NUMBER`          | Public  | Recommandé  | Format `33612345678` (ex. `212669200560`) |
-| `VITE_PLAUSIBLE_DOMAIN`         | Public  | Optionnel   | Analytics (consentement requis)       |
-| `SUPABASE_URL`                  | Serveur | Oui         | Même URL que ci-dessus                |
-| `SUPABASE_PUBLISHABLE_KEY`      | Serveur | Oui         | Clé publishable                       |
-| `SUPABASE_SERVICE_ROLE_KEY`     | Serveur | Oui         | **Jamais** en `VITE_*`                |
-| `RESEND_API_KEY`                | Serveur | Recommandé  | API Resend                            |
-| `RESEND_FROM`                   | Serveur | Recommandé  | Expéditeur vérifié                    |
-| `LEAD_NOTIFY_EMAIL`             | Serveur | Recommandé  | Notification interne                  |
-| `GOOGLE_AI_API_KEY`             | Serveur | Recommandé  | Assistant chat Gemini (Google AI Studio) |
-| `GOOGLE_AI_MODEL`               | Serveur | Optionnel   | Défaut `gemini-3.5-flash`             |
-| `OPENAI_API_KEY`                | Serveur | Optionnel   | Assistant chat (si pas de clé Gemini) |
+| `VITE_PLAUSIBLE_DOMAIN`         | Public  | Optionnel   | Analytics (consentement requis)           |
+| `SUPABASE_URL`                  | Serveur | Oui         | Même URL que ci-dessus                    |
+| `SUPABASE_PUBLISHABLE_KEY`      | Serveur | Oui         | Clé publishable                           |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Serveur | Oui         | **Jamais** en `VITE_*`                    |
+| `RESEND_API_KEY`                | Serveur | Recommandé  | API Resend                                |
+| `RESEND_FROM`                   | Serveur | Recommandé  | Expéditeur vérifié                        |
+| `LEAD_NOTIFY_EMAIL`             | Serveur | Recommandé  | Notification interne                      |
+| `GOOGLE_AI_API_KEY`             | Serveur | Recommandé  | Assistant chat Gemini (Google AI Studio)  |
+| `GOOGLE_AI_MODEL`               | Serveur | Optionnel   | Défaut `gemini-3.5-flash`                 |
+| `OPENAI_API_KEY`                | Serveur | Optionnel   | Assistant chat (si pas de clé Gemini)     |
 
 Données entreprise (téléphone, email, SIRET, adresse) : `src/lib/site.ts`.
 
@@ -84,17 +84,18 @@ npm run preview   # test local optionnel
 7. Définir le domaine et aligner `VITE_SITE_URL`.
 
 Fichiers utiles :
+
 - `vercel.json` — framework + commandes
 - `vite.config.ts` — preset Nitro `vercel` quand `VERCEL=1`
 
 ### Erreurs fréquentes
 
-| Symptôme | Cause | Correctif |
-| --- | --- | --- |
-| Build OK mais 404 / ERR_FUNCTION | Output Directory forcé à `dist` | Laisser vide / Auto |
-| `cloudflare` / Workers dans les logs | Mauvais preset Nitro | Vérifier `VERCEL=1` et redeploy |
-| `npm ci` échoue | Lockfile désynchronisé | `npm install` puis commit `package-lock.json` |
-| Module not found `nitro` | Dependance manquante | `nitro` doit être dans `devDependencies` |
+| Symptôme                             | Cause                           | Correctif                                     |
+| ------------------------------------ | ------------------------------- | --------------------------------------------- |
+| Build OK mais 404 / ERR_FUNCTION     | Output Directory forcé à `dist` | Laisser vide / Auto                           |
+| `cloudflare` / Workers dans les logs | Mauvais preset Nitro            | Vérifier `VERCEL=1` et redeploy               |
+| `npm ci` échoue                      | Lockfile désynchronisé          | `npm install` puis commit `package-lock.json` |
+| Module not found `nitro`             | Dependance manquante            | `nitro` doit être dans `devDependencies`      |
 
 ## En-têtes HTTP
 

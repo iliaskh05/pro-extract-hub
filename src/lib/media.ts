@@ -1,24 +1,35 @@
-import heroKitchen from "@/assets/generated/hero-kitchen-extract.jpg";
-import detailFilters from "@/assets/generated/detail-filters.jpg";
-import serviceHood from "@/assets/generated/service-hood.jpg";
-import serviceFilters from "@/assets/generated/service-filters.jpg";
-import serviceDuct from "@/assets/generated/service-duct.jpg";
-import serviceMotor from "@/assets/generated/service-motor.jpg";
-import serviceMaintenance from "@/assets/generated/service-maintenance.jpg";
-import serviceDiagnostic from "@/assets/generated/service-diagnostic.jpg";
-import sectorRestaurant from "@/assets/generated/sector-restaurant.jpg";
-import sectorHotel from "@/assets/generated/sector-hotel.jpg";
-import sectorFastFood from "@/assets/generated/sector-fast-food.jpg";
-import sectorBakery from "@/assets/generated/sector-bakery.jpg";
-import sectorPastry from "@/assets/generated/sector-pastry.jpg";
-import sectorCaterer from "@/assets/generated/sector-caterer.jpg";
-import sectorCollective from "@/assets/generated/sector-collective.jpg";
-import baHood from "@/assets/generated/ba-hood-clean.jpg";
-import baDuct from "@/assets/generated/ba-duct-clean.jpg";
-import baMotor from "@/assets/generated/ba-motor-clean.jpg";
+import kitchenWide from "@/assets/real/kitchen-wide.jpg";
+import steelTexture from "@/assets/real/steel-texture.jpg";
+import hoodCookline from "@/assets/real/hood-cookline.jpg";
+import kitchenFan from "@/assets/real/kitchen-narrow-fan.jpg";
+import kitchenService from "@/assets/real/kitchen-bw-service.jpg";
+import grillSmoke from "@/assets/real/grill-smoke.jpg";
+import bakeryOvens from "@/assets/real/bakery-ovens.jpg";
+import patisserieCase from "@/assets/real/patisserie-case.jpg";
+import cateringTrays from "@/assets/real/catering-trays.jpg";
+import cafeteriaLine from "@/assets/real/cafeteria-line.jpg";
+
+const heroKitchen = kitchenWide;
+const detailFilters = steelTexture;
+const serviceHood = hoodCookline;
+const serviceFilters = steelTexture;
+const serviceDuct = kitchenWide;
+const serviceMotor = kitchenFan;
+const serviceMaintenance = kitchenService;
+const serviceDiagnostic = kitchenService;
+const sectorRestaurant = hoodCookline;
+const sectorHotel = kitchenService;
+const sectorFastFood = grillSmoke;
+const sectorBakery = bakeryOvens;
+const sectorPastry = patisserieCase;
+const sectorCaterer = cateringTrays;
+const sectorCollective = cafeteriaLine;
+const baHood = hoodCookline;
+const baDuct = kitchenWide;
+const baMotor = kitchenFan;
 
 /**
- * Visuels du site (série IA premium).
+ * Visuels du site — photographie documentaire réelle (Unsplash, licence libre).
  * Avant/après : même angle + traitement `grime` = démonstration
  * jusqu'à `public/interventions/{slug}/before.jpg|after.jpg`.
  */

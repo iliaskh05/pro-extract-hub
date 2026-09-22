@@ -43,6 +43,8 @@
   --color-ink-muted: var(--ink-muted);
   --color-ink-border: var(--ink-border);
   --color-grime: var(--grime);
+  --color-signal: var(--signal);
+  --color-signal-foreground: var(--signal-foreground);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -97,6 +99,12 @@
   /* Bleu marine du logo officiel — pour badges / fusion visuelle */
   --brand-navy: #1a3a8f;
 
+  /* Signal technique (ambre sécurité) — réservé à l'urgence et aux alertes
+     réglementaires. Le bleu reste le signal de conformité/confiance ; l'ambre
+     ne doit jamais se mélanger au bleu dans un même composant. */
+  --signal: #b3570f;
+  --signal-foreground: #ffffff;
+
   /* Encrassement — utilisé uniquement pour la narration avant / après */
   --grime: oklch(0.58 0.09 62);
 
@@ -135,8 +143,9 @@
 .dark {
   --accent: #8fb0ff;
   --accent-foreground: #101113;
+  --signal: #f5a623;
+  --signal-foreground: #17120a;
 }
-
 
 .dark {
   --background: oklch(0.135 0.018 250);
@@ -192,7 +201,6 @@
     background: rgb(26 58 143 / 0.18);
     color: var(--foreground);
   }
-
 }
 
 @utility surface-ink {
@@ -286,7 +294,6 @@
 @utility hero-bleed {
   margin-top: 0;
 }
-
 
 /* Reveal au scroll — base commune à toutes les sections */
 @utility reveal {

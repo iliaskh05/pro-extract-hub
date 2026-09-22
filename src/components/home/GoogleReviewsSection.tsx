@@ -4,11 +4,7 @@ import { BrandMark } from "@/components/BrandMark";
 import { Reveal } from "@/components/Reveal";
 import { SectionHeading } from "@/components/SectionHeading";
 import { Button } from "@/components/ui/button";
-import {
-  GOOGLE_REVIEWS,
-  googleReviewLink,
-  type GoogleReview,
-} from "@/lib/google-reviews";
+import { GOOGLE_REVIEWS, googleReviewLink, type GoogleReview } from "@/lib/google-reviews";
 import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -259,9 +255,7 @@ export function GoogleReviewsSection() {
                     type="button"
                     aria-label={`Avis ${i + 1}`}
                     onClick={() => scrollToIndex(i)}
-                    className={cn(
-                      "min-h-11 min-w-11 rounded-full p-3 transition-all duration-300",
-                    )}
+                    className={cn("min-h-11 min-w-11 rounded-full p-3 transition-all duration-300")}
                   >
                     <span
                       className={cn(

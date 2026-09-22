@@ -6,6 +6,7 @@ import { MethodSection } from "@/components/home/MethodSection";
 import { HomeExploreTabs } from "@/components/home/HomeExploreTabs";
 import { SectorsSection } from "@/components/home/SectorsSection";
 import { GoogleReviewsSection } from "@/components/home/GoogleReviewsSection";
+import { ComplianceBanner } from "@/components/home/ComplianceBanner";
 import { FinalCta } from "@/components/FinalCta";
 
 /**
@@ -22,6 +23,7 @@ export function HomeStory() {
       <HomeExploreTabs />
       <SectorsSection />
       <GoogleReviewsSection />
+      <ComplianceBanner />
       <FinalCta />
     </div>
   );

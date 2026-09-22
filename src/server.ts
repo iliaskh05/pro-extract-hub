@@ -44,16 +44,52 @@ function isH3SwallowedErrorBody(body: string): boolean {
   }
 }
 
-const SECURITY_HEADERS: Record<string, string> = {
-  "X-Content-Type-Options": "nosniff",
-  "X-Frame-Options": "SAMEORIGIN",
-  "Referrer-Policy": "strict-origin-when-cross-origin",
-  "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
-};
+// Only Plausible (analytics, loaded post-consent) and Google Fonts are ever
+// fetched from the browser besides our own origin and Supabase. script-src
+// and style-src need 'unsafe-inline': TanStack Start's SSR hydration payload
+// and the shadcn chart component (src/components/ui/chart.tsx) both inject
+// inline <script>/<style> tags, and there is no nonce/hash plumbing here yet.
+function supabaseCspSources(): string {
+  const supabaseUrl = process.env["VITE_SUPABASE_URL"] || process.env["SUPABASE_URL"] || "";
+  try {
+    const host = supabaseUrl ? new URL(supabaseUrl).host : "";
+    return host ? `https://${host} wss://${host}` : "";
+  } catch {
+    return "";
+  }
+}
+
+function buildContentSecurityPolicy(): string {
+  const connectSrc = ["'self'", "https://plausible.io", supabaseCspSources()]
+    .filter(Boolean)
+    .join(" ");
+  return [
+    "default-src 'self'",
+    "base-uri 'self'",
+    "object-src 'none'",
+    "frame-ancestors 'self'",
+    "img-src 'self' data: blob:",
+    "font-src 'self' https://fonts.gstatic.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "script-src 'self' 'unsafe-inline' https://plausible.io",
+    `connect-src ${connectSrc}`,
+  ].join("; ");
+}
+
+function securityHeaders(): Record<string, string> {
+  return {
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "SAMEORIGIN",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+    "Content-Security-Policy": buildContentSecurityPolicy(),
+  };
+}
 
 function withSecurityHeaders(response: Response): Response {
   const headers = new Headers(response.headers);
-  for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
+  for (const [key, value] of Object.entries(securityHeaders())) {
     if (!headers.has(key)) headers.set(key, value);
   }
   return new Response(response.body, {

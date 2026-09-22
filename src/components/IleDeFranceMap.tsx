@@ -33,13 +33,10 @@ export function IleDeFranceMap({
             Département actif
           </p>
           <h3 className="font-display mt-1 text-lg font-bold tracking-[-0.03em] sm:text-xl">
-            {current.name}{" "}
-            <span className="text-muted-foreground">({current.code})</span>
+            {current.name} <span className="text-muted-foreground">({current.code})</span>
           </h3>
           <p className="mt-1 text-sm text-muted-foreground">{current.hub}</p>
-          <p className="mt-2 text-sm leading-relaxed text-foreground/80 sm:mt-3">
-            {current.note}
-          </p>
+          <p className="mt-2 text-sm leading-relaxed text-foreground/80 sm:mt-3">{current.note}</p>
         </div>
 
         <ul className="grid grid-cols-2 divide-x divide-y divide-border sm:max-h-[22rem] sm:grid-cols-1 sm:overflow-y-auto lg:flex-1">
@@ -52,7 +49,9 @@ export function IleDeFranceMap({
                 onClick={() => setDept(d.code)}
                 className={cn(
                   "flex min-h-12 w-full items-center justify-between gap-2 px-3 py-3 text-left transition-colors sm:gap-3 sm:px-5",
-                  active === d.code ? "bg-accent/8" : "active:bg-secondary/70 hover:bg-secondary/70",
+                  active === d.code
+                    ? "bg-accent/8"
+                    : "active:bg-secondary/70 hover:bg-secondary/70",
                 )}
               >
                 <span className="min-w-0">

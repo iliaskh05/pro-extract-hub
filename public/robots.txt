@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin
 
-Sitemap: /sitemap.xml
+Sitemap: http://localhost:3000/sitemap.xml

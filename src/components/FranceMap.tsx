@@ -46,7 +46,10 @@ export function FranceMap({ highlight }: { highlight?: ZoneSlug | undefined }) {
       ref={ref}
       className="relative overflow-hidden rounded-sm border border-border bg-white p-4 sm:p-8"
     >
-      <div className="grid-blue pointer-events-none absolute inset-0 opacity-60" aria-hidden="true" />
+      <div
+        className="grid-blue pointer-events-none absolute inset-0 opacity-60"
+        aria-hidden="true"
+      />
 
       <svg
         viewBox={MAP.viewBox}

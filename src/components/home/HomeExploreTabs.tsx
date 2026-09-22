@@ -136,17 +136,14 @@ function FrequencyPanel() {
 
       <div className="space-y-6">
         <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
-          Repères d'usage selon le type de cuisine — pas une obligation unique. La fréquence
-          adaptée se précise après qualification de votre installation.
+          Repères d'usage selon le type de cuisine — pas une obligation unique. La fréquence adaptée
+          se précise après qualification de votre installation.
         </p>
 
         {/* Mobile : cartes empilées */}
         <ul className="space-y-2 md:hidden">
           {FREQ_ROWS.map((row) => (
-            <li
-              key={row.type}
-              className="border border-border/80 bg-secondary/20 px-4 py-3.5"
-            >
+            <li key={row.type} className="border border-border/80 bg-secondary/20 px-4 py-3.5">
               <p className="text-sm font-semibold tracking-tight">{row.type}</p>
               <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
                 <span className="font-semibold text-accent">{row.usage}</span>
@@ -193,7 +190,9 @@ function FrequencyPanel() {
               <ArrowRight className="size-4" />
             </Link>
           </Button>
-          <p className="text-xs text-muted-foreground">Sans grille tarifaire affichée — devis adapté.</p>
+          <p className="text-xs text-muted-foreground">
+            Sans grille tarifaire affichée — devis adapté.
+          </p>
         </div>
       </div>
     </div>
@@ -278,8 +277,8 @@ function ZonesPanel() {
           </p>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
             Quatre pôles réellement desservis. Le pôle Paris détaille les{" "}
-            <span className="font-medium text-foreground">8 départements d'Île-de-France</span>{" "}
-            ({deptCodes}). En limite de secteur, la faisabilité est confirmée avant proposition.
+            <span className="font-medium text-foreground">8 départements d'Île-de-France</span> (
+            {deptCodes}). En limite de secteur, la faisabilité est confirmée avant proposition.
           </p>
         </div>
         <div className="inline-flex rounded-sm border border-border bg-secondary/40 p-1">
@@ -312,8 +311,8 @@ function ZonesPanel() {
         <div className="space-y-4">
           <IleDeFranceMap />
           <p className="text-xs leading-relaxed text-muted-foreground">
-            Schéma interactif : survolez un département pour afficher le détail. Couverture au
-            plus près des sites accessibles — pas une annonce de chaque commune IDF.
+            Schéma interactif : survolez un département pour afficher le détail. Couverture au plus
+            près des sites accessibles — pas une annonce de chaque commune IDF.
           </p>
         </div>
       ) : (

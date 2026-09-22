@@ -11,7 +11,10 @@ export function ZonesSection() {
 
   return (
     <section className="surface-blue relative overflow-hidden border-t border-border">
-      <div className="grid-blue pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
+      <div
+        className="grid-blue pointer-events-none absolute inset-0 opacity-40"
+        aria-hidden="true"
+      />
       <div className="shell section-y relative">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
           <Reveal>

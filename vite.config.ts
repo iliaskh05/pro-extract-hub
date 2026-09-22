@@ -14,14 +14,14 @@ export default defineConfig({
     server: { entry: "server" },
   },
   nitro: onVercel
-    ? {
+    ? ({
         preset: "vercel",
         vercel: {
           functions: {
             runtime: "nodejs20.x",
           },
         },
-      }
+      } as any)
     : true,
   vite: {
     build: {

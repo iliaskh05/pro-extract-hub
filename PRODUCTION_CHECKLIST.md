@@ -17,7 +17,7 @@ Copier `.env.example` vers `.env` (local) ou configurer sur Lovable / Cloudflare
 | `LEAD_NOTIFY_EMAIL`             | Recommandé  | Email interne nouvelles demandes                       |
 | `VITE_WHATSAPP_NUMBER`          | Recommandé  | Format `33612345678`                                   |
 | `VITE_PLAUSIBLE_DOMAIN`         | Optionnel   | Analytics (après consentement cookies)                 |
-| `GOOGLE_AI_API_KEY`             | Recommandé  | Assistant chat Gemini (Google AI Studio)                 |
+| `GOOGLE_AI_API_KEY`             | Recommandé  | Assistant chat Gemini (Google AI Studio)               |
 | `GOOGLE_AI_MODEL`               | Optionnel   | Défaut `gemini-3.5-flash`                              |
 | `OPENAI_API_KEY`                | Optionnel   | Assistant chat (si pas de clé Gemini)                  |
 
@@ -27,13 +27,40 @@ Renseigner dans `src/lib/site.ts` : téléphone, email, SIRET, adresse, réseaux
 
 ## Supabase
 
-1. Appliquer les migrations dans l'ordre :
+⚠️ **Deux schémas de rôles ont coexisté sur ce projet** : `public.staff_profiles`
+(`supabase/migrations/`, rôles `admin`/`commercial`) et `public.user_roles`
+(`drizzle/migrations/`, rôles `admin`/`staff`/`user`, généré par Lovable Cloud).
+Avant de toucher à quoi que ce soit, vérifiez lequel est réellement en place sur
+votre base (SQL editor Supabase) :
+
+```sql
+select table_name from information_schema.tables
+where table_schema = 'public' and table_name in ('staff_profiles', 'user_roles');
+
+select policyname from pg_policies where tablename = 'leads';
+```
+
+1. Appliquer les migrations `supabase/migrations/` dans l'ordre :
    - `20260816125108_*.sql`
    - `20260823170000_production_readiness.sql`
    - `20260828180000_lead_qualification.sql`
-2. Désactiver l'inscription publique Auth.
-3. Créer un utilisateur staff + entrée `staff_profiles` (rôle `admin`).
+   - `20260920120000_reconcile_staff_access.sql` ← **nouvelle**, résout le point ci-dessus.
+     Idempotente : sûre à appliquer que `drizzle/migrations/` ait tourné ou non sur
+     cette base. Elle garantit que `staff_profiles` et `user_roles` existent tous
+     les deux, unifie `is_staff()` / `is_admin()` pour vérifier les deux tables, et
+     recrée les policies `leads` sous des noms uniques (plus de conflit possible).
+2. Désactiver l'inscription publique Auth (Dashboard Supabase → Authentication →
+   Providers/Settings → _Allow new users to sign up_ = OFF). Vérifiable avec :
+   `SUPABASE_URL=https://<projet>.supabase.co node scripts/check-auth-settings.mjs`
+   (lecture seule, échoue si l'inscription publique est encore ouverte).
+3. Créer un utilisateur staff, puis lui donner le rôle admin dans **la table que
+   l'étape « vérification » a identifiée comme active** (voir requêtes SQL en bas
+   de `20260920120000_reconcile_staff_access.sql`).
 4. Vérifier le bucket `lead-documents` et les policies RLS.
+5. Une fois le schéma stabilisé, régénérer les types TypeScript
+   (`npx supabase gen types typescript --project-id <id> --schema public > src/integrations/supabase/types.ts`)
+   pour que `staff_profiles` soit typé et que le cast `as any` dans
+   `src/routes/admin.tsx` puisse être retiré.
 
 ## Resend
 
@@ -96,6 +123,14 @@ Sans clé, l'assistant utilise des règles déterministes (réponses basiques).
 - [ ] `sitemap.xml` avec URLs absolues
 - [ ] `robots.txt` — `Disallow: /admin`
 - [ ] Meta OG sur toutes les pages
+
+### Sécurité
+
+- [ ] `npm run test` et `npx tsc --noEmit` passent
+- [ ] Console navigateur sans erreur `Content-Security-Policy` sur `/`, `/devis` et `/admin`
+      (le CSP dans `src/server.ts` autorise Supabase, Google Fonts et Plausible ; élargir
+      `connect-src`/`img-src`/`script-src` si un nouveau domaine externe est ajouté)
+- [ ] `check-auth-settings.mjs` confirme l'inscription publique désactivée
 
 ## Statut attendu après configuration
 

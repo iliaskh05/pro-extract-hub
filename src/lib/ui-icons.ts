@@ -1,12 +1,12 @@
 import {
   CalendarClock,
-  Camera,
   ClipboardCheck,
   Cog,
   Droplets,
   Filter,
   Search,
   ShieldCheck,
+  Waves,
   Waypoints,
   Wind,
   CircleCheckBig,
@@ -28,7 +28,7 @@ export const METHOD_ICONS: Record<string, LucideIcon> = {
   "01": Search,
   "02": ShieldCheck,
   "03": Droplets,
-  "04": CircleCheckBig,
-  "05": Camera,
+  "04": Waves,
+  "05": CircleCheckBig,
   "06": CalendarClock,
 };

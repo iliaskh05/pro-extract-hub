@@ -46,11 +46,7 @@ export function FinalCta({
   }, [reduced]);
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative overflow-hidden"
-      data-header-tone="dark"
-    >
+    <section ref={sectionRef} className="relative overflow-hidden" data-header-tone="dark">
       <div ref={mediaRef} className="absolute inset-0 will-change-transform" aria-hidden="true">
         <img
           src={MEDIA.afterHood}
