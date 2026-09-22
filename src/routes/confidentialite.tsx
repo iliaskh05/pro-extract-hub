@@ -145,12 +145,22 @@ function PrivacyPage() {
 
         <Section title="5. Durées de conservation">
           <ul className="list-disc space-y-1 pl-5">
-            <li>Demande de devis sans suite : {TODO} (usage courant : 3 ans après le dernier contact).</li>
-            <li>Client avec prestation réalisée : {TODO} (documents comptables : 10 ans).</li>
-            <li>Photos transmises : {TODO}.</li>
-            <li>Journaux techniques de sécurité : {TODO} (usage courant : 6 à 12 mois).</li>
+            <li>Demande de devis sans suite : 3 ans après le dernier contact.</li>
+            <li>
+              Client avec prestation réalisée : données de contact 3 ans après la fin de la relation
+              commerciale ; pièces comptables et factures 10 ans (obligation légale).
+            </li>
+            <li>
+              Photos transmises : le temps du traitement de la demande ; supprimées au plus tard 12
+              mois après le dernier contact si aucune prestation n'est réalisée.
+            </li>
+            <li>Journaux techniques de sécurité : 12 mois maximum.</li>
             <li>Preuve du consentement cookies : 6 mois, puis nouvelle demande.</li>
           </ul>
+          <p>
+            Ces durées correspondent aux recommandations courantes de la CNIL ; la direction peut
+            les ajuster et le document sera alors mis à jour.
+          </p>
         </Section>
 
         <Section title="6. Transferts hors Union européenne">
@@ -160,8 +170,8 @@ function PrivacyPage() {
             la Commission européenne. Liste et localisation exactes des prestataires : {TODO}.
           </p>
           <p>
-            Les polices d'écriture sont actuellement chargées depuis Google Fonts, ce qui transmet
-            votre adresse IP à Google. Une internalisation des polices est prévue ({TODO}).
+            Les polices d'écriture sont hébergées sur le site lui-même : aucune adresse IP n'est
+            transmise à un service de polices tiers.
           </p>
         </Section>
 
