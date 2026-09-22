@@ -29,7 +29,9 @@ npm run dev
 | `VITE_PLAUSIBLE_DOMAIN`         | Public  | Optionnel   | Analytics (consentement requis)           |
 | `SUPABASE_URL`                  | Serveur | Oui         | Même URL que ci-dessus                    |
 | `SUPABASE_PUBLISHABLE_KEY`      | Serveur | Oui         | Clé publishable                           |
-| `SUPABASE_SERVICE_ROLE_KEY`     | Serveur | Oui         | **Jamais** en `VITE_*`                    |
+| `SUPABASE_SECRET_KEY`           | Serveur | Oui         | Clé `sb_secret_…`, **jamais** en `VITE_*` |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Serveur | Alternative | Ancienne clé serveur, jamais en `VITE_*`  |
+| `UPLOAD_TOKEN_SECRET`           | Serveur | Oui         | Secret aléatoire pour les sessions photo  |
 | `RESEND_API_KEY`                | Serveur | Recommandé  | API Resend                                |
 | `RESEND_FROM`                   | Serveur | Recommandé  | Expéditeur vérifié                        |
 | `LEAD_NOTIFY_EMAIL`             | Serveur | Recommandé  | Notification interne                      |
@@ -48,6 +50,11 @@ Appliquer dans l'ordre chronologique :
 1. `supabase/migrations/20260816125108_*.sql`
 2. `supabase/migrations/20260823170000_production_readiness.sql`
 3. `supabase/migrations/20260828180000_lead_qualification.sql`
+4. `supabase/migrations/20260920120000_reconcile_staff_access.sql`
+5. `supabase/migrations/20260922120000_fix_staff_function_permissions.sql`
+
+Projet lié : `mfpgsdoyfomaetrkvlfw`. Utiliser `supabase db push --dry-run`
+avant l'application effective des migrations.
 
 ### Sécurité
 

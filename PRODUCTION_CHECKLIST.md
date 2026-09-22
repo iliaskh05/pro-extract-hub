@@ -11,7 +11,9 @@ Copier `.env.example` vers `.env` (local) ou configurer sur Lovable / Cloudflare
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | Oui         | Clé publique Supabase                                  |
 | `SUPABASE_URL`                  | Oui         | Serveur                                                |
 | `SUPABASE_PUBLISHABLE_KEY`      | Oui         | Serveur                                                |
-| `SUPABASE_SERVICE_ROLE_KEY`     | Oui         | Devis, uploads, emails (jamais en `VITE_*`)            |
+| `SUPABASE_SECRET_KEY`           | Oui         | Devis et uploads, uniquement côté serveur               |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Alternative | Compatibilité avec l'ancienne clé serveur               |
+| `UPLOAD_TOKEN_SECRET`           | Oui         | Signature des sessions temporaires d'upload             |
 | `RESEND_API_KEY`                | Recommandé  | Notifications email                                    |
 | `RESEND_FROM`                   | Recommandé  | Expéditeur (domaine vérifié Resend)                    |
 | `LEAD_NOTIFY_EMAIL`             | Recommandé  | Email interne nouvelles demandes                       |
@@ -49,6 +51,9 @@ select policyname from pg_policies where tablename = 'leads';
      cette base. Elle garantit que `staff_profiles` et `user_roles` existent tous
      les deux, unifie `is_staff()` / `is_admin()` pour vérifier les deux tables, et
      recrée les policies `leads` sous des noms uniques (plus de conflit possible).
+   - `20260922120000_fix_staff_function_permissions.sql` ← autorise les comptes
+     authentifiés à exécuter les fonctions requises par les policies, tout en les
+     maintenant interdites aux visiteurs anonymes.
 2. Désactiver l'inscription publique Auth (Dashboard Supabase → Authentication →
    Providers/Settings → _Allow new users to sign up_ = OFF). Vérifiable avec :
    `SUPABASE_URL=https://<projet>.supabase.co node scripts/check-auth-settings.mjs`

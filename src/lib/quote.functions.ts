@@ -11,7 +11,10 @@ const UPLOAD_TOKEN_TTL_MS = 30 * 60 * 1000;
 
 function tokenSecret() {
   const secret =
-    process.env["SUPABASE_SERVICE_ROLE_KEY"] ?? process.env["SUPABASE_PUBLISHABLE_KEY"] ?? "";
+    process.env["UPLOAD_TOKEN_SECRET"] ??
+    process.env["SUPABASE_SECRET_KEY"] ??
+    process.env["SUPABASE_SERVICE_ROLE_KEY"] ??
+    "";
   if (!secret) throw new Error("Configuration serveur incomplète.");
   return secret;
 }
