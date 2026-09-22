@@ -322,6 +322,7 @@ export function DashboardOverview({
         {current.length === 0 ? (
           <EmptyState />
         ) : (
+          <>
           <ChartContainer
             config={config}
             className="h-[260px] w-full"
@@ -372,6 +373,7 @@ export function DashboardOverview({
             <thead><tr><th>Période</th><th>Demandes</th><th>Gagnées</th></tr></thead>
             <tbody>{timeSeries.map((row) => <tr key={row.label}><th>{row.label}</th><td>{row.demandes}</td><td>{row.gagnees}</td></tr>)}</tbody>
           </table>
+          </>
         )}
       </Panel>
 
