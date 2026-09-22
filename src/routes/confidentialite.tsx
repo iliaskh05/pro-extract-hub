@@ -34,8 +34,8 @@ function PrivacyPage() {
         Politique de confidentialité
       </h1>
       <p className="mt-3 text-sm text-muted-foreground">
-        Dernière mise à jour : {TODO} — document à faire valider juridiquement avant publication
-        définitive.
+        Dernière mise à jour : 22 septembre 2026 — document à faire valider juridiquement avant
+        publication définitive.
       </p>
 
       <div className="mt-8 space-y-7 text-sm leading-relaxed text-muted-foreground">
@@ -55,9 +55,10 @@ function PrivacyPage() {
             <br />
             Téléphone : {displayValue(SITE.phone, TODO)}
             <br />
-            Contact données personnelles : {displayValue(SITE.email, TODO)}
+            Contact données personnelles : par téléphone au {SITE.phone} ou par e-mail à{" "}
+            {displayValue(SITE.email, TODO)}
           </p>
-          <p>Aucun délégué à la protection des données n'est désigné à ce jour ({TODO}).</p>
+          <p>Aucun délégué à la protection des données n'est désigné à ce jour.</p>
         </Section>
 
         <Section title="2. Données collectées">
@@ -134,8 +135,9 @@ function PrivacyPage() {
               publicitaire ni revente de données.
             </li>
             <li>
-              Partenaires d'intervention éventuels, uniquement pour exécuter la prestation demandée
-              : {TODO}.
+              Partenaires intervenants qualifiés mobilisés uniquement pour exécuter la prestation
+              demandée ({SITE.name} agit comme coordonnateur). La liste des partenaires mobilisés
+              pour votre intervention est disponible sur demande.
             </li>
           </ul>
           <p>Vos données ne sont ni vendues, ni louées, ni échangées.</p>
