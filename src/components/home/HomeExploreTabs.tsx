@@ -281,9 +281,12 @@ function ZonesPanel() {
             {deptCodes}). En limite de secteur, la faisabilité est confirmée avant proposition.
           </p>
         </div>
-        <div className="inline-flex rounded-sm border border-border bg-secondary/40 p-1">
+        <div className="inline-flex rounded-sm border border-border bg-secondary/40 p-1" role="tablist" aria-label="Choisir la carte">
           <button
             type="button"
+            role="tab"
+            aria-selected={view === "idf"}
+            aria-controls="zones-map-panel"
             onClick={() => setView("idf")}
             className={cn(
               "rounded-sm px-3.5 py-2 text-xs font-semibold tracking-wide transition-colors",
@@ -294,6 +297,9 @@ function ZonesPanel() {
           </button>
           <button
             type="button"
+            role="tab"
+            aria-selected={view === "france"}
+            aria-controls="zones-map-panel"
             onClick={() => setView("france")}
             className={cn(
               "rounded-sm px-3.5 py-2 text-xs font-semibold tracking-wide transition-colors",
@@ -308,7 +314,7 @@ function ZonesPanel() {
       </div>
 
       {view === "idf" ? (
-        <div className="space-y-4">
+        <div id="zones-map-panel" role="tabpanel" className="space-y-4">
           <IleDeFranceMap />
           <p className="text-xs leading-relaxed text-muted-foreground">
             Schéma interactif : survolez un département pour afficher le détail. Couverture au plus
@@ -316,7 +322,7 @@ function ZonesPanel() {
           </p>
         </div>
       ) : (
-        <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
+        <div id="zones-map-panel" role="tabpanel" className="grid gap-8 lg:grid-cols-2 lg:gap-12">
           <div>
             <ul className="divide-y divide-border rounded-sm border border-border bg-background">
               {zones.map((z) => (

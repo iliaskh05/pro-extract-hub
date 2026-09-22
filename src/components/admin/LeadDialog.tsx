@@ -130,12 +130,13 @@ export function LeadDialog({
             <LeadNotes lead={lead} onSaved={(notes) => onPatch({ notes })} />
 
             <div>
-              <p className="text-xs font-semibold text-muted-foreground">Priorité CRM</p>
-              <div className="mt-2 flex flex-wrap gap-2">
+              <p id="priority-group-label" className="text-xs font-semibold text-muted-foreground">Priorité CRM</p>
+              <div className="mt-2 flex flex-wrap gap-2" role="group" aria-labelledby="priority-group-label">
                 {Object.keys(PRIORITY_LABELS).map((p) => (
                   <button
                     key={p}
                     type="button"
+                    aria-pressed={lead.priority === p}
                     onClick={() => onUpdatePriority(lead, p)}
                     className={cn(
                       "rounded-full border px-3 py-1.5 text-xs font-medium",
@@ -151,12 +152,13 @@ export function LeadDialog({
             </div>
 
             <div>
-              <p className="text-xs font-semibold text-muted-foreground">Changer le statut</p>
-              <div className="mt-2 flex flex-wrap gap-2">
+              <p id="status-group-label" className="text-xs font-semibold text-muted-foreground">Changer le statut</p>
+              <div className="mt-2 flex flex-wrap gap-2" role="group" aria-labelledby="status-group-label">
                 {LEAD_STATUSES.map((s) => (
                   <button
                     key={s.value}
                     type="button"
+                    aria-pressed={lead.status === s.value}
                     onClick={() => onUpdateStatus(lead, s.value)}
                     className={cn(
                       "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
@@ -196,6 +198,7 @@ function LeadPhotos({ photos }: { photos: Lead["photos"] }) {
             <button
               key={path}
               type="button"
+              aria-label={`Ouvrir la photo ${(item as { slot?: string }).slot || path}`}
               className="rounded-full bg-secondary px-3 py-1 text-xs font-medium underline-offset-4 hover:underline"
               onClick={async () => {
                 const { data } = await supabase.storage
@@ -229,7 +232,7 @@ function LeadMaintenanceFields({
 
   return (
     <div className="rounded-lg border border-border p-4">
-      <p className="text-xs font-semibold text-muted-foreground">Suivi maintenance</p>
+      <h3 className="text-xs font-semibold text-muted-foreground">Suivi maintenance</h3>
       <div className="mt-3 grid gap-3 sm:grid-cols-2">
         <div>
           <Label htmlFor="last_intervention">Dernière intervention (date)</Label>
@@ -294,8 +297,9 @@ function LeadNotes({ lead, onSaved }: { lead: Lead; onSaved: (notes: string) => 
   const [saving, setSaving] = useState(false);
   return (
     <div>
-      <p className="text-xs font-semibold text-muted-foreground">Notes internes</p>
+      <Label htmlFor={`lead-notes-${lead.id}`}>Notes internes</Label>
       <textarea
+        id={`lead-notes-${lead.id}`}
         className="mt-2 min-h-20 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
         value={notes}
         onChange={(e) => setNotes(e.target.value)}

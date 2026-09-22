@@ -167,6 +167,7 @@
 @layer base {
   * {
     border-color: var(--color-border);
+    letter-spacing: 0 !important;
   }
 
   html {
@@ -180,14 +181,14 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     font-optical-sizing: auto;
-    letter-spacing: -0.011em;
+    letter-spacing: 0;
   }
 
   h1,
   h2,
   h3 {
     font-family: var(--font-display);
-    letter-spacing: -0.045em;
+    letter-spacing: 0;
     text-wrap: balance;
     font-weight: 700;
   }
@@ -376,6 +377,19 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
   .hero-kenburns {
     animation: none;
   }

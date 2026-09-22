@@ -45,15 +45,17 @@ export function ServicesExplorer() {
               style={{ top: indicator.top, height: indicator.height }}
               aria-hidden="true"
             />
-            <ul ref={listRef} className="border-l border-border">
+            <ul ref={listRef} className="border-l border-border" role="tablist" aria-label="Prestations">
               {SERVICES.map((s, i) => (
                 <li key={s.slug}>
                   <button
                     type="button"
+                    role="tab"
                     onMouseEnter={() => setActive(i)}
                     onFocus={() => setActive(i)}
                     onClick={() => setActive(i)}
-                    aria-current={i === active}
+                    aria-selected={i === active}
+                    aria-controls="service-explorer-panel"
                     className={cn(
                       "flex w-full items-baseline justify-between gap-4 py-5 pl-6 text-left transition-all duration-300",
                       i === active
@@ -87,7 +89,7 @@ export function ServicesExplorer() {
           </div>
 
           <div className="order-1 lg:order-2 lg:col-span-7">
-            <div key={current.slug} className="step-in">
+            <div key={current.slug} id="service-explorer-panel" role="tabpanel" className="step-in">
               <figure className="relative overflow-hidden rounded-2xl border border-border">
                 <img
                   src={visual.image}

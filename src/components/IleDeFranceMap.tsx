@@ -39,11 +39,12 @@ export function IleDeFranceMap({
           <p className="mt-2 text-sm leading-relaxed text-foreground/80 sm:mt-3">{current.note}</p>
         </div>
 
-        <ul className="grid grid-cols-2 divide-x divide-y divide-border sm:max-h-[22rem] sm:grid-cols-1 sm:overflow-y-auto lg:flex-1">
+        <ul className="grid grid-cols-2 divide-x divide-y divide-border sm:max-h-[22rem] sm:grid-cols-1 sm:overflow-y-auto lg:flex-1" aria-label="Départements d'Île-de-France">
           {IDF_DEPARTMENTS.map((d) => (
             <li key={d.code} className="min-w-0">
               <button
                 type="button"
+                aria-pressed={active === d.code}
                 onMouseEnter={() => setDept(d.code)}
                 onFocus={() => setDept(d.code)}
                 onClick={() => setDept(d.code)}

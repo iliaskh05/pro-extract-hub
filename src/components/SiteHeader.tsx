@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BrandMark } from "@/components/BrandMark";
@@ -19,6 +19,8 @@ const MOBILE_NAV = [{ to: "/", label: "Accueil" }, ...NAV, { to: "/faq", label: 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isHome = pathname === "/";
   const overHero = isHome && !scrolled && !open;
@@ -41,11 +43,36 @@ export function SiteHeader() {
 
   useEffect(() => {
     if (!open) return;
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    window.requestAnimationFrame(() => {
+      menuRef.current?.querySelector<HTMLElement>("a, button")?.focus();
+    });
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") {
+        setOpen(false);
+        menuButtonRef.current?.focus();
+        return;
+      }
+      if (e.key !== "Tab" || !menuRef.current) return;
+      const focusable = Array.from(
+        menuRef.current.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'),
+      );
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!first || !last) return;
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      if (previousFocus && document.contains(previousFocus)) previousFocus.focus();
+    };
   }, [open]);
 
   return (
@@ -115,10 +142,12 @@ export function SiteHeader() {
             </Button>
 
             <button
+              ref={menuButtonRef}
               type="button"
               onClick={() => setOpen((v) => !v)}
               aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
               aria-expanded={open}
+              aria-controls="navigation-mobile"
               className={cn(
                 "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-sm border transition-colors lg:hidden",
                 overHero
@@ -136,6 +165,11 @@ export function SiteHeader() {
           un bloc conteneur et écraserait un enfant en position fixed. */}
       {open && (
         <div
+          id="navigation-mobile"
+          ref={menuRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu de navigation"
           className={cn(
             "panel-in fixed inset-x-0 bottom-0 z-[60] flex flex-col overflow-y-auto overscroll-contain border-t border-border bg-background px-5 py-6 pb-[calc(2rem+env(safe-area-inset-bottom))] lg:hidden",
             scrolled ? "top-14 md:top-16" : "top-[4.25rem] md:top-20",

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { MessageCircle, Send, Sparkles, X } from "lucide-react";
@@ -40,6 +40,10 @@ export function ChatWidget() {
   const [loading, setLoading] = useState(false);
   const ask = useServerFn(askAssistant);
   const endRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const titleId = useId();
+  const descriptionId = useId();
   const navigate = useNavigate();
   const tel = phoneHref();
   const wa = whatsappLink();
@@ -47,6 +51,19 @@ export function ChatWidget() {
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
   }, [messages, loading, open]);
+
+  useEffect(() => {
+    if (!open) return;
+    window.requestAnimationFrame(() => dialogRef.current?.querySelector<HTMLInputElement>("input")?.focus());
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        triggerRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open]);
 
   async function send(text: string) {
     const value = text.trim();
@@ -114,8 +131,11 @@ export function ChatWidget() {
     <div className="fixed right-4 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-50 flex flex-col items-end gap-3 lg:bottom-24">
       {open && (
         <div
+          ref={dialogRef}
           role="dialog"
-          aria-label="Assistant Salis"
+          aria-modal="false"
+          aria-labelledby={titleId}
+          aria-describedby={descriptionId}
           className="panel-in flex h-[32rem] max-h-[calc(100svh-9rem)] w-[22.5rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-border bg-popover shadow-lift"
         >
           <div className="surface-ink relative overflow-hidden px-4 py-4">
@@ -130,8 +150,8 @@ export function ChatWidget() {
                   <span className="absolute -right-0.5 -bottom-0.5 h-2 w-2 rounded-full bg-accent" />
                 </span>
                 <div>
-                  <p className="text-sm font-semibold text-ink-foreground">Assistant Salis</p>
-                  <p className="text-[10px] tracking-wider text-ink-muted uppercase">
+                  <p id={titleId} className="text-sm font-semibold text-ink-foreground">Assistant Salis</p>
+                  <p id={descriptionId} className="text-[10px] tracking-wider text-ink-muted uppercase">
                     Réponses guidées
                   </p>
                 </div>
@@ -147,7 +167,7 @@ export function ChatWidget() {
             </div>
           </div>
 
-          <div className="flex-1 space-y-3 overflow-y-auto p-4">
+          <div className="flex-1 space-y-3 overflow-y-auto p-4" aria-live="polite" aria-relevant="additions text">
             {messages.map((m, i) => (
               <div
                 key={i}
@@ -162,8 +182,9 @@ export function ChatWidget() {
               </div>
             ))}
             {loading && (
-              <div className="w-16 rounded-xl border border-border bg-secondary px-3.5 py-3">
-                <span className="flex gap-1">
+              <div role="status" className="w-16 rounded-xl border border-border bg-secondary px-3.5 py-3">
+                <span className="sr-only">L'assistant rédige une réponse.</span>
+                <span className="flex gap-1" aria-hidden="true">
                   {[0, 150, 300].map((d) => (
                     <span
                       key={d}
@@ -212,6 +233,7 @@ export function ChatWidget() {
               <button
                 type="submit"
                 disabled={loading || !input.trim()}
+                aria-disabled={loading || !input.trim()}
                 aria-label="Envoyer"
                 className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground disabled:opacity-40"
               >
@@ -244,6 +266,7 @@ export function ChatWidget() {
       )}
 
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => {
           setOpen((v) => {
@@ -252,6 +275,7 @@ export function ChatWidget() {
           });
         }}
         aria-label={open ? "Fermer l'assistant" : "Ouvrir l'assistant Salis"}
+        aria-expanded={open}
         className={cn(
           "relative flex h-12 w-12 items-center justify-center rounded-full bg-ink text-ink-foreground shadow-lift transition-transform hover:-translate-y-0.5 active:scale-95",
           !open && "glow-breathe",

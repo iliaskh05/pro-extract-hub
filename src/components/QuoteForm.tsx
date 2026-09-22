@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { Check, ChevronLeft, ChevronRight, Loader2, Upload, X } from "lucide-react";
@@ -157,6 +157,7 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
   const [reference, setReference] = useState<string>("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [attribution] = useState(readAttribution);
+  const stepHeadingRef = useRef<HTMLLegendElement>(null);
   const submitRemote = useServerFn(submitQuote);
   const attachRemote = useServerFn(attachLeadPhotos);
 
@@ -169,6 +170,7 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
 
   useEffect(() => {
     track("Quote Step", { step: step + 1 });
+    window.requestAnimationFrame(() => stepHeadingRef.current?.focus());
   }, [step]);
 
   const parsed = quoteSchema.safeParse({
@@ -229,12 +231,9 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
       landing_page: attribution.landing_page,
       service_source: attribution.service_source,
       zone_source: attribution.zone_source,
-      uploads: Object.entries(files).map(([slot, file]) => ({
-        slot,
-        name: file!.name,
-        type: file!.type,
-        size: file!.size,
-      })),
+      uploads: Object.entries(files).flatMap(([slot, file]) =>
+        file ? [{ slot, name: file.name, type: file.type, size: file.size }] : [],
+      ),
     });
     if (!check.success) {
       const issues = check.error.issues;
@@ -279,7 +278,11 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
       `Bonjour, je viens d'envoyer une demande de devis${reference ? ` (réf. #${reference})` : ""} depuis votre site.`,
     );
     return (
-      <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-card">
+      <div
+        role="status"
+        aria-live="polite"
+        className="overflow-hidden rounded-2xl border border-border bg-card shadow-card"
+      >
         <div className="surface-ink relative overflow-hidden px-8 py-12 text-center md:px-12 md:py-16">
           <div
             className="pointer-events-none absolute -top-32 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-accent/15 blur-3xl"
@@ -335,12 +338,18 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
     <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-card">
       <div className="h-1 bg-secondary">
         <div
+          role="progressbar"
+          aria-label="Progression de la demande de devis"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(progress)}
+          aria-valuetext={`Étape ${step + 1} sur ${STEPS.length} : ${STEPS[step]}`}
           className="h-full bg-accent transition-[width] duration-500 ease-out"
           style={{ width: `${progress}%` }}
         />
       </div>
       <div className="border-b border-border px-6 pt-6 pb-5 md:px-8">
-        <p className="eyebrow text-accent">
+        <p className="eyebrow text-accent" aria-live="polite" aria-atomic="true">
           {String(step + 1).padStart(2, "0")} {STEPS[step]}
         </p>
         <div className="mt-4 flex items-center justify-between gap-2">
@@ -377,17 +386,19 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
       <div key={step} className="animate-in fade-in slide-in-from-right-4 p-6 duration-300 md:p-8">
         {step === 0 && (
           <fieldset>
-            <legend className="text-xl font-bold tracking-tight md:text-2xl">
+            <legend ref={stepHeadingRef} tabIndex={-1} className="text-xl font-bold tracking-tight md:text-2xl">
               Votre établissement
             </legend>
             <p className="mt-2 text-sm text-muted-foreground">
               Sélectionnez le type d'établissement à entretenir.
             </p>
-            <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4" role="radiogroup" aria-label="Type d'établissement">
               {BUSINESS_TYPES.map((type) => (
                 <button
                   key={type}
                   type="button"
+                  role="radio"
+                  aria-checked={form.business_type === type}
                   onClick={() => set("business_type", type)}
                   className={cn(
                     "min-h-16 rounded-xl border px-3 py-4 text-sm font-medium transition-all",
@@ -405,7 +416,7 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
 
         {step === 1 && (
           <fieldset className="space-y-5">
-            <legend className="text-xl font-bold tracking-tight md:text-2xl">
+            <legend ref={stepHeadingRef} tabIndex={-1} className="text-xl font-bold tracking-tight md:text-2xl">
               Votre installation
             </legend>
             <p className="text-sm text-muted-foreground">
@@ -429,9 +440,10 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
                     });
                   }}
                   aria-invalid={!!fieldErrors.hood_length}
+                  aria-describedby={fieldErrors.hood_length ? "hood_length-error" : undefined}
                 />
                 {fieldErrors.hood_length && (
-                  <p className="mt-1 text-xs text-destructive">{fieldErrors.hood_length}</p>
+                  <p id="hood_length-error" role="alert" className="mt-1 text-xs text-destructive">{fieldErrors.hood_length}</p>
                 )}
               </div>
               <div>
@@ -451,9 +463,10 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
                     });
                   }}
                   aria-invalid={!!fieldErrors.filter_count}
+                  aria-describedby={fieldErrors.filter_count ? "filter_count-error" : undefined}
                 />
                 {fieldErrors.filter_count && (
-                  <p className="mt-1 text-xs text-destructive">{fieldErrors.filter_count}</p>
+                  <p id="filter_count-error" role="alert" className="mt-1 text-xs text-destructive">{fieldErrors.filter_count}</p>
                 )}
               </div>
               <div>
@@ -523,7 +536,7 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
 
         {step === 2 && (
           <fieldset className="space-y-5">
-            <legend className="text-xl font-bold tracking-tight md:text-2xl">Localisation</legend>
+            <legend ref={stepHeadingRef} tabIndex={-1} className="text-xl font-bold tracking-tight md:text-2xl">Localisation</legend>
             <p className="text-sm text-muted-foreground">
               Nous intervenons sur {zonesLine(" et ")}. En limite de secteur, la faisabilité est
               confirmée avant proposition.
@@ -564,9 +577,10 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
                     });
                   }}
                   aria-invalid={!!fieldErrors.postal_code}
+                  aria-describedby={fieldErrors.postal_code ? "postal_code-error" : undefined}
                 />
                 {fieldErrors.postal_code && (
-                  <p className="mt-1 text-xs text-destructive">{fieldErrors.postal_code}</p>
+                  <p id="postal_code-error" role="alert" className="mt-1 text-xs text-destructive">{fieldErrors.postal_code}</p>
                 )}
               </div>
             </div>
@@ -575,7 +589,7 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
 
         {step === 3 && (
           <fieldset className="space-y-5">
-            <legend className="text-xl font-bold tracking-tight md:text-2xl">Photos</legend>
+            <legend ref={stepHeadingRef} tabIndex={-1} className="text-xl font-bold tracking-tight md:text-2xl">Photos</legend>
             <p className="text-sm text-muted-foreground">
               Optionnel. JPG, PNG ou WebP, 5 Mo maximum par fichier. Glissez-déposez ou touchez pour
               ajouter.
@@ -616,6 +630,7 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
                         {current ? current.name : "Ajouter"}
                       </span>
                       <input
+                        aria-label={`Ajouter ${slot.label}`}
                         type="file"
                         accept={ALLOWED_PHOTO_TYPES.join(",")}
                         className="sr-only"
@@ -651,7 +666,7 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
 
         {step === 4 && (
           <fieldset className="space-y-5">
-            <legend className="text-xl font-bold tracking-tight md:text-2xl">
+            <legend ref={stepHeadingRef} tabIndex={-1} className="text-xl font-bold tracking-tight md:text-2xl">
               Vos coordonnées
             </legend>
             <div className="grid gap-5 sm:grid-cols-2">
@@ -672,9 +687,10 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
                     });
                   }}
                   aria-invalid={!!fieldErrors.contact_name}
+                  aria-describedby={fieldErrors.contact_name ? "contact_name-error" : undefined}
                 />
                 {fieldErrors.contact_name && (
-                  <p className="mt-1 text-xs text-destructive">{fieldErrors.contact_name}</p>
+                  <p id="contact_name-error" role="alert" className="mt-1 text-xs text-destructive">{fieldErrors.contact_name}</p>
                 )}
               </div>
               <div>
@@ -705,9 +721,10 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
                     });
                   }}
                   aria-invalid={!!fieldErrors.phone}
+                  aria-describedby={fieldErrors.phone ? "phone-error" : undefined}
                 />
                 {fieldErrors.phone && (
-                  <p className="mt-1 text-xs text-destructive">{fieldErrors.phone}</p>
+                  <p id="phone-error" role="alert" className="mt-1 text-xs text-destructive">{fieldErrors.phone}</p>
                 )}
               </div>
               <div>
@@ -728,19 +745,22 @@ export function QuoteForm({ prefill }: { prefill?: QuotePrefill } = {}) {
                     });
                   }}
                   aria-invalid={!!fieldErrors.email}
+                  aria-describedby={fieldErrors.email ? "email-error" : undefined}
                 />
                 {fieldErrors.email && (
-                  <p className="mt-1 text-xs text-destructive">{fieldErrors.email}</p>
+                  <p id="email-error" role="alert" className="mt-1 text-xs text-destructive">{fieldErrors.email}</p>
                 )}
               </div>
             </div>
             <div>
-              <p className="text-sm font-medium">Préférence de contact</p>
-              <div className="mt-2 flex flex-wrap gap-2">
+              <p id="contact-method-label" className="text-sm font-medium">Préférence de contact</p>
+              <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-labelledby="contact-method-label">
                 {CONTACT_METHODS.map((m) => (
                   <button
                     key={m.value}
                     type="button"
+                    role="radio"
+                    aria-checked={form.preferred_contact === m.value}
                     onClick={() => set("preferred_contact", m.value)}
                     className={cn(
                       "rounded-full border px-3 py-1.5 text-xs font-medium",
