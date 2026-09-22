@@ -70,23 +70,36 @@ export type GalleryItem = {
   beforeTreatment: "grime" | "clean";
   demonstration: boolean;
   text: string;
+  credit?: string;
 };
 
-const hoodPair = interventionPair("hotte", baHood);
 const ductPair = interventionPair("conduit", baDuct);
 const motorPair = interventionPair("moteur", baMotor);
 
 export const GALLERY: GalleryItem[] = [
   {
-    slug: "hotte",
-    title: "Hotte de cuisine professionnelle",
-    type: "Dégraissage de hotte et filtres",
-    before: hoodPair.before,
-    after: hoodPair.after,
-    objectPosition: "center 42%",
-    beforeTreatment: "grime",
-    demonstration: hoodPair.demonstration,
-    text: "Démonstration visuelle sur le même angle : état encrassé simulé, puis surface après dégraissage.",
+    slug: "filtres",
+    title: "Filtre à graisse de hotte professionnelle",
+    type: "Dégraissage de filtres",
+    before: filterCloggedWide,
+    after: filterCleanWide,
+    objectPosition: "center center",
+    beforeTreatment: "clean",
+    demonstration: false,
+    text: "Photos réelles du même filtre : encrassé après des mois de cuisson, puis après dégraissage complet.",
+    credit: CC_FILTER_CREDIT,
+  },
+  {
+    slug: "filtres-macro",
+    title: "Maille du filtre — vue rapprochée",
+    type: "Filtre en gros plan",
+    before: filterCloggedMacro,
+    after: filterCleanMacro,
+    objectPosition: "center center",
+    beforeTreatment: "clean",
+    demonstration: false,
+    text: "Photos réelles au plus près de la maille : dépôts gras carbonisés, puis métal dégagé.",
+    credit: CC_FILTER_CREDIT,
   },
   {
     slug: "conduit",
