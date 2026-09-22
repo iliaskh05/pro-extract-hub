@@ -114,8 +114,6 @@ export function BeforeAfterSlider({
     }
   }
 
-  const sliderId = `ba-${alt.replace(/\s+/g, "-").toLowerCase()}`;
-
   return (
     <div
       ref={containerRef}
@@ -175,10 +173,10 @@ export function BeforeAfterSlider({
       </div>
 
       <span className="pointer-events-none absolute top-3 left-3 z-[2] rounded-sm border border-ink-foreground/20 bg-ink/90 px-2.5 py-2 text-[11px] font-bold tracking-[0.08em] text-ink-foreground uppercase shadow-card backdrop-blur sm:top-4 sm:left-4 sm:px-3 sm:tracking-[0.14em]">
-        Avant <span className="hidden xs:inline">· encrassé</span>
+        Avant <span className="hidden sm:inline">· encrassé</span>
       </span>
       <span className="pointer-events-none absolute top-3 right-3 z-[2] rounded-sm border border-ink/15 bg-background/95 px-2.5 py-2 text-[11px] font-bold tracking-[0.08em] text-foreground uppercase shadow-card backdrop-blur sm:top-4 sm:right-4 sm:px-3 sm:tracking-[0.14em]">
-        Après <span className="hidden xs:inline">· propre</span>
+        Après <span className="hidden sm:inline">· propre</span>
       </span>
 
       <div
