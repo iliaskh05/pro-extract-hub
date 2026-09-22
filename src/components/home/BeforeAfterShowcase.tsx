@@ -58,16 +58,18 @@ export function BeforeAfterShowcase() {
         </Reveal>
       </div>
 
-      <Reveal id="before-after-panel" role="tabpanel" className="relative">
-        <BeforeAfterSlider
-          key={item.slug}
-          before={item.before}
-          after={item.after}
-          alt={item.title}
-          objectPosition={item.objectPosition}
-          beforeTreatment={item.beforeTreatment}
-          className="rounded-none aspect-[4/3] sm:aspect-[16/10] lg:aspect-[21/9]"
-        />
+      <Reveal className="relative">
+        <div id="before-after-panel" role="tabpanel">
+          <BeforeAfterSlider
+            key={item.slug}
+            before={item.before}
+            after={item.after}
+            alt={item.title}
+            objectPosition={item.objectPosition}
+            beforeTreatment={item.beforeTreatment}
+            className="rounded-none aspect-[4/3] sm:aspect-[16/10] lg:aspect-[21/9]"
+          />
+        </div>
       </Reveal>
 
       <div className="shell pt-5 pb-16 lg:pb-24">
