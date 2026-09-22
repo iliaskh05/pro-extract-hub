@@ -86,6 +86,13 @@ export function SiteFooter() {
             <Link to="/confidentialite" className="hover:text-foreground">
               Politique de confidentialité
             </Link>
+            <button
+              type="button"
+              onClick={() => openConsentManager()}
+              className="underline-offset-4 transition-colors hover:text-foreground hover:underline"
+            >
+              Gérer mes cookies
+            </button>
           </nav>
         </div>
       </div>
