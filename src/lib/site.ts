@@ -217,7 +217,7 @@ export function getZone(slug: string): Zone | undefined {
 
 /** Ligne zones pour le hero — inclut Île-de-France autour du pôle Paris. */
 export function zonesHeroLine(): string {
-  return "Paris · IDF · Dijon · Troyes · Perpignan";
+  return "Paris · IDF · Lyon · Dijon · Troyes · Perpignan";
 }
 
 export function zonesLine(separator = " · "): string {
@@ -232,7 +232,7 @@ export function zonesLine(separator = " · "): string {
 
 export function zonesCountLabel(): string {
   const n = activeZones().length;
-  const words = ["Aucun pôle", "Un pôle", "Deux pôles", "Trois pôles", "Quatre pôles"] as const;
+  const words = ["Aucun pôle", "Un pôle", "Deux pôles", "Trois pôles", "Quatre pôles", "Cinq pôles"] as const;
   return words[n] ?? `${n} pôles`;
 }
 
