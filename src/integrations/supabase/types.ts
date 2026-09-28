@@ -176,6 +176,27 @@ export type Database = {
         };
         Relationships: [];
       };
+      staff_profiles: {
+        Row: {
+          created_at: string;
+          display_name: string | null;
+          role: Database["public"]["Enums"]["staff_role"];
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          display_name?: string | null;
+          role?: Database["public"]["Enums"]["staff_role"];
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          display_name?: string | null;
+          role?: Database["public"]["Enums"]["staff_role"];
+          user_id?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -189,11 +210,21 @@ export type Database = {
         Returns: boolean;
       };
       is_staff: { Args: { _user_id: string }; Returns: boolean };
+      check_rate_limit: {
+        Args: {
+          p_bucket: string;
+          p_client_key: string;
+          p_max_per_window: number;
+          p_window_seconds: number;
+        };
+        Returns: boolean;
+      };
     };
     Enums: {
       app_role: "admin" | "staff" | "user";
       lead_status:
         "new" | "contacted" | "qualified" | "quote_requested" | "quote_sent" | "won" | "lost";
+      staff_role: "admin" | "commercial";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -325,6 +356,7 @@ export const Constants = {
         "won",
         "lost",
       ],
+      staff_role: ["admin", "commercial"],
     },
   },
 } as const;

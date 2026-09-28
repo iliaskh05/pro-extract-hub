@@ -13,6 +13,10 @@ export default defineConfig({
   tanstackStart: {
     server: { entry: "server" },
   },
+  // `vercel.functions.runtime` is a real Nitro v3 option, but
+  // LovableViteTanstackOptions["nitro"] only exposes preset/output/cloudflare
+  // (see its .d.ts) — the wrapper's type is intentionally narrower than what
+  // Nitro itself accepts, so this needs a cast rather than a fabricated type.
   nitro: onVercel
     ? ({
         preset: "vercel",
@@ -21,6 +25,7 @@ export default defineConfig({
             runtime: "nodejs20.x",
           },
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any)
     : true,
   vite: {

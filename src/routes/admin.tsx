@@ -52,15 +52,14 @@ function AdminPage() {
 
     async function checkStaffAccess(userId: string) {
       // Official schema: public.staff_profiles (role 'admin' | 'commercial').
-      // Not present in the generated Supabase types yet, so query it untyped.
-      const { data: staffProfile, error: staffError } = await (supabase as any)
+      const { data: staffProfile, error: staffError } = await supabase
         .from("staff_profiles")
         .select("role")
         .eq("user_id", userId)
         .maybeSingle();
 
       if (!staffError && staffProfile) {
-        return isStaffFromProfile(staffProfile as { role?: string });
+        return isStaffFromProfile(staffProfile);
       }
 
       // Fallback for deployments still on the legacy public.user_roles schema.

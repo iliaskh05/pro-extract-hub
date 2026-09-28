@@ -1,8 +1,11 @@
-// Server-only. In-memory, per-instance rate limiter: a reasonable speed bump
-// for a single-instance deployment, but each cold start / serverless
-// instance / edge isolate has its own memory, so it is not a durable,
-// cluster-wide limit. Swap for a shared store (Supabase table, Upstash,
-// Cloudflare KV) if abuse becomes a real problem.
+// Server-only rate limiter, backed by a Postgres table so limits hold across
+// serverless instances / cold starts (see
+// supabase/migrations/20260927120000_add_rate_limit_table.sql), not just
+// within one process. Falls back to an in-memory, per-instance bucket only
+// when the DB check itself fails (e.g. transient outage), so a hiccup there
+// degrades to the old best-effort behavior instead of blocking submissions.
+
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const buckets = new Map<string, number[]>();
 
@@ -21,7 +24,12 @@ export async function clientKey(): Promise<string> {
   }
 }
 
-export function isRateLimited(bucket: string, key: string, maxPerWindow: number, windowMs: number) {
+export function isRateLimitedInMemory(
+  bucket: string,
+  key: string,
+  maxPerWindow: number,
+  windowMs: number,
+) {
   const bucketKey = `${bucket}:${key}`;
   const now = Date.now();
   const recent = (buckets.get(bucketKey) ?? []).filter((t) => now - t < windowMs);
@@ -32,4 +40,28 @@ export function isRateLimited(bucket: string, key: string, maxPerWindow: number,
   recent.push(now);
   buckets.set(bucketKey, recent);
   return false;
+}
+
+export async function isRateLimited(
+  bucket: string,
+  key: string,
+  maxPerWindow: number,
+  windowMs: number,
+): Promise<boolean> {
+  try {
+    const { data, error } = await supabaseAdmin.rpc("check_rate_limit", {
+      p_bucket: bucket,
+      p_client_key: key,
+      p_max_per_window: maxPerWindow,
+      p_window_seconds: Math.ceil(windowMs / 1000),
+    });
+    if (error) throw error;
+    return Boolean(data);
+  } catch (err) {
+    console.error(
+      `[rate-limit] DB check failed for bucket "${bucket}", using in-memory fallback:`,
+      err,
+    );
+    return isRateLimitedInMemory(bucket, key, maxPerWindow, windowMs);
+  }
 }

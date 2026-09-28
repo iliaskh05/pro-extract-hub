@@ -65,7 +65,9 @@ export function AuthGate() {
               id="password"
               type="password"
               required
-              minLength={6}
+              // Client-side hint only — the real policy (length, leaked-password
+              // check, MFA) must be set in the Supabase dashboard (Auth → Policies).
+              minLength={8}
               autoComplete="current-password"
               className="mt-2"
               value={password}

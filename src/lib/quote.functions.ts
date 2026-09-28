@@ -10,8 +10,10 @@ const MAX_PER_WINDOW = 6;
 const UPLOAD_TOKEN_TTL_MS = 30 * 60 * 1000;
 
 function tokenSecret() {
-  const secret =
-    process.env["SUPABASE_SERVICE_ROLE_KEY"] ?? process.env["SUPABASE_PUBLISHABLE_KEY"] ?? "";
+  // SUPABASE_PUBLISHABLE_KEY is intentionally not a fallback here: it's the
+  // anon key, exposed to the browser as VITE_SUPABASE_PUBLISHABLE_KEY, so
+  // using it would let anyone forge a valid upload token.
+  const secret = process.env["UPLOAD_TOKEN_SECRET"] ?? process.env["SUPABASE_SERVICE_ROLE_KEY"];
   if (!secret) throw new Error("Configuration serveur incomplète.");
   return secret;
 }
@@ -60,7 +62,9 @@ export const submitQuote = createServerFn({ method: "POST" })
     if (data.website) {
       return { ok: true as const, reference: "XXXXXX", uploads: [] as never[], uploadToken: "" };
     }
-    if (isRateLimited("submit-quote", await clientKey(), MAX_PER_WINDOW, WINDOW_MS)) {
+    const key = await clientKey();
+    if (await isRateLimited("submit-quote", key, MAX_PER_WINDOW, WINDOW_MS)) {
+      console.warn(`[rate-limit] submit-quote blocked for ${key}`);
       throw new Error("Trop de demandes depuis cette connexion. Réessayez dans une heure.");
     }
 

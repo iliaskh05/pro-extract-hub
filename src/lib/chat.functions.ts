@@ -83,7 +83,9 @@ async function askGemini(
 export const askAssistant = createServerFn({ method: "POST" })
   .validator((data: unknown) => schema.parse(data))
   .handler(async ({ data }) => {
-    if (isRateLimited("chat-assistant", await clientKey(), MAX_PER_WINDOW, WINDOW_MS)) {
+    const key = await clientKey();
+    if (await isRateLimited("chat-assistant", key, MAX_PER_WINDOW, WINDOW_MS)) {
+      console.warn(`[rate-limit] chat-assistant blocked for ${key}`);
       throw new Error("Trop de messages envoyés. Réessayez dans quelques minutes.");
     }
 
