@@ -254,6 +254,7 @@ export function GoogleReviewsSection() {
                     key={i}
                     type="button"
                     aria-label={`Avis ${i + 1}`}
+                    aria-current={page === i ? "true" : undefined}
                     onClick={() => scrollToIndex(i)}
                     className={cn("min-h-11 min-w-11 rounded-full p-3 transition-all duration-300")}
                   >

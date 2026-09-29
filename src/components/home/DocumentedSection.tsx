@@ -143,9 +143,9 @@ export function DocumentedSection() {
                   <figure className="relative">
                     <img
                       src={MEDIA.beforeHood}
-                      alt="Hotte — démonstration avant (traitement visuel)"
+                      alt="Filtre de hotte avant dégraissage — photo réelle"
                       loading="lazy"
-                      className="h-full w-full object-cover brightness-[0.55] contrast-125 saturate-50 sepia-[0.35]"
+                      className="h-full w-full object-cover"
                     />
                     <figcaption className="absolute top-3 left-3 rounded-full bg-ink/80 px-2.5 py-1 text-[10px] font-semibold tracking-[0.18em] text-ink-foreground uppercase">
                       Avant
@@ -154,7 +154,7 @@ export function DocumentedSection() {
                   <figure className="relative">
                     <img
                       src={MEDIA.afterHood}
-                      alt="Hotte après intervention — démonstration"
+                      alt="Filtre de hotte après dégraissage — photo réelle"
                       loading="lazy"
                       className="h-full w-full object-cover"
                     />
@@ -163,7 +163,7 @@ export function DocumentedSection() {
                     </figcaption>
                   </figure>
                 </div>
-                <Caption>Documentation photo — démonstration</Caption>
+                <Caption>Documentation photo — avant / après réel</Caption>
               </StageVisual>
 
               <StageVisual index={3} active={active}>

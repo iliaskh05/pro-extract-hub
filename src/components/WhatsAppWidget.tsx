@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { MessageCircle, X } from "lucide-react";
 import { whatsappLink, WHATSAPP_NUMBER, whatsappUnavailableMessage } from "@/lib/site";
@@ -20,6 +20,22 @@ const OPTIONS: WaOption[] = [
 export function WhatsAppWidget() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const panelRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const titleId = useId();
+
+  useEffect(() => {
+    if (!open) return;
+    window.requestAnimationFrame(() => panelRef.current?.querySelector<HTMLButtonElement>("button")?.focus());
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        triggerRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open]);
 
   function handle(option: (typeof OPTIONS)[number]) {
     const link = whatsappLink(option.message);
@@ -39,9 +55,9 @@ export function WhatsAppWidget() {
   return (
     <div className="fixed right-4 bottom-[5.75rem] z-50 hidden flex-col items-end gap-3 lg:bottom-6 lg:flex">
       {open && (
-        <div className="panel-in w-[19rem] overflow-hidden rounded-2xl border border-border bg-popover shadow-lift">
+        <div ref={panelRef} role="dialog" aria-modal="false" aria-labelledby={titleId} className="panel-in w-[19rem] overflow-hidden rounded-2xl border border-border bg-popover shadow-lift">
           <div className="surface-ink px-5 py-4">
-            <p className="text-sm font-semibold text-ink-foreground">
+            <p id={titleId} className="text-sm font-semibold text-ink-foreground">
               Besoin d'une réponse rapide ?
             </p>
             <p className="mt-1 text-xs text-ink-muted">Choisissez le motif, nous vous orientons.</p>
@@ -67,9 +83,11 @@ export function WhatsAppWidget() {
       )}
 
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Fermer WhatsApp" : "Ouvrir WhatsApp"}
+        aria-expanded={open}
         className="flex h-12 w-12 items-center justify-center rounded-full bg-[oklch(0.68_0.15_150)] text-white shadow-lift transition-transform hover:-translate-y-0.5 active:scale-95"
       >
         {open ? <X className="size-5" /> : <MessageCircle className="size-5" />}

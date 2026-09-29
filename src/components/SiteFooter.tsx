@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { SERVICES, SITE, activeZones, displayValue } from "@/lib/site";
 import { BrandMark } from "@/components/BrandMark";
+import { openConsentManager } from "@/lib/analytics";
 
 export function SiteFooter() {
   const zones = activeZones();
@@ -86,6 +87,13 @@ export function SiteFooter() {
             <Link to="/confidentialite" className="hover:text-foreground">
               Politique de confidentialité
             </Link>
+            <button
+              type="button"
+              onClick={() => openConsentManager()}
+              className="underline-offset-4 transition-colors hover:text-foreground hover:underline"
+            >
+              Gérer mes cookies
+            </button>
           </nav>
         </div>
       </div>

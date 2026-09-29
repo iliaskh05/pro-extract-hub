@@ -25,12 +25,14 @@ export function FaqExplorer({ items, className }: { items: FaqItem[]; className?
             <li key={item.q} className="border-b border-border">
               <h3>
                 <button
+                  id={`faq-question-${i}`}
                   type="button"
                   onClick={() => {
                     setActive(i);
                     setOpenOnMobile(isOpen ? null : i);
                   }}
                   aria-expanded={isOpen}
+                  aria-controls={`faq-answer-${i}`}
                   className={cn(
                     "flex w-full items-start justify-between gap-6 py-5 text-left transition-colors duration-300 lg:py-6",
                     isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground",
@@ -49,6 +51,10 @@ export function FaqExplorer({ items, className }: { items: FaqItem[]; className?
                 </button>
               </h3>
               <div
+                id={`faq-answer-${i}`}
+                role="region"
+                aria-labelledby={`faq-question-${i}`}
+                aria-hidden={!isOpen}
                 className={cn(
                   "grid transition-[grid-template-rows] duration-500 ease-out lg:hidden",
                   isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]",

@@ -131,6 +131,16 @@ function ContactPage() {
             <Link to="/zones">Voir la carte</Link>
           </Button>
         </div>
+
+        <p className="mt-8 text-xs leading-relaxed text-muted-foreground">
+          Les coordonnées que vous nous transmettez servent uniquement à traiter votre demande et à
+          vous recontacter, jamais à de la publicité. Détail des traitements et de vos droits dans
+          notre{" "}
+          <Link to="/confidentialite" className="underline underline-offset-4">
+            politique de confidentialité
+          </Link>
+          .
+        </p>
       </div>
 
       <FinalCta

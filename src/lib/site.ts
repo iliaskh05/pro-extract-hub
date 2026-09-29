@@ -18,15 +18,15 @@ export const SITE = {
   legalName: "",
   legalForm: "",
   tagline: "Dégraissage & entretien des systèmes d'extraction",
-  phone: "",
+  phone: "+33 6 23 38 15 73",
   email: "",
-  address: "",
+  address: "07 rue Jean Zay, 10600 La Chapelle-Saint-Luc",
   siret: "",
   siren: "",
   vat: "",
   capital: "",
-  director: "",
-  hosting: "",
+  director: "Mohammedi Imame Mahjoubi",
+  hosting: "Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis",
   hours: "",
   launch: "Début d'activité : septembre 2026",
   social: {
@@ -38,21 +38,22 @@ export const SITE = {
 
 export const PENDING_COMPANY_INFO = [
   "Dénomination légale et forme juridique",
-  "Adresse du siège",
-  "SIRET / SIREN / TVA",
-  "Téléphone professionnel",
+  "SIRET / SIREN / TVA (selon régime)",
+  "RCS et capital social (uniquement si société immatriculée)",
   "Email professionnel",
-  "Numéro WhatsApp Business",
+  "Assurance responsabilité civile professionnelle (assureur et couverture)",
   "Horaires de contact",
-  "Hébergeur et directeur de publication",
   "Comptes sociaux",
   "Photos d'interventions réelles",
   "Précision du rayon d'intervention autour de Paris, Perpignan, Troyes et Dijon",
   "URL fiche Google Business + avis réels (VITE_GOOGLE_REVIEW_URL / google-reviews.ts)",
 ] as const;
 
+/** Numéro de contact et WhatsApp de l'entreprise — format international sans "+" ni espaces. */
+export const COMPANY_PHONE_E164 = "33623381573";
+
 /** WhatsApp — format international sans "+" ni espaces (ex. 33600000000). */
-export const WHATSAPP_NUMBER = publicEnv("VITE_WHATSAPP_NUMBER");
+export const WHATSAPP_NUMBER = publicEnv("VITE_WHATSAPP_NUMBER") || COMPANY_PHONE_E164;
 
 export const WHATSAPP_DEFAULT_MESSAGE =
   "Bonjour, je souhaite un devis pour le dégraissage de mon système d'extraction.";
@@ -157,6 +158,29 @@ export const ZONES: Zone[] = [
     map: { x: 345.48, y: 180.78 },
   },
   {
+    slug: "lyon",
+    name: "Lyon",
+    region: "Rhône",
+    short: "Lyon",
+    description:
+      "Interventions sur Lyon et les établissements professionnels réellement accessibles depuis ce pôle.",
+    active: true,
+    heroTitle: "Dégraissage de hottes à Lyon",
+    localIntro:
+      "Lyon concentre une restauration réputée, des hôtels et des cuisines de collectivité dans un tissu urbain dense. Nous traitons les systèmes d'extraction comme des installations techniques, après qualification de l'accès et de la configuration.",
+    coverage:
+      "Le pôle de Lyon couvre la ville et les communes immédiatement accessibles. En limite de secteur, la faisabilité est confirmée avant toute proposition.",
+    sectorsFocus:
+      "Bouchons lyonnais, hôtellerie, restauration rapide et cuisines de collectivité dont l'extraction travaille en continu.",
+    useful: [
+      "Qualification à distance à partir de photos et d'un relevé simple",
+      "Intervention planifiée selon vos horaires de service",
+      "Documentation photo et compte rendu après passage",
+    ],
+    whatsappMessage: "Bonjour, je souhaite demander un devis pour mon établissement à Lyon.",
+    map: { x: 372.47, y: 326.88 },
+  },
+  {
     slug: "dijon",
     name: "Dijon",
     region: "Côte-d'Or",
@@ -193,7 +217,7 @@ export function getZone(slug: string): Zone | undefined {
 
 /** Ligne zones pour le hero — inclut Île-de-France autour du pôle Paris. */
 export function zonesHeroLine(): string {
-  return "Paris · IDF · Dijon · Troyes · Perpignan";
+  return "Paris · IDF · Lyon · Dijon · Troyes · Perpignan";
 }
 
 export function zonesLine(separator = " · "): string {
@@ -208,7 +232,7 @@ export function zonesLine(separator = " · "): string {
 
 export function zonesCountLabel(): string {
   const n = activeZones().length;
-  const words = ["Aucun pôle", "Un pôle", "Deux pôles", "Trois pôles", "Quatre pôles"] as const;
+  const words = ["Aucun pôle", "Un pôle", "Deux pôles", "Trois pôles", "Quatre pôles", "Cinq pôles"] as const;
   return words[n] ?? `${n} pôles`;
 }
 

@@ -13,7 +13,11 @@ function tokenSecret() {
   // SUPABASE_PUBLISHABLE_KEY is intentionally not a fallback here: it's the
   // anon key, exposed to the browser as VITE_SUPABASE_PUBLISHABLE_KEY, so
   // using it would let anyone forge a valid upload token.
-  const secret = process.env["UPLOAD_TOKEN_SECRET"] ?? process.env["SUPABASE_SERVICE_ROLE_KEY"];
+  const secret =
+    process.env["UPLOAD_TOKEN_SECRET"] ??
+    process.env["SUPABASE_SECRET_KEY"] ??
+    process.env["SUPABASE_SERVICE_ROLE_KEY"] ??
+    "";
   if (!secret) throw new Error("Configuration serveur incomplète.");
   return secret;
 }

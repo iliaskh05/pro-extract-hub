@@ -8,6 +8,10 @@ import bakeryOvens from "@/assets/real/bakery-ovens.jpg";
 import patisserieCase from "@/assets/real/patisserie-case.jpg";
 import cateringTrays from "@/assets/real/catering-trays.jpg";
 import cafeteriaLine from "@/assets/real/cafeteria-line.jpg";
+import filterCloggedWide from "@/assets/real/filter-clogged-wide.jpg";
+import filterCleanWide from "@/assets/real/filter-clean-wide.jpg";
+import filterCloggedMacro from "@/assets/real/filter-clogged-macro.jpg";
+import filterCleanMacro from "@/assets/real/filter-clean-macro.jpg";
 
 const heroKitchen = kitchenWide;
 const detailFilters = steelTexture;
@@ -24,19 +28,22 @@ const sectorBakery = bakeryOvens;
 const sectorPastry = patisserieCase;
 const sectorCaterer = cateringTrays;
 const sectorCollective = cafeteriaLine;
-const baHood = hoodCookline;
 const baDuct = kitchenWide;
 const baMotor = kitchenFan;
 
 /**
- * Visuels du site — photographie documentaire réelle (Unsplash, licence libre).
- * Avant/après : même angle + traitement `grime` = démonstration
+ * Visuels du site — photographie documentaire réelle.
+ * Avant/après filtres : photos réelles d'un même filtre encrassé puis lavé
+ * (Wikimedia Commons, CC BY-SA 4.0 — crédit affiché sous le comparateur).
+ * Conduit / moteur : même angle + traitement `grime` = démonstration
  * jusqu'à `public/interventions/{slug}/before.jpg|after.jpg`.
  */
 function interventionPair(slug: string, fallback: string) {
   void slug;
   return { before: fallback, after: fallback, demonstration: true as const };
 }
+
+const CC_FILTER_CREDIT = "Photo réelle — Wikimedia Commons, CC BY-SA 4.0";
 
 export const MEDIA = {
   heroKitchen,
@@ -45,8 +52,8 @@ export const MEDIA = {
   hoodReference: serviceHood,
   ductReference: serviceDuct,
   motorReference: serviceMotor,
-  beforeHood: baHood,
-  afterHood: baHood,
+  beforeHood: filterCloggedMacro,
+  afterHood: filterCleanMacro,
   beforeDuct: baDuct,
   afterDuct: baDuct,
   beforeMotor: baMotor,
@@ -63,23 +70,36 @@ export type GalleryItem = {
   beforeTreatment: "grime" | "clean";
   demonstration: boolean;
   text: string;
+  credit?: string;
 };
 
-const hoodPair = interventionPair("hotte", baHood);
 const ductPair = interventionPair("conduit", baDuct);
 const motorPair = interventionPair("moteur", baMotor);
 
 export const GALLERY: GalleryItem[] = [
   {
-    slug: "hotte",
-    title: "Hotte de cuisine professionnelle",
-    type: "Dégraissage de hotte et filtres",
-    before: hoodPair.before,
-    after: hoodPair.after,
-    objectPosition: "center 42%",
-    beforeTreatment: "grime",
-    demonstration: hoodPair.demonstration,
-    text: "Démonstration visuelle sur le même angle : état encrassé simulé, puis surface après dégraissage.",
+    slug: "filtres",
+    title: "Filtre à graisse de hotte professionnelle",
+    type: "Dégraissage de filtres",
+    before: filterCloggedWide,
+    after: filterCleanWide,
+    objectPosition: "center center",
+    beforeTreatment: "clean",
+    demonstration: false,
+    text: "Photos réelles du même filtre : encrassé après des mois de cuisson, puis après dégraissage complet.",
+    credit: CC_FILTER_CREDIT,
+  },
+  {
+    slug: "filtres-macro",
+    title: "Maille du filtre — vue rapprochée",
+    type: "Filtre en gros plan",
+    before: filterCloggedMacro,
+    after: filterCleanMacro,
+    objectPosition: "center center",
+    beforeTreatment: "clean",
+    demonstration: false,
+    text: "Photos réelles au plus près de la maille : dépôts gras carbonisés, puis métal dégagé.",
+    credit: CC_FILTER_CREDIT,
   },
   {
     slug: "conduit",

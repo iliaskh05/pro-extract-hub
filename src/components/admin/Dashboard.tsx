@@ -159,7 +159,7 @@ export function Dashboard({ leadIdFromUrl }: { leadIdFromUrl?: string | undefine
 
       <div className="mx-auto max-w-7xl space-y-8 px-5 py-8 lg:px-8">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="inline-flex rounded-lg border border-border bg-card p-1">
+          <div className="inline-flex rounded-lg border border-border bg-card p-1" role="tablist" aria-label="Vue du CRM">
             {(
               [
                 { value: "dashboard", label: "Tableau de bord" },
@@ -169,6 +169,9 @@ export function Dashboard({ leadIdFromUrl }: { leadIdFromUrl?: string | undefine
               <button
                 key={t.value}
                 type="button"
+                role="tab"
+                aria-selected={view === t.value}
+                aria-controls={`crm-panel-${t.value}`}
                 onClick={() => setView(t.value)}
                 className={cn(
                   "rounded-md px-4 py-1.5 text-xs font-semibold transition-colors",
@@ -183,15 +186,16 @@ export function Dashboard({ leadIdFromUrl }: { leadIdFromUrl?: string | undefine
           </div>
           {view === "dashboard" && (
             <div className="flex flex-wrap items-center gap-3">
-              <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-                <span className="size-2 animate-pulse rounded-full bg-accent" />
+              <span role="status" aria-live="polite" className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                <span className="size-2 animate-pulse rounded-full bg-accent" aria-hidden="true" />
                 En direct · maj {lastUpdated.toLocaleTimeString("fr-FR")}
               </span>
-              <div className="inline-flex rounded-lg border border-border bg-card p-1">
+              <div className="inline-flex rounded-lg border border-border bg-card p-1" role="group" aria-label="Période des indicateurs">
                 {PERIODS.map((p) => (
                   <button
                     key={p.value}
                     type="button"
+                    aria-pressed={period === p.value}
                     onClick={() => setPeriod(p.value)}
                     className={cn(
                       "rounded-md px-3 py-1.5 text-[11px] font-semibold transition-colors",
@@ -209,9 +213,11 @@ export function Dashboard({ leadIdFromUrl }: { leadIdFromUrl?: string | undefine
         </div>
 
         {view === "dashboard" ? (
-          <DashboardOverview leads={leads} period={period} isLoading={isLoading} />
+          <div id="crm-panel-dashboard" role="tabpanel">
+            <DashboardOverview leads={leads} period={period} isLoading={isLoading} />
+          </div>
         ) : (
-          <>
+          <div id="crm-panel-pipeline" role="tabpanel" className="space-y-8">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {kpis.map((k) => (
                 <div
@@ -252,10 +258,12 @@ export function Dashboard({ leadIdFromUrl }: { leadIdFromUrl?: string | undefine
               </section>
             )}
 
-            <section className="rounded-xl border border-border bg-card p-4">
-              <h2 className="text-sm font-bold tracking-tight">Filtres</h2>
+            <section className="rounded-xl border border-border bg-card p-4" aria-labelledby="filters-title">
+              <h2 id="filters-title" className="text-sm font-bold tracking-tight">Filtres</h2>
               <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
                 <select
+                  id="filter-status"
+                  aria-label="Filtrer par statut"
                   className="h-10 rounded-lg border border-input bg-background px-3 text-sm"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
@@ -268,6 +276,8 @@ export function Dashboard({ leadIdFromUrl }: { leadIdFromUrl?: string | undefine
                   ))}
                 </select>
                 <select
+                  id="filter-priority"
+                  aria-label="Filtrer par priorité"
                   className="h-10 rounded-lg border border-input bg-background px-3 text-sm"
                   value={priorityFilter}
                   onChange={(e) => setPriorityFilter(e.target.value)}
@@ -280,11 +290,14 @@ export function Dashboard({ leadIdFromUrl }: { leadIdFromUrl?: string | undefine
                   ))}
                 </select>
                 <Input
+                  aria-label="Filtrer par ville"
                   placeholder="Ville"
                   value={cityFilter}
                   onChange={(e) => setCityFilter(e.target.value)}
                 />
                 <select
+                  id="filter-business"
+                  aria-label="Filtrer par établissement"
                   className="h-10 rounded-lg border border-input bg-background px-3 text-sm"
                   value={businessFilter}
                   onChange={(e) => setBusinessFilter(e.target.value)}
@@ -297,6 +310,8 @@ export function Dashboard({ leadIdFromUrl }: { leadIdFromUrl?: string | undefine
                   ))}
                 </select>
                 <select
+                  id="filter-frequency"
+                  aria-label="Filtrer par fréquence"
                   className="h-10 rounded-lg border border-input bg-background px-3 text-sm"
                   value={freqFilter}
                   onChange={(e) => setFreqFilter(e.target.value)}
@@ -342,6 +357,7 @@ export function Dashboard({ leadIdFromUrl }: { leadIdFromUrl?: string | undefine
                             key={l.id}
                             type="button"
                             onClick={() => setSelected(l)}
+                            aria-label={`Voir les détails de ${l.company_name || l.contact_name || "ce contact"}`}
                             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-left text-xs transition-colors hover:border-accent"
                           >
                             <span className="flex items-center justify-between gap-2">
@@ -376,6 +392,7 @@ export function Dashboard({ leadIdFromUrl }: { leadIdFromUrl?: string | undefine
               <h2 className="text-sm font-bold tracking-tight">Leads ({filtered.length})</h2>
               <div className="mt-4 overflow-x-auto rounded-xl border border-border bg-card">
                 <table className="w-full min-w-[900px] text-sm">
+                  <caption className="sr-only">Liste des demandes filtrées, {filtered.length} résultat(s)</caption>
                   <thead className="border-b border-border bg-secondary/60 text-left text-xs text-muted-foreground">
                     <tr>
                       {[
@@ -410,12 +427,17 @@ export function Dashboard({ leadIdFromUrl }: { leadIdFromUrl?: string | undefine
                       </tr>
                     )}
                     {filtered.map((l) => (
-                      <tr
-                        key={l.id}
-                        onClick={() => setSelected(l)}
-                        className="cursor-pointer border-b border-border last:border-0 hover:bg-secondary/50"
-                      >
-                        <td className="px-4 py-3 font-medium">{l.company_name || "—"}</td>
+                      <tr key={l.id} className="border-b border-border last:border-0 hover:bg-secondary/50">
+                        <td className="px-4 py-3 font-medium">
+                          <button
+                            type="button"
+                            onClick={() => setSelected(l)}
+                            className="rounded-sm text-left underline-offset-4 hover:underline"
+                            aria-label={`Voir les détails de ${l.company_name || l.contact_name || "ce contact"}`}
+                          >
+                            {l.company_name || "—"}
+                          </button>
+                        </td>
                         <td className="px-4 py-3">{l.contact_name || "—"}</td>
                         <td className="px-4 py-3">{l.city || "—"}</td>
                         <td className="px-4 py-3">
@@ -463,7 +485,7 @@ export function Dashboard({ leadIdFromUrl }: { leadIdFromUrl?: string | undefine
                 </table>
               </div>
             </section>
-          </>
+          </div>
         )}
       </div>
 

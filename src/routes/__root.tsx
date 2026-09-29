@@ -67,6 +67,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
+            type="button"
             onClick={() => {
               router.invalidate();
               reset();
@@ -112,12 +113,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       ...(import.meta.env["VITE_SUPABASE_URL"]
         ? [{ rel: "preconnect", href: import.meta.env["VITE_SUPABASE_URL"] as string }]
         : []),
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Syne:wght@500;600;700;800&display=swap",
-      },
     ],
     scripts: [
       {
@@ -178,7 +173,7 @@ function RootComponent() {
         {!isAdmin && !isHome && (
           <div className="h-[4.25rem] shrink-0 md:h-20 lg:h-[5.25rem]" aria-hidden="true" />
         )}
-        <main id="contenu" className="flex-1">
+        <main id="contenu" tabIndex={-1} className="flex-1">
           <Outlet />
         </main>
         {!isAdmin && <SiteFooter />}
