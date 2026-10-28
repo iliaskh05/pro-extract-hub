@@ -47,8 +47,7 @@ function isH3SwallowedErrorBody(body: string): boolean {
 // Only Plausible (analytics, loaded post-consent) and Google Fonts are ever
 // fetched from the browser besides our own origin and Supabase. script-src
 // and style-src need 'unsafe-inline': TanStack Start's SSR hydration payload
-// and the shadcn chart component (src/components/ui/chart.tsx) both inject
-// inline <script>/<style> tags, and there is no nonce/hash plumbing here yet.
+// injects inline <script>/<style> tags, and there is no nonce/hash plumbing yet.
 function supabaseCspSources(): string {
   const supabaseUrl = process.env["VITE_SUPABASE_URL"] || process.env["SUPABASE_URL"] || "";
   try {

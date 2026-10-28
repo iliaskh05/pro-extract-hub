@@ -1,8 +1,7 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
   Link,
-  createRootRouteWithContext,
+  createRootRoute,
   useRouter,
   useRouterState,
   HeadContent,
@@ -88,7 +87,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -154,13 +153,11 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 function RootComponent() {
-  const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isAdmin = pathname.startsWith("/admin");
   const isHome = pathname === "/";
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <>
       <a
         href="#contenu"
         className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[100] focus:rounded-md focus:bg-background focus:px-3 focus:py-2 focus:text-sm"
@@ -168,33 +165,29 @@ function RootComponent() {
         Aller au contenu
       </a>
       <div className="flex min-h-screen flex-col">
-        {!isAdmin && <SiteHeader />}
+        <SiteHeader />
         {/* Header fixed : réserve l'espace sauf sur l'accueil (hero plein écran). */}
-        {!isAdmin && !isHome && (
+        {!isHome && (
           <div className="h-[4.25rem] shrink-0 md:h-20 lg:h-[5.25rem]" aria-hidden="true" />
         )}
         <main id="contenu" tabIndex={-1} className="flex-1">
           <Outlet />
         </main>
-        {!isAdmin && <SiteFooter />}
-        {!isAdmin && (
-          <>
-            <div
-              className="pb-[calc(6.5rem+env(safe-area-inset-bottom))] lg:pb-0"
-              aria-hidden="true"
-            />
-            <StickyMobileCta />
-            <WhatsAppWidget />
-            <Suspense fallback={null}>
-              <ChatWidget />
-            </Suspense>
-            <CursorLabel />
-          </>
-        )}
+        <SiteFooter />
+        <div
+          className="pb-[calc(6.5rem+env(safe-area-inset-bottom))] lg:pb-0"
+          aria-hidden="true"
+        />
+        <StickyMobileCta />
+        <WhatsAppWidget />
+        <Suspense fallback={null}>
+          <ChatWidget />
+        </Suspense>
+        <CursorLabel />
       </div>
-      {!isAdmin && <CookieConsent />}
-      {!isAdmin && <AnalyticsGate />}
+      <CookieConsent />
+      <AnalyticsGate />
       <Toaster position="top-center" />
-    </QueryClientProvider>
+    </>
   );
 }

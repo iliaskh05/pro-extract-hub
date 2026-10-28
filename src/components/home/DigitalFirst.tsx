@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { ClipboardList, FileText, Globe, History, LayoutDashboard, Wrench } from "lucide-react";
+import { ClipboardList, FileText, Globe, History, Mail, Wrench } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 import { cn } from "@/lib/utils";
 
 const FLOW = [
   { icon: Globe, label: "Site" },
   { icon: ClipboardList, label: "Demande" },
-  { icon: LayoutDashboard, label: "CRM" },
+  { icon: Mail, label: "Notification" },
   { icon: Wrench, label: "Intervention" },
   { icon: FileText, label: "Rapport" },
   { icon: History, label: "Suivi" },

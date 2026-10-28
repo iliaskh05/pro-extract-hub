@@ -342,24 +342,6 @@ export const BUSINESS_TYPES = [
   "Autre",
 ] as const;
 
-export const LEAD_STATUSES = [
-  { value: "new", label: "Nouveau" },
-  { value: "contacted", label: "Contacté" },
-  { value: "qualified", label: "Qualifié" },
-  { value: "quote_requested", label: "Devis demandé" },
-  { value: "quote_sent", label: "Devis envoyé" },
-  { value: "won", label: "Gagné" },
-  { value: "lost", label: "Perdu" },
-] as const;
-
-export type LeadStatus = (typeof LEAD_STATUSES)[number]["value"];
-
-export const PRIORITY_LABELS: Record<string, string> = {
-  normal: "Normale",
-  high: "Prioritaire",
-  critical: "Critique",
-};
-
 export const CONTACT_METHODS = [
   { value: "email", label: "Email" },
   { value: "phone", label: "Téléphone" },

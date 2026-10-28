@@ -74,7 +74,6 @@ export function buildRobotsTxt(): string {
   const sitemap = absoluteUrl("/sitemap.xml");
   return `User-agent: *
 Allow: /
-Disallow: /admin
 
 Sitemap: ${sitemap}
 `;

@@ -1,4 +1,4 @@
-import { SITE, siteUrl } from "@/lib/site";
+import { SITE } from "@/lib/site";
 import {
   labelFor,
   MAINTENANCE_FREQUENCIES,
@@ -53,8 +53,6 @@ async function sendResend(to: string, subject: string, html: string, text: strin
 
 export async function notifyNewLead(lead: LeadNotice) {
   const adminTo = process.env["LEAD_NOTIFY_EMAIL"];
-  const origin = siteUrl() || "https://localhost";
-  const crmUrl = `${origin}/admin?lead=${lead.id}`;
   const brand = SITE.name;
   const urgencyLabel = labelFor(URGENCY_LEVELS, lead.urgency_level ?? "normal");
   const needLabel = labelFor(NEED_TYPES, lead.need_type ?? "devis_classique");
@@ -80,7 +78,6 @@ export async function notifyNewLead(lead: LeadNotice) {
     lead.zone_source ? `Zone source : ${lead.zone_source}` : "",
     `Date : ${new Date().toLocaleString("fr-FR")}`,
     lead.message ? `Message : ${lead.message}` : "",
-    `CRM : ${crmUrl}`,
   ]
     .filter(Boolean)
     .join("\n");
@@ -99,7 +96,7 @@ export async function notifyNewLead(lead: LeadNotice) {
     await sendResend(
       adminTo,
       `[${brand}] Nouvelle demande #${lead.reference} — ${lead.city}${urgencyLabel !== "Normale" ? ` (${urgencyLabel})` : ""}`,
-      `<p>Nouvelle demande de devis.</p><pre>${escapeHtml(summary)}</pre><p><a href="${crmUrl}">Ouvrir dans le CRM</a></p>`,
+      `<p>Nouvelle demande de devis.</p><pre>${escapeHtml(summary)}</pre>`,
       summary,
     );
   }

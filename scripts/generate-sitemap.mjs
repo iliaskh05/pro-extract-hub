@@ -82,7 +82,6 @@ ${paths
 
 const robots = `User-agent: *
 Allow: /
-Disallow: /admin
 
 Sitemap: ${loc("/sitemap.xml")}
 `;

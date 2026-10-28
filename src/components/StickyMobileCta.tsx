@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 export function StickyMobileCta() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  if (pathname.startsWith("/admin") || pathname.startsWith("/devis")) return null;
+  if (pathname.startsWith("/devis")) return null;
   const wa = whatsappLink();
   const tel = phoneHref();
 
