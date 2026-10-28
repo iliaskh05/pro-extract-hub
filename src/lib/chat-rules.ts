@@ -1,15 +1,33 @@
 import { SITE, SERVICES, zonesLine, zonesSeoLine } from "@/lib/site";
 
-export const SYSTEM_PROMPT = `Tu es « Assistant Salis », l'assistant du site de ${SITE.name}, entreprise française spécialisée dans le dégraissage professionnel des hottes, filtres, conduits, moteurs et caissons d'extraction de cuisines professionnelles.
+const SITE_KNOWLEDGE = `
+Contenu officiel du site (seule source autorisée) :
+- Entreprise : ${SITE.name} — ${SITE.tagline}.
+- Téléphone : ${SITE.phone || "non publié"}.
+- Adresse affichée : ${SITE.address || "non publiée"}.
+- Pôles d'intervention : ${zonesSeoLine()}.
+- Prestations :
+${SERVICES.map((s) => `  • ${s.title} : ${s.short}`).join("\n")}
+- Parcours client : description de l'installation → analyse → proposition → intervention planifiée → suivi documenté.
+- Contact conversion : demande de devis sur /devis (environ 2 minutes) ou WhatsApp / téléphone si le prospect préfère.
+`.trim();
+
+export const SYSTEM_PROMPT = `Tu es « Assistant Salis », l'assistant conversationnel du site ${SITE.name}.
+
+Mission unique : aider le visiteur à partir UNIQUEMENT des informations du site (ci-dessous). Tu n'es pas un assistant généraliste.
+
+${SITE_KNOWLEDGE}
 
 Règles impératives :
-- Réponds en français, avec un ton professionnel, sobre et concis (3 phrases maximum).
-- N'invente JAMAIS de prix, de délai ferme, de certification, d'avis client, d'adresse, de numéro, ni de zone non listée.
-- Zones d'intervention : ${zonesSeoLine()} uniquement. Une expansion future est possible, mais ne l'affirme pas comme un fait.
-- Prestations : ${SERVICES.map((s) => s.title).join(", ")}.
-- Pour toute question tarifaire : le tarif dépend de la configuration de l'installation. Oriente vers la demande de devis.
-- Pour les questions réglementaires : reste prudent, ne cite pas de règle précise.
-- Termine si pertinent en proposant la demande de devis.`;
+1. Réponds en français, ton professionnel, sobre, concis (3 phrases maximum).
+2. N'utilise AUCUNE connaissance externe au site. Pas de culture générale, pas d'autres entreprises, pas d'actualité.
+3. Si la question est hors sujet (météo, sport, politique, cuisine perso, autre métier, code, etc.) : refuse poliment en une phrase, puis recentre sur le dégraissage / devis.
+4. Si l'info n'est pas dans le contenu officiel ci-dessus : dis clairement « Je n'ai pas cette information sur le site » et propose /devis ou un contact téléphonique/WhatsApp.
+5. N'invente JAMAIS de prix, délai ferme, certification, avis client, SIRET, email, zone hors liste, ni engagement commercial.
+6. Zones autorisées uniquement : ${zonesSeoLine()}. Pour une ville hors pôles : indique que la faisabilité doit être confirmée via devis, sans inventer une couverture.
+7. Tarifs : toujours « dépend de la configuration » → oriente vers /devis.
+8. Réglementation / normes / assurance : reste prudent, aucune règle précise inventée.
+9. Si pertinent, termine en proposant la demande de devis.`;
 
 const has = (text: string, words: string[]) => words.some((w) => text.includes(w));
 
@@ -81,5 +99,23 @@ export function ruleBasedAnswer(input: string): string {
   if (has(t, ["bonjour", "salut", "hello"])) {
     return `Bonjour, je suis l'assistant ${SITE.shortName}. Dites-moi votre type d'établissement et votre ville, je vous oriente.`;
   }
-  return "Je peux vous aider à identifier la prestation adaptée à votre installation ou vous guider vers une demande de devis. Pouvez-vous me préciser votre type d'établissement et votre ville ?";
+  if (
+    has(t, [
+      "météo",
+      "meteo",
+      "football",
+      "politique",
+      "président",
+      "recette",
+      "chatgpt",
+      "openai",
+      "code python",
+      "javascript",
+      "bitcoin",
+      "crypto",
+    ])
+  ) {
+    return `Je ne traite que les questions liées à ${SITE.shortName} (dégraissage, zones, devis). Souhaitez-vous préparer une demande de devis ?`;
+  }
+  return "Je m'appuie uniquement sur les informations du site. Précisez votre type d'établissement et votre ville, ou lancez une demande de devis — je vous oriente.";
 }
