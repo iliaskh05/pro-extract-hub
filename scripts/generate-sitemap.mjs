@@ -1,6 +1,6 @@
 /**
  * Génère public/sitemap.xml et public/robots.txt avec VITE_SITE_URL.
- * Aligné sur src/lib/seo.ts (services, zones actives, secteurs).
+ * Zones / services / secteurs lus depuis les sources TypeScript (évite les écarts).
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
@@ -26,28 +26,23 @@ function loadEnv() {
   return (process.env.VITE_SITE_URL ?? "").replace(/\/$/, "");
 }
 
+/** Extrait les `slug: "..."` d'un tableau exporté dans un fichier source. */
+function loadSlugs(relPath, exportName) {
+  const raw = readFileSync(resolve(root, relPath), "utf8");
+  const re = new RegExp(
+    `export const ${exportName}[\\s\\S]*?= \\[([\\s\\S]*?)\\];`,
+  );
+  const block = raw.match(re)?.[1];
+  if (!block) {
+    throw new Error(`[seo] impossible de lire ${exportName} dans ${relPath}`);
+  }
+  return [...block.matchAll(/slug:\s*"([^"]+)"/g)].map((m) => m[1]);
+}
+
 const base = loadEnv();
-
-const services = [
-  "degraissage-hotte",
-  "nettoyage-filtres",
-  "nettoyage-conduit",
-  "nettoyage-moteur-caisson",
-  "entretien-periodique",
-  "diagnostic-devis",
-];
-
-const zones = ["paris", "perpignan", "troyes", "dijon"];
-
-const sectors = [
-  "restaurant",
-  "hotel",
-  "fast-food",
-  "boulangerie",
-  "patisserie",
-  "traiteur",
-  "cuisine-collective",
-];
+const services = loadSlugs("src/lib/site.ts", "SERVICES");
+const zones = loadSlugs("src/lib/site.ts", "ZONES");
+const sectors = loadSlugs("src/lib/sectors.ts", "SECTORS");
 
 const paths = [
   { path: "/", priority: "1.0" },
@@ -91,6 +86,6 @@ writeFileSync(resolve(root, "public/robots.txt"), robots, "utf8");
 
 console.log(
   base
-    ? `[seo] sitemap + robots générés pour ${base}`
+    ? `[seo] sitemap + robots générés pour ${base} (${zones.length} zones, ${services.length} services)`
     : "[seo] sitemap + robots générés (URLs relatives — définissez VITE_SITE_URL avant prod)",
 );

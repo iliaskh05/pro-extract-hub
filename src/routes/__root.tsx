@@ -122,12 +122,21 @@ export const Route = createRootRoute({
           name: SITE.name,
           description:
             "Dégraissage professionnel des hottes, filtres, conduits et systèmes d'extraction de cuisines professionnelles.",
+          telephone: SITE.phone || undefined,
+          email: SITE.email || undefined,
+          address: SITE.address
+            ? {
+                "@type": "PostalAddress",
+                streetAddress: SITE.address,
+                addressCountry: "FR",
+              }
+            : undefined,
           areaServed: activeZones().map((zone) => ({
             "@type": "AdministrativeArea",
             name: `${zone.name} / ${zone.region}`,
           })),
           image: ogImageUrl(),
-          url: siteUrl() ? absoluteUrl("/") : undefined,
+          url: absoluteUrl("/"),
         }),
       },
     ],

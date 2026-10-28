@@ -1,10 +1,11 @@
 import { Link } from "@tanstack/react-router";
-import { SERVICES, SITE, activeZones, displayValue } from "@/lib/site";
+import { SERVICES, SITE, activeZones, displayValue, phoneHref } from "@/lib/site";
 import { BrandMark } from "@/components/BrandMark";
 import { openConsentManager } from "@/lib/analytics";
 
 export function SiteFooter() {
   const zones = activeZones();
+  const tel = phoneHref();
 
   return (
     <footer className="border-t border-border bg-background">
@@ -15,6 +16,11 @@ export function SiteFooter() {
             <p className="mt-6 max-w-xs text-sm leading-relaxed text-muted-foreground">
               {SITE.tagline} pour les cuisines professionnelles.
             </p>
+            {SITE.address ? (
+              <p className="mt-4 max-w-xs text-xs leading-relaxed text-muted-foreground">
+                {SITE.address}
+              </p>
+            ) : null}
           </div>
 
           <div className="lg:col-span-3">
@@ -54,8 +60,17 @@ export function SiteFooter() {
           <div className="lg:col-span-3">
             <h2 className="eyebrow text-muted-foreground">Contact</h2>
             <ul className="mt-4 space-y-2.5 text-sm text-muted-foreground">
-              <li>{displayValue(SITE.phone, "Téléphone à confirmer")}</li>
-              <li>{displayValue(SITE.email, "Email à confirmer")}</li>
+              <li>
+                {tel ? (
+                  <a href={tel} className="transition-colors hover:text-foreground">
+                    {SITE.phone}
+                  </a>
+                ) : (
+                  displayValue(SITE.phone, "Téléphone à confirmer")
+                )}
+              </li>
+              <li>{displayValue(SITE.email, "Email pro à publier")}</li>
+              {SITE.hours ? <li>{SITE.hours}</li> : null}
               <li>
                 <Link to="/contact" className="transition-colors hover:text-foreground">
                   Nous écrire

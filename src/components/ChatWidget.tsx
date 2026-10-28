@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { MessageCircle, Send, Sparkles, X } from "lucide-react";
 import { askAssistant } from "@/lib/chat.functions";
@@ -45,6 +45,9 @@ export function ChatWidget() {
   const titleId = useId();
   const descriptionId = useId();
   const navigate = useNavigate();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  /** Sur /devis la barre sticky mobile est masquée : descendre le chat. */
+  const aboveSticky = !pathname.startsWith("/devis");
   const tel = phoneHref();
   const wa = whatsappLink();
 
@@ -128,7 +131,14 @@ export function ChatWidget() {
   }
 
   return (
-    <div className="fixed right-4 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-50 flex flex-col items-end gap-3 lg:bottom-24">
+    <div
+      className={cn(
+        "fixed right-4 z-50 flex flex-col items-end gap-3 lg:bottom-24",
+        aboveSticky
+          ? "bottom-[calc(5.5rem+env(safe-area-inset-bottom))]"
+          : "bottom-[calc(1.25rem+env(safe-area-inset-bottom))]",
+      )}
+    >
       {open && (
         <div
           ref={dialogRef}
@@ -136,7 +146,10 @@ export function ChatWidget() {
           aria-modal="false"
           aria-labelledby={titleId}
           aria-describedby={descriptionId}
-          className="panel-in flex h-[32rem] max-h-[calc(100svh-9rem)] w-[22.5rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-border bg-popover shadow-lift"
+          className={cn(
+            "panel-in flex h-[32rem] w-[22.5rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-border bg-popover shadow-lift",
+            aboveSticky ? "max-h-[calc(100svh-10.5rem)]" : "max-h-[calc(100svh-6rem)]",
+          )}
         >
           <div className="surface-ink relative overflow-hidden px-4 py-4">
             <div

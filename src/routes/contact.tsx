@@ -120,16 +120,31 @@ function ContactPage() {
           </div>
         </div>
 
-        <div className="mt-12 rounded-2xl border border-border bg-secondary/50 p-7">
-          <h2 className="text-lg font-semibold tracking-tight">Zones d'intervention</h2>
-          <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
-            {activeZones().map((z) => (
-              <li key={z.slug}>· {z.name}</li>
-            ))}
-          </ul>
-          <Button asChild variant="ghost" className="mt-4 px-0">
-            <Link to="/zones">Voir la carte</Link>
-          </Button>
+        <div className="mt-12 grid gap-5 md:grid-cols-2">
+          <div className="rounded-2xl border border-border bg-secondary/50 p-7">
+            <h2 className="text-lg font-semibold tracking-tight">Adresse</h2>
+            <p className="mt-3 text-sm text-muted-foreground">
+              {displayValue(SITE.address, "Adresse à confirmer")}
+            </p>
+            {SITE.hours ? (
+              <p className="mt-3 text-sm text-muted-foreground">{SITE.hours}</p>
+            ) : (
+              <p className="mt-3 text-xs text-muted-foreground">
+                Horaires de contact : via devis, téléphone ou WhatsApp selon votre disponibilité.
+              </p>
+            )}
+          </div>
+          <div className="rounded-2xl border border-border bg-secondary/50 p-7">
+            <h2 className="text-lg font-semibold tracking-tight">Zones d'intervention</h2>
+            <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
+              {activeZones().map((z) => (
+                <li key={z.slug}>· {z.name}</li>
+              ))}
+            </ul>
+            <Button asChild variant="ghost" className="mt-4 px-0">
+              <Link to="/zones">Voir la carte</Link>
+            </Button>
+          </div>
         </div>
 
         <p className="mt-8 text-xs leading-relaxed text-muted-foreground">

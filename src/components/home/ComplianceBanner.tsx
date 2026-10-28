@@ -2,15 +2,14 @@ import { AlertTriangle, FileCheck2, ShieldAlert } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 
 const CERT_ROWS = [
-  { label: "Fréquence légale minimale", value: "1× / an" },
-  { label: "Débit d'air", value: "Mesuré et consigné" },
-  { label: "Commission de sécurité", value: "Document accepté" },
+  { label: "Photos avant / après", value: "Incluses" },
+  { label: "Zones traitées", value: "Détaillées" },
+  { label: "Points d'attention", value: "Signalés" },
 ] as const;
 
 /**
- * Rappel réglementaire : obligation légale, risque incendie, attestation.
- * L'ambre marque volontairement une rupture avec le bleu de confiance —
- * réservé aux moments d'alerte réglementaire, jamais mélangé au bleu.
+ * Rappel réglementaire prudent + preuve de documentation post-intervention.
+ * L'ambre marque une rupture visuelle avec le bleu de confiance.
  */
 export function ComplianceBanner() {
   return (
@@ -29,13 +28,14 @@ export function ComplianceBanner() {
             Une obligation légale, pas une option.
           </h2>
           <p className="mt-5 max-w-md text-[0.9375rem] leading-relaxed text-ink-muted">
-            Le dégraissage périodique des systèmes d'extraction est une obligation réglementaire
-            pour les cuisines professionnelles. En cas d'incendie lié à un conduit encrassé, un
-            défaut d'entretien documenté peut justifier un refus d'indemnisation par l'assurance.
+            L'entretien périodique des systèmes d'extraction est attendu pour les cuisines
+            professionnelles. Les exigences précises dépendent de votre établissement, de votre
+            assureur et du contexte local : nous documentons l'intervention pour vous aider à
+            conserver une trace claire.
           </p>
           <p className="mt-5 flex items-start gap-2.5 border-l-2 border-signal/50 py-1 pl-4 font-mono text-[0.8125rem] text-ink-foreground/85">
             <AlertTriangle className="mt-0.5 size-4 shrink-0 text-signal" aria-hidden="true" />
-            Arrêté du 25 juin 1980 — Règlement sanitaire départemental type (RSDT)
+            En cas de doute réglementaire, rapprochez-vous de votre assureur ou d'un conseil compétent.
           </p>
         </Reveal>
 
@@ -47,7 +47,7 @@ export function ComplianceBanner() {
                 <div>
                   <p className="eyebrow text-muted-foreground">Remis après intervention</p>
                   <h3 className="mt-1.5 text-lg font-semibold tracking-tight">
-                    Attestation de dégraissage
+                    Compte rendu d'intervention
                   </h3>
                 </div>
                 <FileCheck2 className="size-6 shrink-0 text-signal" aria-hidden="true" />
@@ -70,7 +70,7 @@ export function ComplianceBanner() {
               </dl>
 
               <p className="mt-6 border-t border-dashed border-border pt-4 font-mono text-[11px] tracking-[0.08em] text-muted-foreground">
-                N° S3H-{new Date().getFullYear()}-XXXXXX · délivré par intervention
+                Document remis après chaque passage
               </p>
             </div>
           </div>

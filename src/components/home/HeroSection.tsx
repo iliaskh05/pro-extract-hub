@@ -9,9 +9,9 @@ import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
 import { track } from "@/lib/analytics";
 
 const REASSURANCE = [
-  { icon: ShieldCheck, text: "Conforme normes ERP & assurances" },
-  { icon: Moon, text: "Intervention de nuit sans arrêt de service" },
-  { icon: FileCheck2, text: "Attestation officielle remise après intervention" },
+  { icon: ShieldCheck, text: "Intervention technique documentée" },
+  { icon: Moon, text: "Créneaux pensés pour limiter l'impact service" },
+  { icon: FileCheck2, text: "Photos avant / après + compte rendu" },
 ] as const;
 
 /**
@@ -163,7 +163,7 @@ function EmergencyCta() {
       <Button asChild size="lg" variant="signal" className="h-12 w-full px-8 text-base sm:w-auto">
         <a href={tel} onClick={() => track("Phone Click", { from: "hero" })}>
           <PhoneCall className="size-4" />
-          Appel d'urgence 24/7
+          Appeler maintenant
         </a>
       </Button>
     );
@@ -183,7 +183,7 @@ function EmergencyCta() {
         }
       >
         <PhoneCall className="size-4" />
-        Urgence 24/7
+        Demande urgente
       </Link>
     </Button>
   );
