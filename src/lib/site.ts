@@ -53,7 +53,8 @@ export const PENDING_COMPANY_INFO = [
 export const COMPANY_PHONE_E164 = "33623381573";
 
 /** WhatsApp — format international sans "+" ni espaces (ex. 33600000000). */
-export const WHATSAPP_NUMBER = publicEnv("VITE_WHATSAPP_NUMBER") || COMPANY_PHONE_E164;
+// Numéro fixé volontairement : aucune variable d'hébergement ne peut le remplacer.
+export const WHATSAPP_NUMBER = COMPANY_PHONE_E164;
 
 export const WHATSAPP_DEFAULT_MESSAGE =
   "Bonjour, je souhaite un devis pour le dégraissage de mon système d'extraction.";
