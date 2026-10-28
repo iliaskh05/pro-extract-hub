@@ -52,12 +52,11 @@ export function sitemapEntries(): SitemapEntry[] {
 }
 
 export function buildSitemapXml(): string {
-  const today = new Date().toISOString().slice(0, 10);
   const urls = sitemapEntries()
     .map(
       (e) => `  <url>
     <loc>${escapeXml(absoluteUrl(e.path))}</loc>
-    <lastmod>${today}</lastmod>${e.changefreq ? `\n    <changefreq>${e.changefreq}</changefreq>` : ""}
+    ${e.changefreq ? `<changefreq>${e.changefreq}</changefreq>` : ""}
     <priority>${e.priority}</priority>
   </url>`,
     )
@@ -108,9 +107,7 @@ export function pageHead(opts: PageHeadOptions) {
     { property: "og:description", content: opts.ogDescription ?? opts.description },
     { property: "og:type", content: opts.ogType ?? "website" },
     { property: "og:url", content: absoluteUrl(opts.path) },
-    { property: "og:image", content: ogImageUrl() },
     { name: "twitter:card", content: "summary_large_image" },
-    { name: "twitter:image", content: ogImageUrl() },
   ];
 
   if (opts.noindex) {

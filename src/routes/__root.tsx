@@ -6,6 +6,7 @@ import {
   useRouterState,
   HeadContent,
   Scripts,
+  type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { lazy, Suspense, useEffect, type ReactNode } from "react";
 
@@ -48,7 +49,7 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
@@ -92,6 +93,7 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "google-site-verification", content: "Qihg83y02alwgO8p1PPEP_ys0gniYEznLnh42bwxIWs" },
       { title: `Dégraissage de hottes professionnelles | ${SITE.name}` },
       {
         name: "description",
@@ -100,9 +102,7 @@ export const Route = createRootRoute({
       { property: "og:site_name", content: SITE.name },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "fr_FR" },
-      { property: "og:image", content: ogImageUrl() },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: ogImageUrl() },
       { name: "theme-color", content: "#0c1118" },
     ],
     links: [
