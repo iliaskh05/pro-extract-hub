@@ -9,6 +9,19 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const buckets = new Map<string, number[]>();
 
+// This migration may not yet exist on the connected database. Keep its narrow
+// RPC contract here without changing generated types; failures still use the
+// existing in-memory fallback below.
+const checkRateLimit = supabaseAdmin.rpc.bind(supabaseAdmin) as unknown as (
+  name: "check_rate_limit",
+  args: {
+    p_bucket: string;
+    p_client_key: string;
+    p_max_per_window: number;
+    p_window_seconds: number;
+  },
+) => PromiseLike<{ data: boolean | null; error: { message: string } | null }>;
+
 export async function clientKey(): Promise<string> {
   try {
     const { getRequest } = await import("@tanstack/react-start/server");
@@ -49,7 +62,7 @@ export async function isRateLimited(
   windowMs: number,
 ): Promise<boolean> {
   try {
-    const { data, error } = await supabaseAdmin.rpc("check_rate_limit", {
+    const { data, error } = await checkRateLimit("check_rate_limit", {
       p_bucket: bucket,
       p_client_key: key,
       p_max_per_window: maxPerWindow,
