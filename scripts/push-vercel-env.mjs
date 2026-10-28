@@ -57,11 +57,12 @@ function parseEnv(raw) {
 
 const env = parseEnv(fs.readFileSync(envPath, "utf8"));
 
-// Prefer the linked production URL if SITE_URL still points at an old name.
-const preferred = "https://salis3hottes-ilias12.vercel.app";
+// Prefer the production domain if SITE_URL still points at an old preview name.
+const preferred = "https://salis3hottes.fr";
 if (
   !env.VITE_SITE_URL ||
   /pro-extract-hub\.vercel\.app/i.test(env.VITE_SITE_URL) ||
+  /salis3hottes\.vercel\.app/i.test(env.VITE_SITE_URL) ||
   /lovable\.app/i.test(env.VITE_SITE_URL)
 ) {
   env.VITE_SITE_URL = preferred;

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://salis3hottes.vercel.app/sitemap.xml
+Sitemap: https://salis3hottes.fr/sitemap.xml

@@ -361,7 +361,7 @@ export function emailHref() {
   return SITE.email.trim() ? `mailto:${SITE.email}` : null;
 }
 
-const DEFAULT_SITE_URL = "https://salis3hottes.vercel.app";
+const DEFAULT_SITE_URL = "https://salis3hottes.fr";
 
 export function siteUrl() {
   return publicEnv("VITE_SITE_URL").replace(/\/$/, "") || DEFAULT_SITE_URL;

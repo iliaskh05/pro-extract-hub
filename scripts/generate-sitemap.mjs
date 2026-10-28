@@ -12,7 +12,7 @@ const root = resolve(__dirname, "..");
 function loadEnv() {
   try {
     const raw = readFileSync(resolve(root, ".env"), "utf8");
-    for (const line of raw.split("\n")) {
+    for (const line of raw.split(/\r?\n/)) {
       const m = line.match(/^VITE_SITE_URL=(.*)$/);
       if (m)
         return m[1]
