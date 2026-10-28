@@ -22,7 +22,7 @@ export default defineConfig({
         preset: "vercel",
         vercel: {
           functions: {
-            runtime: "nodejs20.x",
+            runtime: "nodejs24.x",
           },
         },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
