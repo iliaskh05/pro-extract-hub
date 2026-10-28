@@ -39,7 +39,12 @@ function loadSlugs(relPath, exportName) {
   return [...block.matchAll(/slug:\s*"([^"]+)"/g)].map((m) => m[1]);
 }
 
-const base = loadEnv();
+const siteSource = readFileSync(resolve(root, "src/lib/site.ts"), "utf8");
+const defaultBase = siteSource.match(/const DEFAULT_SITE_URL = "([^"]+)"/)?.[1];
+const base = loadEnv() || defaultBase;
+if (!base || !/^https:\/\//.test(base)) {
+  throw new Error("[seo] une URL publique HTTPS est requise pour le sitemap");
+}
 const services = loadSlugs("src/lib/site.ts", "SERVICES");
 const zones = loadSlugs("src/lib/site.ts", "ZONES");
 const sectors = loadSlugs("src/lib/sectors.ts", "SECTORS");
@@ -61,7 +66,6 @@ const paths = [
   { path: "/confidentialite", priority: "0.3" },
 ];
 
-const today = new Date().toISOString().slice(0, 10);
 const loc = (p) => (base ? `${base}${p}` : p);
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -69,7 +73,7 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 ${paths
   .map(
     (e) =>
-      `  <url><loc>${loc(e.path)}</loc><lastmod>${today}</lastmod><priority>${e.priority}</priority></url>`,
+      `  <url><loc>${loc(e.path)}</loc><priority>${e.priority}</priority></url>`,
   )
   .join("\n")}
 </urlset>
