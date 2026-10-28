@@ -68,13 +68,20 @@ const DEMO_REVIEWS: GoogleReview[] = [
   },
 ];
 
+const writeReviewUrl = publicEnv("VITE_GOOGLE_REVIEW_URL");
+const profileUrl = publicEnv("VITE_GOOGLE_BUSINESS_URL");
+
+/** Afficher la section uniquement quand une vraie fiche Google est reliée. */
+export const HAS_REAL_GOOGLE_REVIEWS = Boolean(writeReviewUrl || profileUrl);
+
 export const GOOGLE_REVIEWS = {
-  writeReviewUrl: publicEnv("VITE_GOOGLE_REVIEW_URL"),
-  profileUrl: publicEnv("VITE_GOOGLE_BUSINESS_URL"),
+  writeReviewUrl,
+  profileUrl,
   businessName: "Salis3Hottes",
-  rating: 5.0,
-  reviewCount: 5,
-  reviews: DEMO_REVIEWS,
+  // Démos désactivées en prod tant qu'aucune URL GMB n'est configurée.
+  rating: HAS_REAL_GOOGLE_REVIEWS ? 5.0 : 0,
+  reviewCount: HAS_REAL_GOOGLE_REVIEWS ? DEMO_REVIEWS.length : 0,
+  reviews: HAS_REAL_GOOGLE_REVIEWS ? DEMO_REVIEWS : ([] as GoogleReview[]),
 };
 
 export function googleReviewLink(): string | null {

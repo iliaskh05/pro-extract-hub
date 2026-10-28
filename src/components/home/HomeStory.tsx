@@ -8,6 +8,7 @@ import { SectorsSection } from "@/components/home/SectorsSection";
 import { GoogleReviewsSection } from "@/components/home/GoogleReviewsSection";
 import { ComplianceBanner } from "@/components/home/ComplianceBanner";
 import { FinalCta } from "@/components/FinalCta";
+import { HAS_REAL_GOOGLE_REVIEWS } from "@/lib/google-reviews";
 
 /**
  * Accueil aéré : preuves essentielles + détail dense en onglets.
@@ -22,7 +23,7 @@ export function HomeStory() {
       <MethodSection />
       <HomeExploreTabs />
       <SectorsSection />
-      <GoogleReviewsSection />
+      {HAS_REAL_GOOGLE_REVIEWS ? <GoogleReviewsSection /> : null}
       <ComplianceBanner />
       <FinalCta />
     </div>
